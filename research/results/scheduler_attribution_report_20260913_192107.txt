@@ -1,0 +1,132 @@
+EXACT SIGNAL-GATE VS NON-OVERLAP-CENSORING ATTRIBUTION AUDIT (research only, no production changes)
+
+## Hypothesis and falsifier (fixed, from research/NEXT_EXPERIMENT.md)
+  H: every Recent STRONG_BEARISH row passing score>=40 and signal!=NO TRADE was bypassed because the canonical non-overlap walk was already inside a prior selected trade for that symbol/category.
+  Falsified if: (1) no Recent STRONG_BEARISH row is pre-scheduler-eligible (upstream gate fully accounts for zero trades); (2) any pre-scheduler-eligible row is reached and neither selected nor rejected by score/signal; or (3) exact canonical scheduling cannot be reproduced -- reported as UNVERIFIED, not as non-overlap evidence.
+
+## Provenance and reproducibility guard
+  Master file SHA-256: 7d6d623480e64c37ac606f45909074134b96257630f43230a51b476f5981e6c7  (expected 7d6d623480e64c37ac606f45909074134b96257630f43230a51b476f5981e6c7)  match=True
+  Trades file SHA-256: 05b11415a0979d224048e6e993d24c9a064f25a7b622e13a60ab5bbfe9026369  (expected 05b11415a0979d224048e6e993d24c9a064f25a7b622e13a60ab5bbfe9026369)  match=True
+  Command: python -m research.scheduler_attribution_experiment
+  Runtime: Python 3.14.7  pandas 3.0.5  numpy 2.5.3
+  Production-code verification (quoted, not assumed): research/factor_data.py's run_ablation walk uses `i = max(exit_idx + 1, i + 1)` (verbatim, reproduced below); calls analyzer.score_short_term/score_long_term, analyzer._grade_from_score, analyzer._classify_signal, and backtest._simulate_trade UNCHANGED; ablate_factor=None matches experiment 5's exact call.
+
+## Reconstruction check (predeclared tolerance BEFORE comparison: rtol=1e-06, atol=1e-06 -- accounts only for CSV text round-trip of identically-computed floats)
+  Columns present in canonical file but not reproduced by wrapper: ['dist_resistance_pct', 'dist_52w_high_pct']
+  OK -- 2083 wrapper-produced rows match the canonical trade file exactly (row count identical, zero value mismatches across 28 compared columns, within the predeclared tolerance).
+
+## Master-level reconstruction check on the two Recent STRONG_BEARISH dates
+  Checked 102 master rows against wrapper's own visited-index scoring.
+  Not visited (inside a prior trade's skip interval -- expected, resolved separately, not a discrepancy): 5 of 102
+  OK -- all checked master values match the wrapper's own computation where the index was visited.
+
+## Master-level reconstruction check on the two Recent STRONG_BEARISH dates
+  Checked 102 master rows against wrapper's own visited-index scoring.
+  Not visited (inside a prior trade's skip interval -- expected, resolved separately, not a discrepancy): 43 of 102
+  OK -- all checked master values match the wrapper's own computation where the index was visited.
+
+## Fixed population: 204 Recent STRONG_BEARISH master rows (both dates, both categories, all 51 symbols)
+
+## Gate taxonomy: all 204 rows, Recent STRONG_BEARISH (no examples selected -- exhaustive)
+  score<40: n=144
+  40<=score<60 (below grade floor C=60 -- always NO TRADE): n=52
+  pre_scheduler_eligible (score>=40 and signal!=NO TRADE): n=7
+  grade_present_signal_NO_TRADE (production classification gate): n=1
+  Pre-scheduler-eligible rows (candidates for skipped_by_open_trade attribution): n=7
+    ADANIENT     2026-06-05 Long-Term            score=63.7 grade=C rr_ratio=0.16 signal=WATCH
+    APOLLOHOSP   2026-06-05 Long-Term            score=64.0 grade=C rr_ratio=0.47 signal=WATCH
+    APOLLOHOSP   2026-06-08 Long-Term            score=63.9 grade=C rr_ratio=0.43 signal=WATCH
+    COALINDIA    2026-06-05 Long-Term            score=71.6 grade=B rr_ratio=0.60 signal=WATCH
+    COALINDIA    2026-06-08 Long-Term            score=67.3 grade=C rr_ratio=0.80 signal=WATCH
+    TITAN        2026-06-05 Long-Term            score=60.7 grade=C rr_ratio=1.25 signal=WATCH
+    TITAN        2026-06-08 Long-Term            score=60.3 grade=C rr_ratio=1.49 signal=WATCH
+
+## State attribution: all 102 rows, Recent STRONG_BEARISH, Short-Term (Swing)
+  State counts: {'reached_and_rejected_upstream': 97, 'skipped_by_open_trade': 5}
+  skipped_by_open_trade rows (blocking trade identifiers):
+    COALINDIA    2026-06-05 Short-Term (Swing)   gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-06-01 entry=2026-06-02 exit=2026-06-10 (Short-Term (Swing), exit_reason=stop_loss)
+    COALINDIA    2026-06-08 Short-Term (Swing)   gate=score<40  blocked_by: signal_date=2026-06-01 entry=2026-06-02 exit=2026-06-10 (Short-Term (Swing), exit_reason=stop_loss)
+    GRASIM       2026-06-05 Short-Term (Swing)   gate=score<40  blocked_by: signal_date=2026-05-29 entry=2026-06-01 exit=2026-07-10 (Short-Term (Swing), exit_reason=target1)
+    GRASIM       2026-06-08 Short-Term (Swing)   gate=score<40  blocked_by: signal_date=2026-05-29 entry=2026-06-01 exit=2026-07-10 (Short-Term (Swing), exit_reason=target1)
+    HINDALCO     2026-06-05 Short-Term (Swing)   gate=score<40  blocked_by: signal_date=2026-06-01 entry=2026-06-02 exit=2026-06-05 (Short-Term (Swing), exit_reason=stop_loss)
+  Pre-scheduler-eligible AND skipped_by_open_trade (the hypothesis's key evidence class): n=0
+
+## State attribution: all 102 rows, Recent STRONG_BEARISH, Long-Term
+  State counts: {'reached_and_rejected_upstream': 59, 'skipped_by_open_trade': 43}
+  skipped_by_open_trade rows (blocking trade identifiers):
+    ADANIENT     2026-06-05 Long-Term            gate=pre_scheduler_eligible (score>=40 and signal!=NO TRADE)  blocked_by: signal_date=2026-05-28 entry=2026-05-29 exit=2026-06-05 (Long-Term, exit_reason=target1)
+    ADANIPORTS   2026-06-05 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-05-28 entry=2026-05-29 exit=2026-07-01 (Long-Term, exit_reason=target1)
+    ADANIPORTS   2026-06-08 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-05-28 entry=2026-05-29 exit=2026-07-01 (Long-Term, exit_reason=target1)
+    APOLLOHOSP   2026-06-05 Long-Term            gate=pre_scheduler_eligible (score>=40 and signal!=NO TRADE)  blocked_by: signal_date=2026-06-03 entry=2026-06-04 exit=2026-06-09 (Long-Term, exit_reason=target1)
+    APOLLOHOSP   2026-06-08 Long-Term            gate=pre_scheduler_eligible (score>=40 and signal!=NO TRADE)  blocked_by: signal_date=2026-06-03 entry=2026-06-04 exit=2026-06-09 (Long-Term, exit_reason=target1)
+    ASIANPAINT   2026-06-05 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-04-21 entry=2026-04-22 exit=2026-07-22 (Long-Term, exit_reason=time_exit)
+    ASIANPAINT   2026-06-08 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-04-21 entry=2026-04-22 exit=2026-07-22 (Long-Term, exit_reason=time_exit)
+    AXISBANK     2026-06-05 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-04-06 entry=2026-04-07 exit=2026-07-07 (Long-Term, exit_reason=time_exit)
+    AXISBANK     2026-06-08 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-04-06 entry=2026-04-07 exit=2026-07-07 (Long-Term, exit_reason=time_exit)
+    BAJAJ-AUTO   2026-06-05 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-05-08 entry=2026-05-11 exit=2026-06-12 (Long-Term, exit_reason=stop_loss)
+    BAJAJ-AUTO   2026-06-08 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-05-08 entry=2026-05-11 exit=2026-06-12 (Long-Term, exit_reason=stop_loss)
+    BAJFINANCE   2026-06-05 Long-Term            gate=score<40  blocked_by: signal_date=2026-04-21 entry=2026-04-22 exit=2026-07-22 (Long-Term, exit_reason=time_exit)
+    BAJFINANCE   2026-06-08 Long-Term            gate=score<40  blocked_by: signal_date=2026-04-21 entry=2026-04-22 exit=2026-07-22 (Long-Term, exit_reason=time_exit)
+    BEL          2026-06-05 Long-Term            gate=score<40  blocked_by: signal_date=2026-04-02 entry=2026-04-06 exit=2026-07-06 (Long-Term, exit_reason=time_exit)
+    BEL          2026-06-08 Long-Term            gate=score<40  blocked_by: signal_date=2026-04-02 entry=2026-04-06 exit=2026-07-06 (Long-Term, exit_reason=time_exit)
+    CIPLA        2026-06-05 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-04-27 entry=2026-04-28 exit=2026-06-23 (Long-Term, exit_reason=target1)
+    CIPLA        2026-06-08 Long-Term            gate=score<40  blocked_by: signal_date=2026-04-27 entry=2026-04-28 exit=2026-06-23 (Long-Term, exit_reason=target1)
+    COALINDIA    2026-06-05 Long-Term            gate=pre_scheduler_eligible (score>=40 and signal!=NO TRADE)  blocked_by: signal_date=2026-05-28 entry=2026-05-29 exit=2026-07-07 (Long-Term, exit_reason=stop_loss)
+    COALINDIA    2026-06-08 Long-Term            gate=pre_scheduler_eligible (score>=40 and signal!=NO TRADE)  blocked_by: signal_date=2026-05-28 entry=2026-05-29 exit=2026-07-07 (Long-Term, exit_reason=stop_loss)
+    DRREDDY      2026-06-05 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-04-20 entry=2026-04-21 exit=2026-06-29 (Long-Term, exit_reason=target1)
+    DRREDDY      2026-06-08 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-04-20 entry=2026-04-21 exit=2026-06-29 (Long-Term, exit_reason=target1)
+    EICHERMOT    2026-06-05 Long-Term            gate=score<40  blocked_by: signal_date=2026-04-08 entry=2026-04-09 exit=2026-07-09 (Long-Term, exit_reason=time_exit)
+    EICHERMOT    2026-06-08 Long-Term            gate=score<40  blocked_by: signal_date=2026-04-08 entry=2026-04-09 exit=2026-07-09 (Long-Term, exit_reason=time_exit)
+    GRASIM       2026-06-05 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-05-25 entry=2026-05-26 exit=2026-07-10 (Long-Term, exit_reason=target1)
+    GRASIM       2026-06-08 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-05-25 entry=2026-05-26 exit=2026-07-10 (Long-Term, exit_reason=target1)
+    HINDALCO     2026-06-05 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-06-01 entry=2026-06-02 exit=2026-06-08 (Long-Term, exit_reason=stop_loss)
+    HINDALCO     2026-06-08 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-06-01 entry=2026-06-02 exit=2026-06-08 (Long-Term, exit_reason=stop_loss)
+    INDUSINDBK   2026-06-05 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-04-08 entry=2026-04-09 exit=2026-07-06 (Long-Term, exit_reason=target1)
+    INDUSINDBK   2026-06-08 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-04-08 entry=2026-04-09 exit=2026-07-06 (Long-Term, exit_reason=target1)
+    JSWSTEEL     2026-06-05 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-05-28 entry=2026-05-29 exit=2026-06-23 (Long-Term, exit_reason=stop_loss)
+    JSWSTEEL     2026-06-08 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-05-28 entry=2026-05-29 exit=2026-06-23 (Long-Term, exit_reason=stop_loss)
+    LT           2026-06-05 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-04-08 entry=2026-04-09 exit=2026-07-09 (Long-Term, exit_reason=time_exit)
+    LT           2026-06-08 Long-Term            gate=score<40  blocked_by: signal_date=2026-04-08 entry=2026-04-09 exit=2026-07-09 (Long-Term, exit_reason=time_exit)
+    SHRIRAMFIN   2026-06-05 Long-Term            gate=score<40  blocked_by: signal_date=2026-04-07 entry=2026-04-08 exit=2026-07-08 (Long-Term, exit_reason=time_exit)
+    SHRIRAMFIN   2026-06-08 Long-Term            gate=score<40  blocked_by: signal_date=2026-04-07 entry=2026-04-08 exit=2026-07-08 (Long-Term, exit_reason=time_exit)
+    SUNPHARMA    2026-06-05 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-05-19 entry=2026-05-20 exit=2026-07-09 (Long-Term, exit_reason=target1)
+    SUNPHARMA    2026-06-08 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-05-19 entry=2026-05-20 exit=2026-07-09 (Long-Term, exit_reason=target1)
+    TATASTEEL    2026-06-05 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-05-15 entry=2026-05-18 exit=2026-06-08 (Long-Term, exit_reason=stop_loss)
+    TATASTEEL    2026-06-08 Long-Term            gate=40<=score<60 (below grade floor C=60 -- always NO TRADE)  blocked_by: signal_date=2026-05-15 entry=2026-05-18 exit=2026-06-08 (Long-Term, exit_reason=stop_loss)
+    TITAN        2026-06-05 Long-Term            gate=pre_scheduler_eligible (score>=40 and signal!=NO TRADE)  blocked_by: signal_date=2026-05-25 entry=2026-05-26 exit=2026-07-07 (Long-Term, exit_reason=target1)
+    TITAN        2026-06-08 Long-Term            gate=pre_scheduler_eligible (score>=40 and signal!=NO TRADE)  blocked_by: signal_date=2026-05-25 entry=2026-05-26 exit=2026-07-07 (Long-Term, exit_reason=target1)
+    TRENT        2026-06-05 Long-Term            gate=score<40  blocked_by: signal_date=2026-04-29 entry=2026-04-30 exit=2026-06-22 (Long-Term, exit_reason=target1)
+    TRENT        2026-06-08 Long-Term            gate=score<40  blocked_by: signal_date=2026-04-29 entry=2026-04-30 exit=2026-06-22 (Long-Term, exit_reason=target1)
+  Pre-scheduler-eligible AND skipped_by_open_trade (the hypothesis's key evidence class): n=7
+
+## Fixed context-only robustness, Short-Term (Swing): same state taxonomy for every STRONG_BEARISH date, Early and Middle (descriptive only -- no returns evaluated, no new factors)
+
+  --- Early (n rows=1275) ---
+    Gate bucket counts: {'score<40': 1039, '40<=score<60': 214, 'pre_scheduler_eligible': 21, 'grade_present_signal_NO_TRADE': 1}
+    State counts: {'reached_and_rejected_upstream': 1187, 'skipped_by_open_trade': 75, 'reached_and_selected': 13}
+    Short-Term (Swing): n=1275
+
+  --- Middle (n rows=1785) ---
+    Gate bucket counts: {'score<40': 1364, '40<=score<60': 388, 'pre_scheduler_eligible': 32, 'grade_present_signal_NO_TRADE': 1}
+    State counts: {'reached_and_rejected_upstream': 1641, 'skipped_by_open_trade': 130, 'reached_and_selected': 14}
+    Short-Term (Swing): n=1785
+
+## Fixed context-only robustness, Long-Term: same state taxonomy for every STRONG_BEARISH date, Early and Middle (descriptive only -- no returns evaluated, no new factors)
+
+  --- Early (n rows=1275) ---
+    Gate bucket counts: {'score<40': 737, '40<=score<60': 402, 'pre_scheduler_eligible': 105, 'grade_present_signal_NO_TRADE': 31}
+    State counts: {'reached_and_rejected_upstream': 839, 'skipped_by_open_trade': 424, 'reached_and_selected': 12}
+    Long-Term: n=1275
+
+  --- Middle (n rows=1785) ---
+    Gate bucket counts: {'score<40': 1120, '40<=score<60': 443, 'pre_scheduler_eligible': 159, 'grade_present_signal_NO_TRADE': 63}
+    State counts: {'reached_and_rejected_upstream': 1178, 'skipped_by_open_trade': 598, 'reached_and_selected': 9}
+    Long-Term: n=1785
+
+## Hypothesis conditions, explicit, with N
+  Condition 1 (no pre-scheduler-eligible Recent STRONG_BEARISH row exists): FALSE (n_pre_scheduler_eligible=7)
+  Condition 2 (a pre-scheduler-eligible row reached but neither selected nor skipped_by_open_trade): FALSE (n=0)
+  Condition 3 (exact canonical scheduling could not be reproduced): FALSE
+
+## Verdict
+  SUPPORTED: reconstruction verified exactly against the canonical files, and 7 pre-scheduler-eligible Recent STRONG_BEARISH row(s) were reached by the walk's index sequence but never evaluated because the walk was still inside an earlier selected trade for that symbol/category (skipped_by_open_trade), with blocking-trade identifiers shown above. This is an observed scheduler effect on this frozen simulation path -- it is NOT a causal explanation of the STRONG_BEARISH-vs-BULLISH return anomaly (experiments 1-6), and supports no production change.

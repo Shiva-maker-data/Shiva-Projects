@@ -25,8 +25,8 @@ under that precommitted test (see experiment 6 below).
 
 ## Status: awaiting Codex audit
 
-Last completed experiment: **STRONG_BEARISH regime-frequency /
-opportunity-funnel audit** (2026-09-13, Codex-specified via
+Last completed experiment: **Exact signal-gate vs non-overlap-censoring
+attribution audit** (2026-09-13, Codex-specified via
 `research/NEXT_EXPERIMENT.md`). Codex has not yet audited it or written a
 new `NEXT_EXPERIMENT.md`. Next action is the human asking Codex to perform
 the handoff per the short prompt in the VYOM handoff README.
@@ -260,6 +260,83 @@ the handoff per the short prompt in the VYOM handoff README.
   `research/factor_data.py` and quoted in the report rather than assumed;
   script syntax-checked before running; single run, no alternate
   seeds/splits/block-lengths explored, per spec.
+- **This experiment does not begin or recommend a next experiment** —
+  awaiting Codex's next audit per the VYOM loop.
+
+### 8. Exact signal-gate vs non-overlap-censoring attribution audit — 2026-09-13
+- **Spec:** written by Codex in `research/NEXT_EXPERIMENT.md` after
+  auditing experiment 7, which had left the score/signal gate and the
+  non-overlap walk conflated in one opaque transition. Run exactly as
+  specified, no substitutions.
+- **Report:** `research/results/scheduler_attribution_report_20260913_192107.txt`
+- **Dataset:** `research/results/scheduler_attribution_states_20260913_192107.csv`
+  (per-row state attribution for all 204 Recent STRONG_BEARISH master rows)
+- **Fixed inputs (unmodified, hashes re-verified before use):** the same
+  `resistance_master_20260913_164146.csv` / `resistance_trades_20260913_164146.csv`
+  pair as experiments 5 and 7 (SHA-256s matched exactly).
+- **Question:** of the Recent-split STRONG_BEARISH rows that pass the
+  production pre-scheduler eligibility gate (score≥40 and signal≠"NO
+  TRADE"), were they bypassed specifically because the canonical
+  non-overlap walk was already inside a prior selected trade for that
+  symbol/category — or does upstream score/signal classification alone
+  already account for zero trades?
+- **Method:** built an instrumented wrapper reproducing
+  `research/factor_data.py`'s `run_ablation` walk exactly (identical
+  production function calls, identical `i = max(exit_idx + 1, i + 1)`
+  update expression, `ablate_factor=None` matching experiment 5's own
+  call), recording every visited index's outcome and every selected
+  trade's skip interval. Required an exact reconstruction check against
+  the archived canonical trade file before trusting any attribution.
+- **Reconstruction result: PASSED exactly.** 2,083 wrapper-produced rows
+  matched the canonical trade file with zero value mismatches across 28
+  compared columns (predeclared tolerance rtol=atol=1e-6, declared before
+  running). One real bug was found and fixed in the *comparison code*
+  itself (not the walk/scoring logic) before this result: `sector_ticker`
+  initially showed 604 "mismatches" that were a string-representation
+  artifact (Python `None` for unmapped symbols stringifying as `"None"`
+  vs pandas' CSV-round-tripped `NaN` stringifying as `"nan"`) — verified
+  `sector_ticker` is a pure static `SECTOR_MAP.get(symbol)` lookup,
+  independent of date or run, so a real behavioral mismatch was never
+  plausible here; the comparison method was corrected to normalize
+  missing-value representations before re-running once, fresh, in full —
+  this is a fix to the audit tool's own equality check, not a loosened
+  numerical tolerance (which is unchanged at 1e-6).
+- **Result: hypothesis SUPPORTED.** Of 204 Recent STRONG_BEARISH master
+  rows (102 per category), 7 were pre-scheduler-eligible — all Long-Term
+  (ADANIENT, APOLLOHOSP ×2, COALINDIA ×2, TITAN ×2) — and every one of
+  the 7 was confirmed `skipped_by_open_trade`, each with an exact blocking
+  trade identified (e.g. TITAN's 2026-06-05/08 candidates were both
+  blocked by a Long-Term trade signaled 2026-05-25, entered 2026-05-26,
+  exiting 2026-07-07 on target1). Zero pre-scheduler-eligible rows were
+  reached-but-unresolved (condition 2 false), so no undocumented
+  mechanism was found. Short-Term had zero pre-scheduler-eligible Recent
+  STRONG_BEARISH rows (its 5 skipped rows were all sub-40-score, i.e.
+  would have been rejected upstream regardless).
+- **Context robustness (Early/Middle, descriptive only):** the same three
+  states (reached_and_rejected_upstream / reached_and_selected /
+  skipped_by_open_trade) occur throughout the whole 3-year window at
+  much higher volume (e.g. Long-Term Early: 424 skipped_by_open_trade of
+  1,275 STRONG_BEARISH rows) — Recent's pattern is not unusual in kind,
+  only in how it happened to affect literally 100% of Recent's tiny
+  pre-scheduler-eligible population (n=7).
+- **Conclusion (scheduler-effect finding only — no causal or production
+  claim):** confirms and sharpens experiment 7 — it is specifically the
+  non-overlap trade-simulation gate, not upstream score/signal
+  classification, that is responsible for the Recent-split STRONG_BEARISH
+  trade count being zero despite eligible candidates existing. This is an
+  observed property of the frozen simulation path on a very small (n=7)
+  population, not evidence about the STRONG_BEARISH-vs-BULLISH return
+  anomaly (experiments 1-6) and not a case for changing the non-overlap
+  rule.
+- **Verification:** both input SHA-256s matched exactly; `git status
+  --short` before and after showed only new files under `research/`, all
+  16 production files and `tests/test_engine.py` unchanged; production
+  function/line verification (walk update expression, scorer calls,
+  `_grade_from_score`/`_classify_signal`/`_simulate_trade`) quoted from
+  code in the report; script syntax-checked before each run; single
+  substantive re-run after fixing the comparison-code defect described
+  above (not a re-run seeking a different result — the fix was applied
+  once, uniformly, before re-running the whole script end-to-end).
 - **This experiment does not begin or recommend a next experiment** —
   awaiting Codex's next audit per the VYOM loop.
 

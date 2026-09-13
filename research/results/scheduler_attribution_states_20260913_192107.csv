@@ -1,0 +1,205 @@
+symbol,category,date,gate_bucket,score,grade,signal,rr_ratio,chase_flag,regime,state,blocking_signal_date,blocking_entry_date,blocking_exit_date,blocking_exit_reason,blocking_category
+ADANIENT,Short-Term (Swing),2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),54.5,,NO TRADE,0.32,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ADANIENT,Short-Term (Swing),2026-06-08,score<40,33.1,,NO TRADE,0.92,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ADANIPORTS,Short-Term (Swing),2026-06-05,score<40,38.3,,NO TRADE,0.58,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ADANIPORTS,Short-Term (Swing),2026-06-08,score<40,36.1,,NO TRADE,0.88,True,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+APOLLOHOSP,Short-Term (Swing),2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),43.1,,NO TRADE,0.94,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+APOLLOHOSP,Short-Term (Swing),2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),50.6,,NO TRADE,0.86,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ASIANPAINT,Short-Term (Swing),2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),46.5,,NO TRADE,1.3,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ASIANPAINT,Short-Term (Swing),2026-06-08,score<40,29.0,,NO TRADE,1.33,True,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+AXISBANK,Short-Term (Swing),2026-06-05,score<40,38.5,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+AXISBANK,Short-Term (Swing),2026-06-08,score<40,19.9,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BAJAJ-AUTO,Short-Term (Swing),2026-06-05,score<40,17.7,,NO TRADE,1.52,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BAJAJ-AUTO,Short-Term (Swing),2026-06-08,score<40,21.0,,NO TRADE,2.31,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BAJFINANCE,Short-Term (Swing),2026-06-05,score<40,39.5,,NO TRADE,1.43,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BAJFINANCE,Short-Term (Swing),2026-06-08,score<40,22.0,,NO TRADE,3.17,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BAJAJFINSV,Short-Term (Swing),2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),46.2,,NO TRADE,4.1,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BAJAJFINSV,Short-Term (Swing),2026-06-08,score<40,22.2,,NO TRADE,3.53,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BEL,Short-Term (Swing),2026-06-05,score<40,18.0,,NO TRADE,1.75,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BEL,Short-Term (Swing),2026-06-08,score<40,25.8,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BHARTIARTL,Short-Term (Swing),2026-06-05,score<40,18.7,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BHARTIARTL,Short-Term (Swing),2026-06-08,score<40,32.3,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+CIPLA,Short-Term (Swing),2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),43.5,,NO TRADE,1.32,True,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+CIPLA,Short-Term (Swing),2026-06-08,score<40,17.8,,NO TRADE,1.33,True,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+COALINDIA,Short-Term (Swing),2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-06-01,2026-06-02,2026-06-10,stop_loss,Short-Term (Swing)
+COALINDIA,Short-Term (Swing),2026-06-08,score<40,,,,,,,skipped_by_open_trade,2026-06-01,2026-06-02,2026-06-10,stop_loss,Short-Term (Swing)
+DRREDDY,Short-Term (Swing),2026-06-05,score<40,29.4,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+DRREDDY,Short-Term (Swing),2026-06-08,score<40,19.9,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+EICHERMOT,Short-Term (Swing),2026-06-05,score<40,17.5,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+EICHERMOT,Short-Term (Swing),2026-06-08,score<40,18.1,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ETERNAL,Short-Term (Swing),2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),55.5,,NO TRADE,0.43,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ETERNAL,Short-Term (Swing),2026-06-08,score<40,39.7,,NO TRADE,1.13,True,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+GRASIM,Short-Term (Swing),2026-06-05,score<40,,,,,,,skipped_by_open_trade,2026-05-29,2026-06-01,2026-07-10,target1,Short-Term (Swing)
+GRASIM,Short-Term (Swing),2026-06-08,score<40,,,,,,,skipped_by_open_trade,2026-05-29,2026-06-01,2026-07-10,target1,Short-Term (Swing)
+HCLTECH,Short-Term (Swing),2026-06-05,score<40,27.0,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HCLTECH,Short-Term (Swing),2026-06-08,score<40,26.6,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HDFCBANK,Short-Term (Swing),2026-06-05,score<40,22.1,,NO TRADE,1.83,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HDFCBANK,Short-Term (Swing),2026-06-08,score<40,25.6,,NO TRADE,3.45,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HDFCLIFE,Short-Term (Swing),2026-06-05,score<40,37.6,,NO TRADE,3.3,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HDFCLIFE,Short-Term (Swing),2026-06-08,score<40,21.0,,NO TRADE,3.62,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HEROMOTOCO,Short-Term (Swing),2026-06-05,score<40,28.5,,NO TRADE,2.41,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HEROMOTOCO,Short-Term (Swing),2026-06-08,score<40,21.0,,NO TRADE,5.01,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HINDALCO,Short-Term (Swing),2026-06-05,score<40,,,,,,,skipped_by_open_trade,2026-06-01,2026-06-02,2026-06-05,stop_loss,Short-Term (Swing)
+HINDALCO,Short-Term (Swing),2026-06-08,score<40,17.9,,NO TRADE,1.43,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HINDUNILVR,Short-Term (Swing),2026-06-05,score<40,21.8,,NO TRADE,1.47,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HINDUNILVR,Short-Term (Swing),2026-06-08,score<40,16.6,,NO TRADE,1.74,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ICICIBANK,Short-Term (Swing),2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),40.4,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ICICIBANK,Short-Term (Swing),2026-06-08,score<40,28.9,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ITC,Short-Term (Swing),2026-06-05,score<40,14.0,,NO TRADE,1.59,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ITC,Short-Term (Swing),2026-06-08,score<40,20.3,,NO TRADE,1.96,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+INDUSINDBK,Short-Term (Swing),2026-06-05,score<40,33.3,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+INDUSINDBK,Short-Term (Swing),2026-06-08,score<40,18.2,,NO TRADE,1.54,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+INFY,Short-Term (Swing),2026-06-05,score<40,32.2,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+INFY,Short-Term (Swing),2026-06-08,score<40,31.1,,NO TRADE,1.33,True,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+JSWSTEEL,Short-Term (Swing),2026-06-05,score<40,21.1,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+JSWSTEEL,Short-Term (Swing),2026-06-08,score<40,24.3,,NO TRADE,2.56,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+JIOFIN,Short-Term (Swing),2026-06-05,score<40,25.7,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+JIOFIN,Short-Term (Swing),2026-06-08,score<40,24.1,,NO TRADE,4.05,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+KOTAKBANK,Short-Term (Swing),2026-06-05,score<40,28.5,,NO TRADE,2.42,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+KOTAKBANK,Short-Term (Swing),2026-06-08,score<40,27.9,,NO TRADE,2.49,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+LT,Short-Term (Swing),2026-06-05,score<40,25.6,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+LT,Short-Term (Swing),2026-06-08,score<40,27.3,,NO TRADE,3.26,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+M&M,Short-Term (Swing),2026-06-05,score<40,22.3,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+M&M,Short-Term (Swing),2026-06-08,score<40,21.0,,NO TRADE,2.41,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+MARUTI,Short-Term (Swing),2026-06-05,score<40,15.8,,NO TRADE,1.43,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+MARUTI,Short-Term (Swing),2026-06-08,score<40,24.7,,NO TRADE,2.11,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+NESTLEIND,Short-Term (Swing),2026-06-05,score<40,36.6,,NO TRADE,2.25,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+NESTLEIND,Short-Term (Swing),2026-06-08,score<40,20.8,,NO TRADE,1.53,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+NTPC,Short-Term (Swing),2026-06-05,score<40,21.0,,NO TRADE,3.65,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+NTPC,Short-Term (Swing),2026-06-08,score<40,36.1,,NO TRADE,1.96,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ONGC,Short-Term (Swing),2026-06-05,score<40,24.2,,NO TRADE,2.66,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ONGC,Short-Term (Swing),2026-06-08,score<40,23.1,,NO TRADE,2.62,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+POWERGRID,Short-Term (Swing),2026-06-05,score<40,13.4,,NO TRADE,1.55,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+POWERGRID,Short-Term (Swing),2026-06-08,score<40,23.6,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+RELIANCE,Short-Term (Swing),2026-06-05,score<40,21.0,,NO TRADE,5.35,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+RELIANCE,Short-Term (Swing),2026-06-08,score<40,21.0,,NO TRADE,4.95,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+SBILIFE,Short-Term (Swing),2026-06-05,score<40,32.8,,NO TRADE,2.21,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+SBILIFE,Short-Term (Swing),2026-06-08,score<40,30.7,,NO TRADE,3.99,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+SHRIRAMFIN,Short-Term (Swing),2026-06-05,score<40,22.4,,NO TRADE,1.38,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+SHRIRAMFIN,Short-Term (Swing),2026-06-08,score<40,18.5,,NO TRADE,4.46,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+SBIN,Short-Term (Swing),2026-06-05,score<40,34.0,,NO TRADE,1.18,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+SBIN,Short-Term (Swing),2026-06-08,score<40,37.4,,NO TRADE,0.61,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+SUNPHARMA,Short-Term (Swing),2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),44.0,,NO TRADE,2.17,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+SUNPHARMA,Short-Term (Swing),2026-06-08,score<40,26.3,,NO TRADE,1.79,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TCS,Short-Term (Swing),2026-06-05,score<40,18.7,,NO TRADE,7.87,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TCS,Short-Term (Swing),2026-06-08,score<40,26.0,,NO TRADE,7.36,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TATACONSUM,Short-Term (Swing),2026-06-05,score<40,25.5,,NO TRADE,4.63,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TATACONSUM,Short-Term (Swing),2026-06-08,score<40,21.0,,NO TRADE,6.17,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TMPV,Short-Term (Swing),2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),43.0,,NO TRADE,0.84,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TMPV,Short-Term (Swing),2026-06-08,score<40,39.0,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TATASTEEL,Short-Term (Swing),2026-06-05,score<40,33.3,,NO TRADE,2.05,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TATASTEEL,Short-Term (Swing),2026-06-08,score<40,24.5,,NO TRADE,4.6,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TECHM,Short-Term (Swing),2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),40.8,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TECHM,Short-Term (Swing),2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),48.0,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TITAN,Short-Term (Swing),2026-06-05,score<40,27.3,,NO TRADE,1.04,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TITAN,Short-Term (Swing),2026-06-08,score<40,29.5,,NO TRADE,0.91,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TRENT,Short-Term (Swing),2026-06-05,score<40,26.2,,NO TRADE,1.33,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TRENT,Short-Term (Swing),2026-06-08,score<40,24.2,,NO TRADE,1.86,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ULTRACEMCO,Short-Term (Swing),2026-06-05,score<40,28.5,,NO TRADE,3.97,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ULTRACEMCO,Short-Term (Swing),2026-06-08,score<40,21.0,,NO TRADE,4.72,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+WIPRO,Short-Term (Swing),2026-06-05,score<40,38.4,,NO TRADE,1.33,True,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+WIPRO,Short-Term (Swing),2026-06-08,score<40,33.8,,NO TRADE,7.51,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BAJAJHLDNG,Short-Term (Swing),2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),46.1,,NO TRADE,1.75,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BAJAJHLDNG,Short-Term (Swing),2026-06-08,score<40,23.6,,NO TRADE,5.49,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ADANIENT,Long-Term,2026-06-05,pre_scheduler_eligible (score>=40 and signal!=NO TRADE),,,,,,,skipped_by_open_trade,2026-05-28,2026-05-29,2026-06-05,target1,Long-Term
+ADANIENT,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),56.5,,NO TRADE,0.46,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ADANIPORTS,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-05-28,2026-05-29,2026-07-01,target1,Long-Term
+ADANIPORTS,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-05-28,2026-05-29,2026-07-01,target1,Long-Term
+APOLLOHOSP,Long-Term,2026-06-05,pre_scheduler_eligible (score>=40 and signal!=NO TRADE),,,,,,,skipped_by_open_trade,2026-06-03,2026-06-04,2026-06-09,target1,Long-Term
+APOLLOHOSP,Long-Term,2026-06-08,pre_scheduler_eligible (score>=40 and signal!=NO TRADE),,,,,,,skipped_by_open_trade,2026-06-03,2026-06-04,2026-06-09,target1,Long-Term
+ASIANPAINT,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-04-21,2026-04-22,2026-07-22,time_exit,Long-Term
+ASIANPAINT,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-04-21,2026-04-22,2026-07-22,time_exit,Long-Term
+AXISBANK,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-04-06,2026-04-07,2026-07-07,time_exit,Long-Term
+AXISBANK,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-04-06,2026-04-07,2026-07-07,time_exit,Long-Term
+BAJAJ-AUTO,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-05-08,2026-05-11,2026-06-12,stop_loss,Long-Term
+BAJAJ-AUTO,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-05-08,2026-05-11,2026-06-12,stop_loss,Long-Term
+BAJFINANCE,Long-Term,2026-06-05,score<40,,,,,,,skipped_by_open_trade,2026-04-21,2026-04-22,2026-07-22,time_exit,Long-Term
+BAJFINANCE,Long-Term,2026-06-08,score<40,,,,,,,skipped_by_open_trade,2026-04-21,2026-04-22,2026-07-22,time_exit,Long-Term
+BAJAJFINSV,Long-Term,2026-06-05,score<40,10.9,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BAJAJFINSV,Long-Term,2026-06-08,score<40,10.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BEL,Long-Term,2026-06-05,score<40,,,,,,,skipped_by_open_trade,2026-04-02,2026-04-06,2026-07-06,time_exit,Long-Term
+BEL,Long-Term,2026-06-08,score<40,,,,,,,skipped_by_open_trade,2026-04-02,2026-04-06,2026-07-06,time_exit,Long-Term
+BHARTIARTL,Long-Term,2026-06-05,score<40,23.6,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BHARTIARTL,Long-Term,2026-06-08,score<40,29.0,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+CIPLA,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-04-27,2026-04-28,2026-06-23,target1,Long-Term
+CIPLA,Long-Term,2026-06-08,score<40,,,,,,,skipped_by_open_trade,2026-04-27,2026-04-28,2026-06-23,target1,Long-Term
+COALINDIA,Long-Term,2026-06-05,pre_scheduler_eligible (score>=40 and signal!=NO TRADE),,,,,,,skipped_by_open_trade,2026-05-28,2026-05-29,2026-07-07,stop_loss,Long-Term
+COALINDIA,Long-Term,2026-06-08,pre_scheduler_eligible (score>=40 and signal!=NO TRADE),,,,,,,skipped_by_open_trade,2026-05-28,2026-05-29,2026-07-07,stop_loss,Long-Term
+DRREDDY,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-04-20,2026-04-21,2026-06-29,target1,Long-Term
+DRREDDY,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-04-20,2026-04-21,2026-06-29,target1,Long-Term
+EICHERMOT,Long-Term,2026-06-05,score<40,,,,,,,skipped_by_open_trade,2026-04-08,2026-04-09,2026-07-09,time_exit,Long-Term
+EICHERMOT,Long-Term,2026-06-08,score<40,,,,,,,skipped_by_open_trade,2026-04-08,2026-04-09,2026-07-09,time_exit,Long-Term
+ETERNAL,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),44.3,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ETERNAL,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),44.3,,NO TRADE,1.5,True,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+GRASIM,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-05-25,2026-05-26,2026-07-10,target1,Long-Term
+GRASIM,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-05-25,2026-05-26,2026-07-10,target1,Long-Term
+HCLTECH,Long-Term,2026-06-05,score<40,18.0,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HCLTECH,Long-Term,2026-06-08,score<40,18.0,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HDFCBANK,Long-Term,2026-06-05,score<40,10.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HDFCBANK,Long-Term,2026-06-08,score<40,10.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HDFCLIFE,Long-Term,2026-06-05,score<40,10.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HDFCLIFE,Long-Term,2026-06-08,score<40,10.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HEROMOTOCO,Long-Term,2026-06-05,score<40,10.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HEROMOTOCO,Long-Term,2026-06-08,score<40,10.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HINDALCO,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-06-01,2026-06-02,2026-06-08,stop_loss,Long-Term
+HINDALCO,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-06-01,2026-06-02,2026-06-08,stop_loss,Long-Term
+HINDUNILVR,Long-Term,2026-06-05,score<40,17.1,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+HINDUNILVR,Long-Term,2026-06-08,score<40,19.6,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ICICIBANK,Long-Term,2026-06-05,score<40,35.2,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ICICIBANK,Long-Term,2026-06-08,score<40,33.0,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ITC,Long-Term,2026-06-05,score<40,10.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ITC,Long-Term,2026-06-08,score<40,10.7,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+INDUSINDBK,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-04-08,2026-04-09,2026-07-06,target1,Long-Term
+INDUSINDBK,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-04-08,2026-04-09,2026-07-06,target1,Long-Term
+INFY,Long-Term,2026-06-05,score<40,32.5,,NO TRADE,1.5,True,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+INFY,Long-Term,2026-06-08,score<40,34.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+JSWSTEEL,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-05-28,2026-05-29,2026-06-23,stop_loss,Long-Term
+JSWSTEEL,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-05-28,2026-05-29,2026-06-23,stop_loss,Long-Term
+JIOFIN,Long-Term,2026-06-05,score<40,32.6,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+JIOFIN,Long-Term,2026-06-08,score<40,20.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+KOTAKBANK,Long-Term,2026-06-05,score<40,30.0,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+KOTAKBANK,Long-Term,2026-06-08,score<40,19.4,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+LT,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-04-08,2026-04-09,2026-07-09,time_exit,Long-Term
+LT,Long-Term,2026-06-08,score<40,,,,,,,skipped_by_open_trade,2026-04-08,2026-04-09,2026-07-09,time_exit,Long-Term
+M&M,Long-Term,2026-06-05,score<40,15.2,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+M&M,Long-Term,2026-06-08,score<40,10.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+MARUTI,Long-Term,2026-06-05,score<40,24.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+MARUTI,Long-Term,2026-06-08,score<40,14.7,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+NESTLEIND,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),46.0,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+NESTLEIND,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),53.3,,NO TRADE,1.32,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+NTPC,Long-Term,2026-06-05,score<40,37.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+NTPC,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),40.3,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ONGC,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),40.0,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ONGC,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),43.7,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+POWERGRID,Long-Term,2026-06-05,score<40,28.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+POWERGRID,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),42.1,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+RELIANCE,Long-Term,2026-06-05,score<40,10.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+RELIANCE,Long-Term,2026-06-08,score<40,10.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+SBILIFE,Long-Term,2026-06-05,score<40,12.0,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+SBILIFE,Long-Term,2026-06-08,score<40,10.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+SHRIRAMFIN,Long-Term,2026-06-05,score<40,,,,,,,skipped_by_open_trade,2026-04-07,2026-04-08,2026-07-08,time_exit,Long-Term
+SHRIRAMFIN,Long-Term,2026-06-08,score<40,,,,,,,skipped_by_open_trade,2026-04-07,2026-04-08,2026-07-08,time_exit,Long-Term
+SBIN,Long-Term,2026-06-05,score<40,33.0,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+SBIN,Long-Term,2026-06-08,score<40,33.0,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+SUNPHARMA,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-05-19,2026-05-20,2026-07-09,target1,Long-Term
+SUNPHARMA,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-05-19,2026-05-20,2026-07-09,target1,Long-Term
+TCS,Long-Term,2026-06-05,score<40,17.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TCS,Long-Term,2026-06-08,score<40,17.5,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TATACONSUM,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),43.7,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TATACONSUM,Long-Term,2026-06-08,score<40,36.7,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TMPV,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),45.3,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TMPV,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),46.8,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TATASTEEL,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-05-15,2026-05-18,2026-06-08,stop_loss,Long-Term
+TATASTEEL,Long-Term,2026-06-08,40<=score<60 (below grade floor C=60 -- always NO TRADE),,,,,,,skipped_by_open_trade,2026-05-15,2026-05-18,2026-06-08,stop_loss,Long-Term
+TECHM,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),51.3,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TECHM,Long-Term,2026-06-08,grade_present_signal_NO_TRADE (production classification gate),61.3,C,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+TITAN,Long-Term,2026-06-05,pre_scheduler_eligible (score>=40 and signal!=NO TRADE),,,,,,,skipped_by_open_trade,2026-05-25,2026-05-26,2026-07-07,target1,Long-Term
+TITAN,Long-Term,2026-06-08,pre_scheduler_eligible (score>=40 and signal!=NO TRADE),,,,,,,skipped_by_open_trade,2026-05-25,2026-05-26,2026-07-07,target1,Long-Term
+TRENT,Long-Term,2026-06-05,score<40,,,,,,,skipped_by_open_trade,2026-04-29,2026-04-30,2026-06-22,target1,Long-Term
+TRENT,Long-Term,2026-06-08,score<40,,,,,,,skipped_by_open_trade,2026-04-29,2026-04-30,2026-06-22,target1,Long-Term
+ULTRACEMCO,Long-Term,2026-06-05,score<40,16.0,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+ULTRACEMCO,Long-Term,2026-06-08,score<40,14.0,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+WIPRO,Long-Term,2026-06-05,40<=score<60 (below grade floor C=60 -- always NO TRADE),43.8,,NO TRADE,1.5,True,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+WIPRO,Long-Term,2026-06-08,score<40,17.7,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BAJAJHLDNG,Long-Term,2026-06-05,score<40,32.7,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
+BAJAJHLDNG,Long-Term,2026-06-08,score<40,18.9,,NO TRADE,1.5,False,STRONG_BEARISH,reached_and_rejected_upstream,,,,,
