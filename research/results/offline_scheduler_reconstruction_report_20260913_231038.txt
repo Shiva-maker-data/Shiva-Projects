@@ -1,0 +1,80 @@
+OFFLINE SCHEDULER-ATTRIBUTION RECONSTRUCTION FROM THE FROZEN FIXTURE (experiment 13, research only, network blocked)
+
+## Hypothesis (fixed, from research/NEXT_EXPERIMENT.md)
+  Using only the frozen experiment-12 fixture and unchanged production functions, a fresh offline instrumented reconstruction will (1) reproduce the canonical 2,083 experiment-5 trades exactly, and (2) independently identify the same 7 pre-scheduler-eligible Recent/STRONG_BEARISH Long-Term rows as skipped by a prior selected trade whose reconstructed open interval covers each candidate date.
+  Simulation-path finding only -- not evidence of predictive edge, causality, or a reason to change the non-overlap rule; does not test whether the STRONG_BEARISH return anomaly is real.
+
+## Step 1: pre-work git status and hashes
+  raw_ohlcv_manifest.json: 235e4f3c0991715bdd7363e7516238d85ad7255d6696bb94124616628ff0214b
+  resistance_master_20260913_164146.csv: 7d6d623480e64c37ac606f45909074134b96257630f43230a51b476f5981e6c7
+  resistance_trades_20260913_164146.csv: 05b11415a0979d224048e6e993d24c9a064f25a7b622e13a60ab5bbfe9026369
+  offline_master_20260913_225716.csv: acfe408fb13a218407b480d912f921fb4978fff051e024f4eb7b8117e35d25b9
+  offline_trades_20260913_225716.csv: f5f04261b876844281d965636d0a7ca1d658fca22f0c838ab2e7ddb9a83f4264
+  scheduler_attribution_states_20260913_192107.csv: b6598774edcc543ab84bceb765ee388acf0b2b1578b012d5db94c37874179cf7
+  Manifest hash matches experiment-12-recorded value (235e4f3c0991715bdd7363e7516238d85ad7255d6696bb94124616628ff0214b): True
+  Verified 61 fixture CSVs against manifest-recorded SHA-256 (not assumed): mismatches=0
+  Hashed 16 production files + tests/test_engine.py before work.
+
+## Step 2/3: offline universe load + fresh instrumented walk (both categories)
+  Offline universe loaded: 51/51 symbols; regime_bundle=OK; sector_bundles=9/9
+  Fresh wrapper produced 2083 trades (1283 ST + 800 LT).
+
+## Step 4: reconstruction check vs resistance_trades_20260913_164146.csv (predeclared tol rtol=atol=1e-06; documented missing-value normalization only)
+  OK -- 2083 rows, zero mismatches across 28 columns (row count and keys identical).
+
+## Step 5: independent population recomputation (research.factor_data.build_master_dataset, UNCHANGED)
+  Recent/STRONG_BEARISH population (both categories, all symbols): N=204 (51-symbol universe would give 204 at 2 dates x 2 categories x 51 symbols)
+  Gate bucket counts: {'score<40': 144, '40<=score<60': 52, 'pre_scheduler_eligible': 7, 'grade_present_signal_NO_TRADE': 1}
+  Independently recomputed eligible-candidate set: N=7
+  Equals the 7 predeclared keys exactly: True
+
+## Step 6: state and interval verification, 7 predeclared candidates
+  ADANIENT     Long-Term            cand=2026-06-05  state=skipped_by_open_trade  blocked_by: signal=2026-05-28 entry=2026-05-29 exit=2026-06-05 (target1)  date_interval_ok=True  index_interval_ok=True
+  APOLLOHOSP   Long-Term            cand=2026-06-05  state=skipped_by_open_trade  blocked_by: signal=2026-06-03 entry=2026-06-04 exit=2026-06-09 (target1)  date_interval_ok=True  index_interval_ok=True
+  APOLLOHOSP   Long-Term            cand=2026-06-08  state=skipped_by_open_trade  blocked_by: signal=2026-06-03 entry=2026-06-04 exit=2026-06-09 (target1)  date_interval_ok=True  index_interval_ok=True
+  COALINDIA    Long-Term            cand=2026-06-05  state=skipped_by_open_trade  blocked_by: signal=2026-05-28 entry=2026-05-29 exit=2026-07-07 (stop_loss)  date_interval_ok=True  index_interval_ok=True
+  COALINDIA    Long-Term            cand=2026-06-08  state=skipped_by_open_trade  blocked_by: signal=2026-05-28 entry=2026-05-29 exit=2026-07-07 (stop_loss)  date_interval_ok=True  index_interval_ok=True
+  TITAN        Long-Term            cand=2026-06-05  state=skipped_by_open_trade  blocked_by: signal=2026-05-25 entry=2026-05-26 exit=2026-07-07 (target1)  date_interval_ok=True  index_interval_ok=True
+  TITAN        Long-Term            cand=2026-06-08  state=skipped_by_open_trade  blocked_by: signal=2026-05-25 entry=2026-05-26 exit=2026-07-07 (target1)  date_interval_ok=True  index_interval_ok=True
+
+## Step 7: secondary comparison vs scheduler_attribution_states_20260913_192107.csv (corroboration only, not primary derivation)
+  ADANIENT     Long-Term            cand=2026-06-05: experiment-8 state=skipped_by_open_trade  vs  experiment-13 state=skipped_by_open_trade  agree=True
+  APOLLOHOSP   Long-Term            cand=2026-06-05: experiment-8 state=skipped_by_open_trade  vs  experiment-13 state=skipped_by_open_trade  agree=True
+  APOLLOHOSP   Long-Term            cand=2026-06-08: experiment-8 state=skipped_by_open_trade  vs  experiment-13 state=skipped_by_open_trade  agree=True
+  COALINDIA    Long-Term            cand=2026-06-05: experiment-8 state=skipped_by_open_trade  vs  experiment-13 state=skipped_by_open_trade  agree=True
+  COALINDIA    Long-Term            cand=2026-06-08: experiment-8 state=skipped_by_open_trade  vs  experiment-13 state=skipped_by_open_trade  agree=True
+  TITAN        Long-Term            cand=2026-06-05: experiment-8 state=skipped_by_open_trade  vs  experiment-13 state=skipped_by_open_trade  agree=True
+  TITAN        Long-Term            cand=2026-06-08: experiment-8 state=skipped_by_open_trade  vs  experiment-13 state=skipped_by_open_trade  agree=True
+  Agreement with experiment 8's independently-derived (network-using) states artifact: 7/7
+
+## Step 8: experiment-12 master mismatches, re-reported (not explained or repaired here)
+  Experiment-12 master 'score' mismatches re-identified from fixed artifacts: N=11 (expect 11)
+  Mismatch keys: [('BAJAJFINSV', 'Short-Term (Swing)', Timestamp('2025-12-11 00:00:00')), ('BAJFINANCE', 'Short-Term (Swing)', Timestamp('2026-05-01 00:00:00')), ('BEL', 'Short-Term (Swing)', Timestamp('2026-05-28 00:00:00')), ('COALINDIA', 'Short-Term (Swing)', Timestamp('2025-07-16 00:00:00')), ('COALINDIA', 'Short-Term (Swing)', Timestamp('2026-01-15 00:00:00')), ('COALINDIA', 'Short-Term (Swing)', Timestamp('2026-05-28 00:00:00')), ('INDUSINDBK', 'Short-Term (Swing)', Timestamp('2026-05-01 00:00:00')), ('ITC', 'Short-Term (Swing)', Timestamp('2025-12-01 00:00:00')), ('JSWSTEEL', 'Short-Term (Swing)', Timestamp('2025-07-24 00:00:00')), ('KOTAKBANK', 'Short-Term (Swing)', Timestamp('2025-03-18 00:00:00')), ('KOTAKBANK', 'Short-Term (Swing)', Timestamp('2026-05-01 00:00:00'))]
+  Intersection with the Recent/STRONG_BEARISH population (N=204): 0 (none)
+  Intersection with the 7 predeclared candidate keys: 0 (none)
+
+## Descriptive context: Early/Middle STRONG_BEARISH state taxonomy (cannot override primary decision)
+  Early / Short-Term (Swing): N=1275
+  Early / Long-Term: N=1275
+  Middle / Short-Term (Swing): N=1785
+  Middle / Long-Term: N=1785
+
+## Step 9: post-work git status and hash re-check
+  All 6 fixed artifacts unchanged: True
+  All 16 production files + tests/test_engine.py byte-unchanged: True
+
+## Predeclared decision-rule table
+  1. network block self-test passed AND all fixture/artifact hashes unchanged: True
+  2. fresh wrapper reproduces all 2083 canonical trades exactly: True
+  3. independently recomputed eligible set == 7 predeclared keys exactly: True
+  4. all 7 are skipped_by_open_trade with verified date AND index interval coverage: True
+  5. no experiment-12 master mismatch intersects the 7 candidate keys: True
+
+## Verdict
+  SUPPORTED: all 5 predeclared conditions hold. The frozen fixture, combined with a freshly written offline instrumented wrapper, independently reconstructs experiment 8's scheduler-attribution conclusion for all 7 predeclared candidates -- exact trade reproduction, exact candidate-set match, and verified date+index interval coverage for each blocking trade. This is a simulation-path finding on a very small (n=7) population, not evidence of predictive edge or causality, and not a reason to change the non-overlap rule. It does not test whether the STRONG_BEARISH return anomaly is real.
+
+## Limitations
+  Exact offline reproduction validates this frozen fixture/run only -- it does not eliminate survivorship bias (today's constituents projected backward), vendor data revisions that occurred before this fixture was captured, corporate-action risk, or generalize to any future data. Scheduler attribution on 7 rows is a simulation-path finding, not evidence of predictive edge, causality, or a reason to change the non-overlap rule.
+
+## Commands executed
+  python -m research.offline_scheduler_reconstruction

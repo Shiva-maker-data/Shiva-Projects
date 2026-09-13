@@ -1,0 +1,8 @@
+symbol,category,candidate_date,state,blocking_signal_date,blocking_entry_date,blocking_exit_date,blocking_exit_reason,blocking_category,blocking_skip_start_idx,blocking_skip_end_excl_idx,date_interval_ok,index_interval_ok
+ADANIENT,Long-Term,2026-06-05,skipped_by_open_trade,2026-05-28,2026-05-29,2026-06-05,target1,Long-Term,669,675,True,True
+APOLLOHOSP,Long-Term,2026-06-05,skipped_by_open_trade,2026-06-03,2026-06-04,2026-06-09,target1,Long-Term,673,677,True,True
+APOLLOHOSP,Long-Term,2026-06-08,skipped_by_open_trade,2026-06-03,2026-06-04,2026-06-09,target1,Long-Term,673,677,True,True
+COALINDIA,Long-Term,2026-06-05,skipped_by_open_trade,2026-05-28,2026-05-29,2026-07-07,stop_loss,Long-Term,669,697,True,True
+COALINDIA,Long-Term,2026-06-08,skipped_by_open_trade,2026-05-28,2026-05-29,2026-07-07,stop_loss,Long-Term,669,697,True,True
+TITAN,Long-Term,2026-06-05,skipped_by_open_trade,2026-05-25,2026-05-26,2026-07-07,target1,Long-Term,666,697,True,True
+TITAN,Long-Term,2026-06-08,skipped_by_open_trade,2026-05-25,2026-05-26,2026-07-07,target1,Long-Term,666,697,True,True

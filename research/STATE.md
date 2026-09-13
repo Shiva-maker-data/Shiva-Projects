@@ -25,8 +25,8 @@ under that precommitted test (see experiment 6 below).
 
 ## Status: awaiting Codex audit
 
-Last completed experiment: **Frozen raw-data fixture and baseline
-reproducibility audit** (2026-09-13, Codex-specified via
+Last completed experiment: **Offline scheduler-attribution reconstruction
+from the frozen fixture** (2026-09-13, Codex-specified via
 `research/NEXT_EXPERIMENT.md`). Codex has not yet audited it or written a
 new `NEXT_EXPERIMENT.md`. Next action is the human asking Codex to perform
 the handoff per the short prompt in the VYOM handoff README.
@@ -626,6 +626,79 @@ the handoff per the short prompt in the VYOM handoff README.
   both scripts syntax-checked before running; one comparison-code bug
   found and fixed before the trusted final run (single corrected re-run,
   not repeated tuning).
+- **This experiment does not begin or recommend a next experiment** —
+  awaiting Codex's next audit per the VYOM loop.
+
+### 13. Offline scheduler-attribution reconstruction from the frozen fixture — 2026-09-13
+- **Spec:** written by Codex in `research/NEXT_EXPERIMENT.md` after
+  auditing experiment 12. Tests whether the new frozen 61-series fixture
+  closes the specific evidence gap experiments 9-11 could not close
+  without a live re-fetch: can experiment 8's scheduler-attribution
+  conclusion be independently reconstructed fully offline?
+- **Report:** `research/results/offline_scheduler_reconstruction_report_20260913_231038.txt`
+- **Dataset:** `research/results/offline_scheduler_attribution_20260913_231038.csv`
+  (7-row attribution table with full blocking-trade fields)
+- **Fixed artifacts used (all hash-verified before and after, unchanged):**
+  `research/fixtures/raw_ohlcv_manifest.json` (+ all 61 referenced fixture
+  CSVs, individually re-verified against manifest-recorded SHA-256, zero
+  mismatches), `resistance_master_20260913_164146.csv`,
+  `resistance_trades_20260913_164146.csv`,
+  `offline_master_20260913_225716.csv`, `offline_trades_20260913_225716.csv`
+  (experiment 12), `scheduler_attribution_states_20260913_192107.csv`
+  (experiment 8, used only for secondary corroboration per spec).
+- **Method:** a freshly-written instrumented wrapper (does NOT import
+  `research.scheduler_attribution_experiment`, per spec) mirroring
+  `research.factor_data.run_ablation`'s walk exactly (same production
+  function calls, same `i = max(exit_idx + 1, i + 1)` update), fed by an
+  offline UniverseData loader reading only the frozen fixture, with
+  network actively blocked at the socket layer and self-tested (a real
+  connection attempt was made and confirmed to raise) before any other
+  work. Population/gate identification reused
+  `research.factor_data.build_master_dataset` (unchanged, a different
+  module than the one the spec restricts) on the same offline data.
+- **Result: all 5 predeclared conditions met.**
+  1. Network block self-test passed; all 6 fixed artifacts (+ all 61
+     fixture files individually) confirmed unchanged before and after.
+  2. Fresh wrapper reproduced all 2,083 canonical trades exactly (zero
+     mismatches across 28 columns, documented-only missing-value
+     normalization, tol 1e-6).
+  3. Independently recomputed pre-scheduler-eligible set from the frozen
+     fixture (score≥40, signal≠"NO TRADE") equals the 7 predeclared keys
+     **exactly** — no missing, no extra.
+  4. All 7 confirmed `skipped_by_open_trade`, each with **both**
+     `blocking_entry_date <= candidate_date <= blocking_exit_date` (date
+     interval) **and** the skip-index interval covering the candidate's
+     index (index interval) independently verified true.
+  5. None of experiment 12's known 11 master-dataset mismatches (all
+     Short-Term category, re-confirmed N=11 from the fixed artifacts)
+     intersects the Recent/STRONG_BEARISH population (N=204) or the 7
+     candidate keys.
+- **Secondary corroboration (not primary derivation, per spec):** all 7
+  states agree exactly with experiment 8's independently-derived
+  (network-using) states artifact (7/7).
+- **Verdict: SUPPORTED.** This is the first experiment in the 9-13
+  evidentiary-gap chain to fully close it: experiment 8's
+  scheduler-attribution conclusion — that all 7 pre-scheduler-eligible
+  Recent STRONG_BEARISH candidates were bypassed because the non-overlap
+  walk was already inside a prior selected trade — is now independently
+  reproducible entirely offline, from a hashed, frozen, immutable local
+  fixture, with no network dependency. Still a simulation-path finding on
+  a very small (n=7) population — not evidence of predictive edge or
+  causality, not a reason to change the non-overlap rule, and not a test
+  of whether the STRONG_BEARISH-vs-BULLISH return anomaly itself
+  (experiments 1-6) is real.
+- **Limitations (stated, not resolved):** exact offline reproduction
+  validates this frozen fixture/run only — does not eliminate
+  survivorship bias, vendor data revisions predating fixture capture, or
+  corporate-action risk, and does not generalize to future data.
+- **Verification:** all 6 fixed-artifact hashes plus all 61 individual
+  fixture-file hashes matched before and after (zero mismatches); all 16
+  production files and `tests/test_engine.py` confirmed byte-unchanged
+  before and after (both via in-script hash comparison and an external
+  `git status`/`git diff` check); network block enforced via
+  socket-layer monkeypatch and self-tested with a real connection
+  attempt; script syntax-checked before running; single clean run, no
+  bugs found this time, no tuning.
 - **This experiment does not begin or recommend a next experiment** —
   awaiting Codex's next audit per the VYOM loop.
 
