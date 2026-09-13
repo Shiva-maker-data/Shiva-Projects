@@ -1,0 +1,20 @@
+# Secrets -- never commit this. Credentials go into GitHub Actions Secrets
+# instead when running in the cloud; locally they stay in this file only.
+.env
+
+# Local virtual environment
+.venv/
+__pycache__/
+*.pyc
+
+# Ephemeral local run output -- regenerated every run, not needed in git.
+# (state/open_positions.json is intentionally NOT ignored -- see below.)
+logs/
+reports_archive/
+backtest_results/
+
+# state/open_positions.json IS tracked on purpose: it's the only thing that
+# needs to persist across days for the "don't repeat already-open picks"
+# feature to work when running in GitHub Actions' ephemeral runners (a
+# fresh checkout every time, no local disk carried over between runs). The
+# workflow commits updates to this one file back to the repo after each run.

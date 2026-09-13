@@ -1,0 +1,9 @@
+yfinance>=0.2.40
+pandas>=2.0
+numpy>=1.24
+requests>=2.31
+python-dotenv>=1.0
+
+# Optional -- only needed if you set ANTHROPIC_API_KEY in .env to get
+# Claude-written rationales instead of the built-in template text.
+anthropic>=0.40

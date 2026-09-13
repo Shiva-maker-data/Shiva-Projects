@@ -1,0 +1,62 @@
+[
+  {
+    "symbol": "DRREDDY",
+    "category": "Short-Term (Swing)",
+    "first_shown_date": "2026-09-11",
+    "entry_price": 1165.5,
+    "target1": 1208.02,
+    "target2": 1233.54,
+    "stop_loss": 1133.61,
+    "score_at_signal": 75.0
+  },
+  {
+    "symbol": "HDFCBANK",
+    "category": "Short-Term (Swing)",
+    "first_shown_date": "2026-09-11",
+    "entry_price": 708.25,
+    "target1": 733.6,
+    "target2": 748.81,
+    "stop_loss": 689.24,
+    "score_at_signal": 67.0
+  },
+  {
+    "symbol": "KOTAKBANK",
+    "category": "Short-Term (Swing)",
+    "first_shown_date": "2026-09-11",
+    "entry_price": 419.0,
+    "target1": 432.93,
+    "target2": 441.29,
+    "stop_loss": 408.55,
+    "score_at_signal": 42.0
+  },
+  {
+    "symbol": "ADANIPORTS",
+    "category": "Long-Term",
+    "first_shown_date": "2026-09-11",
+    "entry_price": 1764.6,
+    "target1": 1910.01,
+    "target2": 2068.22,
+    "stop_loss": 1650.74,
+    "score_at_signal": 100.0
+  },
+  {
+    "symbol": "ADANIENT",
+    "category": "Long-Term",
+    "first_shown_date": "2026-09-11",
+    "entry_price": 3060.0,
+    "target1": 3277.45,
+    "target2": 3722.32,
+    "stop_loss": 2811.63,
+    "score_at_signal": 100.0
+  },
+  {
+    "symbol": "ETERNAL",
+    "category": "Long-Term",
+    "first_shown_date": "2026-09-11",
+    "entry_price": 323.5,
+    "target1": 356.4,
+    "target2": 381.99,
+    "stop_loss": 301.57,
+    "score_at_signal": 90.0
+  }
+]

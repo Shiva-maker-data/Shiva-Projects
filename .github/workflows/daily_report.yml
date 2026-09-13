@@ -1,0 +1,57 @@
+name: Daily NIFTY/SENSEX Watchlist
+
+on:
+  schedule:
+    # 10:30 AM IST = 05:00 UTC, Monday-Friday. GitHub can delay scheduled
+    # runs by a few minutes during platform-wide high load -- expected and
+    # harmless for a personal daily digest.
+    - cron: '0 5 * * 1-5'
+  workflow_dispatch: {}  # lets you trigger a one-off test run from the Actions tab
+
+permissions:
+  contents: write  # needed to commit state/open_positions.json back after each run
+
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run daily agent
+        env:
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
+          EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python main.py
+
+      # state/open_positions.json is the only thing that needs to survive
+      # between runs (GitHub Actions gives every run a fresh checkout, no
+      # persistent disk) -- commit just that file back so tomorrow's run
+      # knows what's already "open" and doesn't re-suggest it.
+      - name: Persist open-positions state
+        if: always()  # commit state even if the email step above had issues, so we don't lose track
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add state/open_positions.json
+          git diff --staged --quiet || git commit -m "Update open positions [skip ci]"
+          git push
+
+      - name: Upload today's report as an artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-${{ github.run_id }}
+          path: reports_archive/*.html
+          retention-days: 30
+          if-no-files-found: ignore
