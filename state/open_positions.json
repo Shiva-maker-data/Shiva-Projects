@@ -58,5 +58,35 @@
     "target2": 381.99,
     "stop_loss": 301.57,
     "score_at_signal": 90.0
+  },
+  {
+    "symbol": "GRASIM",
+    "category": "Long-Term",
+    "first_shown_date": "2026-09-13",
+    "entry_price": 3281.9,
+    "target1": 3445.21,
+    "target2": 3797.97,
+    "stop_loss": 3088.37,
+    "score_at_signal": 90.0
+  },
+  {
+    "symbol": "BAJAJ-AUTO",
+    "category": "Long-Term",
+    "first_shown_date": "2026-09-13",
+    "entry_price": 11678.0,
+    "target1": 12594.7,
+    "target2": 13404.22,
+    "stop_loss": 11030.67,
+    "score_at_signal": 80.0
+  },
+  {
+    "symbol": "TITAN",
+    "category": "Long-Term",
+    "first_shown_date": "2026-09-13",
+    "entry_price": 5009.5,
+    "target1": 5238.57,
+    "target2": 5616.15,
+    "stop_loss": 4782.01,
+    "score_at_signal": 80.0
   }
 ]
