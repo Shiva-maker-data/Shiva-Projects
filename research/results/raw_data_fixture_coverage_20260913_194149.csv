@@ -1,0 +1,62 @@
+required_series,status,note
+stock:ADANIENT,missing,no local OHLCV fixture found for this symbol
+stock:ADANIPORTS,missing,no local OHLCV fixture found for this symbol
+stock:APOLLOHOSP,missing,no local OHLCV fixture found for this symbol
+stock:ASIANPAINT,missing,no local OHLCV fixture found for this symbol
+stock:AXISBANK,missing,no local OHLCV fixture found for this symbol
+stock:BAJAJ-AUTO,missing,no local OHLCV fixture found for this symbol
+stock:BAJAJFINSV,missing,no local OHLCV fixture found for this symbol
+stock:BAJAJHLDNG,missing,no local OHLCV fixture found for this symbol
+stock:BAJFINANCE,missing,no local OHLCV fixture found for this symbol
+stock:BEL,missing,no local OHLCV fixture found for this symbol
+stock:BHARTIARTL,missing,no local OHLCV fixture found for this symbol
+stock:CIPLA,missing,no local OHLCV fixture found for this symbol
+stock:COALINDIA,missing,no local OHLCV fixture found for this symbol
+stock:DRREDDY,missing,no local OHLCV fixture found for this symbol
+stock:EICHERMOT,missing,no local OHLCV fixture found for this symbol
+stock:ETERNAL,missing,no local OHLCV fixture found for this symbol
+stock:GRASIM,missing,no local OHLCV fixture found for this symbol
+stock:HCLTECH,missing,no local OHLCV fixture found for this symbol
+stock:HDFCBANK,missing,no local OHLCV fixture found for this symbol
+stock:HDFCLIFE,missing,no local OHLCV fixture found for this symbol
+stock:HEROMOTOCO,missing,no local OHLCV fixture found for this symbol
+stock:HINDALCO,missing,no local OHLCV fixture found for this symbol
+stock:HINDUNILVR,missing,no local OHLCV fixture found for this symbol
+stock:ICICIBANK,missing,no local OHLCV fixture found for this symbol
+stock:INDUSINDBK,missing,no local OHLCV fixture found for this symbol
+stock:INFY,missing,no local OHLCV fixture found for this symbol
+stock:ITC,missing,no local OHLCV fixture found for this symbol
+stock:JIOFIN,missing,no local OHLCV fixture found for this symbol
+stock:JSWSTEEL,missing,no local OHLCV fixture found for this symbol
+stock:KOTAKBANK,missing,no local OHLCV fixture found for this symbol
+stock:LT,missing,no local OHLCV fixture found for this symbol
+stock:M&M,missing,no local OHLCV fixture found for this symbol
+stock:MARUTI,missing,no local OHLCV fixture found for this symbol
+stock:NESTLEIND,missing,no local OHLCV fixture found for this symbol
+stock:NTPC,missing,no local OHLCV fixture found for this symbol
+stock:ONGC,missing,no local OHLCV fixture found for this symbol
+stock:POWERGRID,missing,no local OHLCV fixture found for this symbol
+stock:RELIANCE,missing,no local OHLCV fixture found for this symbol
+stock:SBILIFE,missing,no local OHLCV fixture found for this symbol
+stock:SBIN,missing,no local OHLCV fixture found for this symbol
+stock:SHRIRAMFIN,missing,no local OHLCV fixture found for this symbol
+stock:SUNPHARMA,missing,no local OHLCV fixture found for this symbol
+stock:TATACONSUM,missing,no local OHLCV fixture found for this symbol
+stock:TATASTEEL,missing,no local OHLCV fixture found for this symbol
+stock:TCS,missing,no local OHLCV fixture found for this symbol
+stock:TECHM,missing,no local OHLCV fixture found for this symbol
+stock:TITAN,missing,no local OHLCV fixture found for this symbol
+stock:TMPV,missing,no local OHLCV fixture found for this symbol
+stock:TRENT,missing,no local OHLCV fixture found for this symbol
+stock:ULTRACEMCO,missing,no local OHLCV fixture found for this symbol
+stock:WIPRO,missing,no local OHLCV fixture found for this symbol
+index:^NSEI,missing,no local OHLCV fixture found for the NIFTY regime index
+sector:^CNXAUTO,missing,no local OHLCV fixture found for this sector index
+sector:^CNXCONSUM,missing,no local OHLCV fixture found for this sector index
+sector:^CNXENERGY,missing,no local OHLCV fixture found for this sector index
+sector:^CNXFMCG,missing,no local OHLCV fixture found for this sector index
+sector:^CNXINFRA,missing,no local OHLCV fixture found for this sector index
+sector:^CNXIT,missing,no local OHLCV fixture found for this sector index
+sector:^CNXMETAL,missing,no local OHLCV fixture found for this sector index
+sector:^CNXPHARMA,missing,no local OHLCV fixture found for this sector index
+sector:^NSEBANK,missing,no local OHLCV fixture found for this sector index

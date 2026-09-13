@@ -25,8 +25,8 @@ under that precommitted test (see experiment 6 below).
 
 ## Status: awaiting Codex audit
 
-Last completed experiment: **Artifact-only reproducibility audit of
-scheduler attribution** (2026-09-13, Codex-specified via
+Last completed experiment: **Local point-in-time raw-data-fixture
+availability audit** (2026-09-13, Codex-specified via
 `research/NEXT_EXPERIMENT.md`). Codex has not yet audited it or written a
 new `NEXT_EXPERIMENT.md`. Next action is the human asking Codex to perform
 the handoff per the short prompt in the VYOM handoff README.
@@ -428,6 +428,68 @@ the handoff per the short prompt in the VYOM handoff README.
   in the report; script syntax-checked before each run; one comparison-
   code bug (gate-bucket label mismatch) found and fixed before the
   trusted run, analogous to the sector_ticker fix in experiment 8.
+- **This experiment does not begin or recommend a next experiment** —
+  awaiting Codex's next audit per the VYOM loop.
+
+### 10. Local point-in-time raw-data-fixture availability audit — 2026-09-13
+- **Spec:** written by Codex in `research/NEXT_EXPERIMENT.md` after
+  auditing experiment 9, which found that neither raw OHLCV inputs, exact
+  entry/exit dates, nor a visited-index trace exist in the archived
+  master/trade/state artifacts. This experiment checks whether a frozen
+  local fixture exists ANYWHERE in the repo that could make a future
+  no-refetch reconstruction possible. Run exactly as specified.
+- **Report:** `research/results/raw_data_fixture_audit_report_20260913_194149.txt`
+- **Datasets:** `research/results/raw_data_fixture_inventory_20260913_194149.csv`
+  (26-file inventory), `research/results/raw_data_fixture_coverage_20260913_194149.csv`
+  (61-row required-series coverage table)
+- **Absolute boundary (enforced, not just stated):** script imports only
+  `hashlib`/`json`/`sys`/`pathlib`/`datetime`/`numpy`/`pandas` — no
+  production or `data_sources` import, no network call anywhere in the
+  file.
+- **Question:** does the repository already contain an immutable local
+  raw-OHLCV fixture (all 51 stock symbols + NIFTY index + 9 required
+  sector indices, covering the full ~3-year fetch window through the
+  latest required trade-outcome date) sufficient for a future no-refetch
+  reconstruction?
+- **Required coverage, derived from the canonical files (not assumed):**
+  51 stock symbols (from `master['symbol'].unique()`), NIFTY ticker
+  `^NSEI` (quoted from `config.REGIME_INDEX_TICKER`), 9 sector tickers
+  (from `master['sector_ticker'].dropna().unique()`), signal dates
+  2024-07-09 to 2026-06-08 (476 distinct dates), plus quoted-not-computed
+  buffer constants (`MIN_WARMUP_DAYS=200`, `HIGH52W_LOOKBACK_DAYS=252`,
+  original fetch `history_period="3y"`, `FORWARD_WINDOW_DAYS=90` for
+  trade resolution).
+- **Result: zero of 26 candidate files (deterministic inventory, fixed
+  extension set, `.git`/`.venv`/`__pycache__`/tool-caches excluded) contain
+  recognizable OHLCV columns.** All 26 are derived outputs: 7
+  `backtest_results/trades_*.csv` (production `backtest.py`'s own summary
+  output — notably DOES carry `entry_date`/`exit_date` columns unlike the
+  research artifacts, but is a trade-level summary, not raw price history,
+  so it does not satisfy the fixture definition — flagged as a
+  non-research-scope observation only, not used in the verdict), 18
+  `research/results/*` files (this program's own prior outputs), and
+  `state/open_positions.json` (live-position tracking, no price history).
+- **Coverage table: 0 present / 61 missing / 61 total required series**
+  (51 stocks + 1 index + 9 sectors, all missing).
+- **Verdict: FALSIFIED.** No local raw-data fixture exists for any
+  required series. A no-refetch exact reconstruction of the experiment-5
+  population or experiment-8 scheduling path is currently unavailable —
+  the repository is a live-fetch-only pipeline (`data_sources.py` calls
+  yfinance at run time; `.gitignore` and this inventory confirm no raw
+  data is persisted locally). Experiment 8 remains internally consistent
+  (per experiment 9) but unverified under the research boundary. This
+  absence is explicitly NOT used as evidence about the
+  STRONG_BEARISH-vs-BULLISH return anomaly (experiments 1-6) — a purely
+  archival finding.
+- **Verification:** both canonical file SHA-256s recorded; `git status
+  --short` before and after showed only new files under `research/`, all
+  16 production files and `tests/test_engine.py` unchanged; absolute
+  boundary (no production/network imports) verified by inspecting this
+  script's own import block, quoted in the report; script syntax-checked
+  before each run; one real bug (a `pd.notna()` call on a list-valued
+  cell raising `ValueError: ambiguous truth value`) found and fixed
+  before the trusted run — an `isinstance` check replaced the faulty
+  `pd.notna` call, no change to the inventory logic or extension set.
 - **This experiment does not begin or recommend a next experiment** —
   awaiting Codex's next audit per the VYOM loop.
 
