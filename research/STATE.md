@@ -25,8 +25,8 @@ under that precommitted test (see experiment 6 below).
 
 ## Status: awaiting Codex audit
 
-Last completed experiment: **Statistical reliability of the STRONG_BEARISH
-vs BULLISH anomaly** (2026-09-13, Codex-specified via
+Last completed experiment: **STRONG_BEARISH regime-frequency /
+opportunity-funnel audit** (2026-09-13, Codex-specified via
 `research/NEXT_EXPERIMENT.md`). Codex has not yet audited it or written a
 new `NEXT_EXPERIMENT.md`. Next action is the human asking Codex to perform
 the handoff per the short prompt in the VYOM handoff README.
@@ -184,6 +184,85 @@ the handoff per the short prompt in the VYOM handoff README.
 - **This experiment does not begin or recommend a next experiment** —
   awaiting Codex's next audit per the VYOM loop.
 
+### 7. STRONG_BEARISH regime-frequency / opportunity-funnel audit — 2026-09-13
+- **Spec:** written by Codex in `research/NEXT_EXPERIMENT.md` after
+  auditing experiment 6; run exactly as specified, no substitutions.
+- **Report:** `research/results/regime_frequency_report_20260913_172830.txt`
+- **Fixed inputs (unmodified, unrefetched):**
+  `research/results/resistance_master_20260913_164146.csv`
+  (SHA-256 `7d6d623480e64c37ac606f45909074134b96257630f43230a51b476f5981e6c7`,
+  48,552 rows, 476 distinct dates, 2024-07-09 to 2026-06-08) and
+  `research/results/resistance_trades_20260913_164146.csv`
+  (SHA-256 `05b11415a0979d224048e6e993d24c9a064f25a7b622e13a60ab5bbfe9026369`,
+  2,083 rows, 402 distinct signal dates).
+- **Question:** is the zero-Recent-STRONG_BEARISH-trades pattern (seen in
+  experiments 5 and 6) a regime-frequency artifact (no STRONG_BEARISH
+  NIFTY dates existed in that window) rather than a scoring/signal/
+  non-overlap gate effect? Sample-composition audit only — does not test,
+  explain, or validate the return anomaly itself.
+- **Result: hypothesis FALSIFIED.** The Recent split does contain 2
+  point-in-time STRONG_BEARISH regime dates (2026-06-05, 2026-06-08;
+  1.3% of that split's 157 dates, vs 17.5% Early / 19.9% Middle) — not
+  zero. So the absence of Recent STRONG_BEARISH trades is NOT explained
+  by an absence of opportunities.
+- **What the funnel + exhaustive trace showed instead:** on both Recent
+  STRONG_BEARISH dates, of 102 symbol-category observations, only 14-46
+  per category scored ≥40 (13.7%/45.1% — in line with other splits), and
+  **zero of those became trades (0% stage c→d, vs 1.4-5.5% in Early/
+  Middle)** — a complete stall at the final, non-overlap-simulation
+  stage, not at scoring or signal classification. The exhaustive trace
+  (every one of the 102 rows) showed several genuine WATCH-grade
+  candidates (e.g. COALINDIA Long-Term score=71.6 grade=B, TITAN
+  Long-Term score=60.7-60.3 grade=C) that never reached the trade file.
+  Verified from code: `research/factor_data.py`'s `build_master_dataset`
+  walks every day unconditionally (`i += 1`), while `run_ablation`'s walk
+  skips ahead after taking a trade (`i = max(exit_idx+1, i+1)`) — so a
+  WATCH/BUY-eligible row recorded in the master dataset at a given date
+  does not guarantee `run_ablation`'s non-overlap walk for that
+  symbol/category ever reached that date; an earlier open trade extending
+  toward the end of the 3-year history is the specific mechanism
+  identified (not a specific trade individually traced further, per the
+  audit's own no-new-analysis-beyond-spec scope).
+- **Also verified and quoted from code (not assumed):** `analyzer.
+  _classify_signal` has a deliberate production rule —
+  `regime_label=='STRONG_BEARISH' and grade in ('B','C') -> NO TRADE` —
+  that suppresses merely-decent setups specifically in a STRONG_BEARISH
+  tape; and `_grade_from_score` returns no grade below score 60, so the
+  funnel's score≥40 stage is deliberately looser than the real grade
+  floor. Both are genuine standing production rules, correctly
+  reproduced by this audit, not something to change.
+- **Robustness:** regime-label uniqueness holds (all 476 master dates
+  carry exactly one regime label — no data-integrity exceptions);
+  trade-file dates reconcile exactly with master regime labels (no
+  mismatches, trade dates correctly NOT used as the regime denominator);
+  symbol-exclusion funnel repeat shows the same pattern (0 Recent
+  STRONG_BEARISH trades survives exclusion); month-by-month table flags
+  every STRONG_BEARISH month as small (n<20 dates), consistent with prior
+  experiments' small-sample caveats.
+- **Bootstrap (descriptive, dependent estimates only):** 5-day
+  moving-block bootstrap (seed 20260913, 20,000 draws) gives Recent's
+  STRONG_BEARISH regime-date share a 95% CI of [0.0%, 1.9%] (vs Early
+  [6.3%, 30.8%], Middle [9.1%, 33.0%]) — consistent with Recent being a
+  genuinely low-STRONG_BEARISH-frequency window, not just a point
+  estimate artifact, even though it wasn't literally zero.
+- **Conclusion (regime-frequency evidence only, no causal/production
+  claim):** the hypothesis as stated is falsified, but a *softer* version
+  is supported — Recent had very few (not zero) STRONG_BEARISH
+  opportunities, and the ones that existed were disproportionately
+  filtered out by the non-overlap trade-simulation walk rather than by
+  scoring or signal classification. This says nothing about whether the
+  STRONG_BEARISH-vs-BULLISH return anomaly (experiments 1-6) is real.
+- **Verification:** both input file SHA-256s recorded; `git status
+  --short` before and after showed only new files under `research/`, all
+  16 production files and `tests/test_engine.py` unchanged; regime,
+  score, grade, and signal definitions verified directly from
+  `market_regime.py`, `analyzer.py`, `config.py`, and
+  `research/factor_data.py` and quoted in the report rather than assumed;
+  script syntax-checked before running; single run, no alternate
+  seeds/splits/block-lengths explored, per spec.
+- **This experiment does not begin or recommend a next experiment** —
+  awaiting Codex's next audit per the VYOM loop.
+
 ## Cumulative robustness findings (hold across every experiment above)
 
 - **Symbol concentration:** ruled out. Excluding the same top-3 symbols
@@ -193,8 +272,13 @@ the handoff per the short prompt in the VYOM handoff README.
 - **Sector concentration:** ruled out. Both regimes spread across 7-10
   sectors in every experiment, no dominant sector.
 - **Recent time period:** STRONG_BEARISH produced zero trades in the most
-  recent third of the 3-year window in the last two experiments — flagged
-  but not yet investigated as a possible regime-frequency artifact.
+  recent third of the 3-year window in experiments 5 and 6. Experiment 7
+  investigated this directly: it is NOT zero regime opportunities (2
+  genuine STRONG_BEARISH dates existed, vs 25/35 in Early/Middle) — the
+  zero trades instead trace to the non-overlap trade-simulation walk
+  never reaching those dates for the symbols with qualifying scores. Not
+  a regime-frequency artifact in the strict sense; a downstream
+  simulation-gate effect on an already-thin population.
 
 ## Production code status
 

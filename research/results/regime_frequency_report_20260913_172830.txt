@@ -1,0 +1,371 @@
+STRONG_BEARISH REGIME-FREQUENCY / OPPORTUNITY-FUNNEL AUDIT (research only, no production changes)
+
+## Hypothesis and falsifier (fixed, from research/NEXT_EXPERIMENT.md)
+  H: zero Recent-split STRONG_BEARISH trades are fully accounted for by zero (or near-zero) point-in-time STRONG_BEARISH NIFTY regime-dates in that window -- not by the score/signal/non-overlap gates. Sample-composition audit only; does not explain or validate the historical return gap.
+  Falsified if Recent contains >=1 point-in-time STRONG_BEARISH regime date in the master data -- then every missing trade must be traced to a specific downstream gate. If Recent has zero such dates, the hypothesis is supported only as an explanation of zero Recent OPPORTUNITIES, not of the historical return anomaly.
+
+## Provenance and fixed inputs
+  Master file:  research\results\resistance_master_20260913_164146.csv  SHA-256=7d6d623480e64c37ac606f45909074134b96257630f43230a51b476f5981e6c7
+  Trades file:  research\results\resistance_trades_20260913_164146.csv  SHA-256=05b11415a0979d224048e6e993d24c9a064f25a7b622e13a60ab5bbfe9026369
+  Command: python -m research.regime_frequency_experiment
+  Runtime: Python 3.14.7  pandas 3.0.5  numpy 2.5.3
+  Fixed production threshold reused (not a new threshold): score >= 40.0 (the exact min_score experiment 5's run_ablation used to build resistance_trades).
+  Production-field / point-in-time verification (quoted from direct code inspection):
+    - market_regime.RegimeBundle is built once over full NIFTY history (compute_regime_bundle); classify_regime_at reads bundle.sma_fast/sma_slow/rsi/atr_pct/atr_percentile via .iloc[idx] -- point-in-time safe by the same Bundle pattern as analyzer.IndicatorBundle.
+    - _classify(): STRONG_BEARISH requires price below BOTH SMA20/SMA50 AND NIFTY RSI<=45 (market_regime.py lines 71-73) -- a genuinely rare, extreme-oversold-market condition by construction, checked AFTER the HIGH_VOLATILITY gate (ATR-percentile >= threshold) takes priority.
+    - analyzer._grade_from_score: grade is None below score 60 (config.GRADE_THRESHOLDS: C=60, B=70, A=80, A+=90) -- so the funnel's score>=40 stage (c) is DELIBERATELY looser than the production grade floor; rows scoring 40-59 can never receive a grade and are therefore always classified NO TRADE by _classify_signal, regardless of regime.
+    - analyzer._classify_signal (lines 323-336): grade is None -> NO TRADE; rr_ratio < RR_MIN_ACCEPTABLE (1.5) -> WATCH; chase_flag -> WATCH; **regime_label=='STRONG_BEARISH' AND grade in ('B','C') -> NO TRADE** (an existing, deliberate production rule that suppresses merely-decent setups specifically in a STRONG_BEARISH tape) -- this is a distinct, real candidate explanation for STRONG_BEARISH funnel attrition that this audit can directly observe in the trace (Section 3), quoted here rather than assumed.
+    - backtest._simulate_trade (via research.factor_data.run_ablation, called unchanged) provides the non-overlapping target1/stop-loss trade simulation for funnel stage (d); run_ablation's own gate is `score < min_score or signal == 'NO TRADE'` -> skipped.
+  No production function was reimplemented; all of the above is quoted from analyzer.py, market_regime.py, config.py, backtest.py, and research/factor_data.py as they exist on disk.
+
+  Master rows: 48552  (distinct dates=476, date range 2024-07-09 to 2026-06-08)
+  Trades rows: 2083  (distinct signal_dates=402, date range 2024-07-09 to 2026-06-03)
+
+## Time-split convention (fixed, identical to experiments 5 and 6 -- not re-derived)
+  Early:  date <= 2025-01-31
+  Middle: 2025-01-31 < date <= 2025-10-17
+  Recent: date > 2025-10-17
+
+## Robustness: regime label uniqueness per calendar date
+  OK -- all 476 distinct master dates carry exactly one regime label (consistent with regime being a NIFTY-index-level, not stock-level, point-in-time label).
+
+## Section 1: Distinct point-in-time regime dates per split (master-dataset denominator)
+
+  --- Early (total distinct dates=143) ---
+    STRONG_BULLISH: 47 dates (32.9% of split dates)
+    STRONG_BEARISH: 25 dates (17.5% of split dates)
+    BEARISH: 24 dates (16.8% of split dates)
+    HIGH_VOLATILITY: 22 dates (15.4% of split dates)
+    NEUTRAL: 14 dates (9.8% of split dates)
+    BULLISH: 11 dates (7.7% of split dates)
+    >> BULLISH explicit: 11 dates, share=7.7%
+    >> STRONG_BEARISH explicit: 25 dates, share=17.5%
+
+  --- Middle (total distinct dates=176) ---
+    STRONG_BULLISH: 48 dates (27.3% of split dates)
+    STRONG_BEARISH: 35 dates (19.9% of split dates)
+    NEUTRAL: 34 dates (19.3% of split dates)
+    BULLISH: 25 dates (14.2% of split dates)
+    HIGH_VOLATILITY: 20 dates (11.4% of split dates)
+    BEARISH: 14 dates (8.0% of split dates)
+    >> BULLISH explicit: 25 dates, share=14.2%
+    >> STRONG_BEARISH explicit: 35 dates, share=19.9%
+
+  --- Recent (total distinct dates=157) ---
+    HIGH_VOLATILITY: 61 dates (38.9% of split dates)
+    STRONG_BULLISH: 37 dates (23.6% of split dates)
+    NEUTRAL: 23 dates (14.6% of split dates)
+    BEARISH: 19 dates (12.1% of split dates)
+    BULLISH: 15 dates (9.6% of split dates)
+    STRONG_BEARISH: 2 dates (1.3% of split dates)
+    >> BULLISH explicit: 15 dates, share=9.6%
+    >> STRONG_BEARISH explicit: 2 dates, share=1.3%
+
+## Section 2: Four-stage funnel (time_split x regime x category)
+
+  --- Early ---
+    BULLISH: stage(a) distinct regime dates = 11  [category-invariant, from date-level dedup]
+      Short-Term (Swing): (b) obs=561  (c) score>=40=416 [rate b->c: 74.2%]  (d) trades=45 [rate c->d: 10.8%]
+      Long-Term: (b) obs=561  (c) score>=40=424 [rate b->c: 75.6%]  (d) trades=20 [rate c->d: 4.7%]
+    STRONG_BEARISH: stage(a) distinct regime dates = 25  [category-invariant, from date-level dedup]
+      Short-Term (Swing): (b) obs=1275  (c) score>=40=236 [rate b->c: 18.5%]  (d) trades=13 [rate c->d: 5.5%]
+      Long-Term: (b) obs=1275  (c) score>=40=538 [rate b->c: 42.2%]  (d) trades=12 [rate c->d: 2.2%]
+
+  --- Middle ---
+    BULLISH: stage(a) distinct regime dates = 25  [category-invariant, from date-level dedup]
+      Short-Term (Swing): (b) obs=1275  (c) score>=40=995 [rate b->c: 78.0%]  (d) trades=100 [rate c->d: 10.1%]
+      Long-Term: (b) obs=1275  (c) score>=40=1035 [rate b->c: 81.2%]  (d) trades=49 [rate c->d: 4.7%]
+    STRONG_BEARISH: stage(a) distinct regime dates = 35  [category-invariant, from date-level dedup]
+      Short-Term (Swing): (b) obs=1785  (c) score>=40=421 [rate b->c: 23.6%]  (d) trades=14 [rate c->d: 3.3%]
+      Long-Term: (b) obs=1785  (c) score>=40=665 [rate b->c: 37.3%]  (d) trades=9 [rate c->d: 1.4%]
+
+  --- Recent ---
+    BULLISH: stage(a) distinct regime dates = 15  [category-invariant, from date-level dedup]
+      Short-Term (Swing): (b) obs=765  (c) score>=40=575 [rate b->c: 75.2%]  (d) trades=72 [rate c->d: 12.5%]
+      Long-Term: (b) obs=765  (c) score>=40=630 [rate b->c: 82.4%]  (d) trades=38 [rate c->d: 6.0%]
+    STRONG_BEARISH: stage(a) distinct regime dates = 2  [category-invariant, from date-level dedup]
+      Short-Term (Swing): (b) obs=102  (c) score>=40=14 [rate b->c: 13.7%]  (d) trades=0 [rate c->d: 0.0%]
+      Long-Term: (b) obs=102  (c) score>=40=46 [rate b->c: 45.1%]  (d) trades=0 [rate c->d: 0.0%]
+
+## Section 3: Exhaustive trace of every Recent-split STRONG_BEARISH master row (fixed, not a selected sample)
+  ADANIENT     2026-06-05 Long-Term            score=63.7 grade=C  signal=WATCH  in_trade_file=False
+  ADANIENT     2026-06-05 Short-Term (Swing)   score=54.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ADANIPORTS   2026-06-05 Long-Term            score=52.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ADANIPORTS   2026-06-05 Short-Term (Swing)   score=38.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  APOLLOHOSP   2026-06-05 Long-Term            score=64.0 grade=C  signal=WATCH  in_trade_file=False
+  APOLLOHOSP   2026-06-05 Short-Term (Swing)   score=43.1 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ASIANPAINT   2026-06-05 Long-Term            score=45.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ASIANPAINT   2026-06-05 Short-Term (Swing)   score=46.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  AXISBANK     2026-06-05 Long-Term            score=49.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  AXISBANK     2026-06-05 Short-Term (Swing)   score=38.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJAJ-AUTO   2026-06-05 Long-Term            score=57.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJAJ-AUTO   2026-06-05 Short-Term (Swing)   score=17.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJAJFINSV   2026-06-05 Long-Term            score=10.9 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJAJFINSV   2026-06-05 Short-Term (Swing)   score=46.2 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJAJHLDNG   2026-06-05 Long-Term            score=32.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJAJHLDNG   2026-06-05 Short-Term (Swing)   score=46.1 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJFINANCE   2026-06-05 Long-Term            score=14.4 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJFINANCE   2026-06-05 Short-Term (Swing)   score=39.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BEL          2026-06-05 Long-Term            score=21.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BEL          2026-06-05 Short-Term (Swing)   score=18.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BHARTIARTL   2026-06-05 Long-Term            score=23.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BHARTIARTL   2026-06-05 Short-Term (Swing)   score=18.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  CIPLA        2026-06-05 Long-Term            score=43.8 grade=NONE  signal=NO TRADE  in_trade_file=False
+  CIPLA        2026-06-05 Short-Term (Swing)   score=43.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  COALINDIA    2026-06-05 Long-Term            score=71.6 grade=B  signal=WATCH  in_trade_file=False
+  COALINDIA    2026-06-05 Short-Term (Swing)   score=43.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  DRREDDY      2026-06-05 Long-Term            score=49.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  DRREDDY      2026-06-05 Short-Term (Swing)   score=29.4 grade=NONE  signal=NO TRADE  in_trade_file=False
+  EICHERMOT    2026-06-05 Long-Term            score=36.8 grade=NONE  signal=NO TRADE  in_trade_file=False
+  EICHERMOT    2026-06-05 Short-Term (Swing)   score=17.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ETERNAL      2026-06-05 Long-Term            score=44.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ETERNAL      2026-06-05 Short-Term (Swing)   score=55.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  GRASIM       2026-06-05 Long-Term            score=57.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  GRASIM       2026-06-05 Short-Term (Swing)   score=33.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HCLTECH      2026-06-05 Long-Term            score=18.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HCLTECH      2026-06-05 Short-Term (Swing)   score=27.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HDFCBANK     2026-06-05 Long-Term            score=10.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HDFCBANK     2026-06-05 Short-Term (Swing)   score=22.1 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HDFCLIFE     2026-06-05 Long-Term            score=10.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HDFCLIFE     2026-06-05 Short-Term (Swing)   score=37.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HEROMOTOCO   2026-06-05 Long-Term            score=10.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HEROMOTOCO   2026-06-05 Short-Term (Swing)   score=28.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HINDALCO     2026-06-05 Long-Term            score=57.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HINDALCO     2026-06-05 Short-Term (Swing)   score=22.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HINDUNILVR   2026-06-05 Long-Term            score=17.1 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HINDUNILVR   2026-06-05 Short-Term (Swing)   score=21.8 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ICICIBANK    2026-06-05 Long-Term            score=35.2 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ICICIBANK    2026-06-05 Short-Term (Swing)   score=40.4 grade=NONE  signal=NO TRADE  in_trade_file=False
+  INDUSINDBK   2026-06-05 Long-Term            score=57.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  INDUSINDBK   2026-06-05 Short-Term (Swing)   score=33.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  INFY         2026-06-05 Long-Term            score=32.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  INFY         2026-06-05 Short-Term (Swing)   score=32.2 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ITC          2026-06-05 Long-Term            score=10.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ITC          2026-06-05 Short-Term (Swing)   score=14.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  JIOFIN       2026-06-05 Long-Term            score=32.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  JIOFIN       2026-06-05 Short-Term (Swing)   score=25.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  JSWSTEEL     2026-06-05 Long-Term            score=57.2 grade=NONE  signal=NO TRADE  in_trade_file=False
+  JSWSTEEL     2026-06-05 Short-Term (Swing)   score=21.1 grade=NONE  signal=NO TRADE  in_trade_file=False
+  KOTAKBANK    2026-06-05 Long-Term            score=30.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  KOTAKBANK    2026-06-05 Short-Term (Swing)   score=28.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  LT           2026-06-05 Long-Term            score=53.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  LT           2026-06-05 Short-Term (Swing)   score=25.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  M&M          2026-06-05 Long-Term            score=15.2 grade=NONE  signal=NO TRADE  in_trade_file=False
+  M&M          2026-06-05 Short-Term (Swing)   score=22.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  MARUTI       2026-06-05 Long-Term            score=24.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  MARUTI       2026-06-05 Short-Term (Swing)   score=15.8 grade=NONE  signal=NO TRADE  in_trade_file=False
+  NESTLEIND    2026-06-05 Long-Term            score=46.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  NESTLEIND    2026-06-05 Short-Term (Swing)   score=36.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  NTPC         2026-06-05 Long-Term            score=37.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  NTPC         2026-06-05 Short-Term (Swing)   score=21.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ONGC         2026-06-05 Long-Term            score=40.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ONGC         2026-06-05 Short-Term (Swing)   score=24.2 grade=NONE  signal=NO TRADE  in_trade_file=False
+  POWERGRID    2026-06-05 Long-Term            score=28.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  POWERGRID    2026-06-05 Short-Term (Swing)   score=13.4 grade=NONE  signal=NO TRADE  in_trade_file=False
+  RELIANCE     2026-06-05 Long-Term            score=10.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  RELIANCE     2026-06-05 Short-Term (Swing)   score=21.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SBILIFE      2026-06-05 Long-Term            score=12.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SBILIFE      2026-06-05 Short-Term (Swing)   score=32.8 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SBIN         2026-06-05 Long-Term            score=33.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SBIN         2026-06-05 Short-Term (Swing)   score=34.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SHRIRAMFIN   2026-06-05 Long-Term            score=29.9 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SHRIRAMFIN   2026-06-05 Short-Term (Swing)   score=22.4 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SUNPHARMA    2026-06-05 Long-Term            score=44.9 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SUNPHARMA    2026-06-05 Short-Term (Swing)   score=44.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TATACONSUM   2026-06-05 Long-Term            score=43.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TATACONSUM   2026-06-05 Short-Term (Swing)   score=25.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TATASTEEL    2026-06-05 Long-Term            score=53.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TATASTEEL    2026-06-05 Short-Term (Swing)   score=33.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TCS          2026-06-05 Long-Term            score=17.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TCS          2026-06-05 Short-Term (Swing)   score=18.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TECHM        2026-06-05 Long-Term            score=51.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TECHM        2026-06-05 Short-Term (Swing)   score=40.8 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TITAN        2026-06-05 Long-Term            score=60.7 grade=C  signal=WATCH  in_trade_file=False
+  TITAN        2026-06-05 Short-Term (Swing)   score=27.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TMPV         2026-06-05 Long-Term            score=45.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TMPV         2026-06-05 Short-Term (Swing)   score=43.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TRENT        2026-06-05 Long-Term            score=36.8 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TRENT        2026-06-05 Short-Term (Swing)   score=26.2 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ULTRACEMCO   2026-06-05 Long-Term            score=16.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ULTRACEMCO   2026-06-05 Short-Term (Swing)   score=28.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  WIPRO        2026-06-05 Long-Term            score=43.8 grade=NONE  signal=NO TRADE  in_trade_file=False
+  WIPRO        2026-06-05 Short-Term (Swing)   score=38.4 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ADANIENT     2026-06-08 Long-Term            score=56.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ADANIENT     2026-06-08 Short-Term (Swing)   score=33.1 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ADANIPORTS   2026-06-08 Long-Term            score=52.4 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ADANIPORTS   2026-06-08 Short-Term (Swing)   score=36.1 grade=NONE  signal=NO TRADE  in_trade_file=False
+  APOLLOHOSP   2026-06-08 Long-Term            score=63.9 grade=C  signal=WATCH  in_trade_file=False
+  APOLLOHOSP   2026-06-08 Short-Term (Swing)   score=50.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ASIANPAINT   2026-06-08 Long-Term            score=53.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ASIANPAINT   2026-06-08 Short-Term (Swing)   score=29.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  AXISBANK     2026-06-08 Long-Term            score=48.4 grade=NONE  signal=NO TRADE  in_trade_file=False
+  AXISBANK     2026-06-08 Short-Term (Swing)   score=19.9 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJAJ-AUTO   2026-06-08 Long-Term            score=53.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJAJ-AUTO   2026-06-08 Short-Term (Swing)   score=21.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJAJFINSV   2026-06-08 Long-Term            score=10.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJAJFINSV   2026-06-08 Short-Term (Swing)   score=22.2 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJAJHLDNG   2026-06-08 Long-Term            score=18.9 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJAJHLDNG   2026-06-08 Short-Term (Swing)   score=23.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJFINANCE   2026-06-08 Long-Term            score=14.1 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BAJFINANCE   2026-06-08 Short-Term (Swing)   score=22.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BEL          2026-06-08 Long-Term            score=21.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BEL          2026-06-08 Short-Term (Swing)   score=25.8 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BHARTIARTL   2026-06-08 Long-Term            score=29.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  BHARTIARTL   2026-06-08 Short-Term (Swing)   score=32.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  CIPLA        2026-06-08 Long-Term            score=39.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  CIPLA        2026-06-08 Short-Term (Swing)   score=17.8 grade=NONE  signal=NO TRADE  in_trade_file=False
+  COALINDIA    2026-06-08 Long-Term            score=67.3 grade=C  signal=WATCH  in_trade_file=False
+  COALINDIA    2026-06-08 Short-Term (Swing)   score=37.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  DRREDDY      2026-06-08 Long-Term            score=41.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  DRREDDY      2026-06-08 Short-Term (Swing)   score=19.9 grade=NONE  signal=NO TRADE  in_trade_file=False
+  EICHERMOT    2026-06-08 Long-Term            score=34.1 grade=NONE  signal=NO TRADE  in_trade_file=False
+  EICHERMOT    2026-06-08 Short-Term (Swing)   score=18.1 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ETERNAL      2026-06-08 Long-Term            score=44.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ETERNAL      2026-06-08 Short-Term (Swing)   score=39.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  GRASIM       2026-06-08 Long-Term            score=57.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  GRASIM       2026-06-08 Short-Term (Swing)   score=22.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HCLTECH      2026-06-08 Long-Term            score=18.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HCLTECH      2026-06-08 Short-Term (Swing)   score=26.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HDFCBANK     2026-06-08 Long-Term            score=10.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HDFCBANK     2026-06-08 Short-Term (Swing)   score=25.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HDFCLIFE     2026-06-08 Long-Term            score=10.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HDFCLIFE     2026-06-08 Short-Term (Swing)   score=21.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HEROMOTOCO   2026-06-08 Long-Term            score=10.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HEROMOTOCO   2026-06-08 Short-Term (Swing)   score=21.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HINDALCO     2026-06-08 Long-Term            score=45.9 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HINDALCO     2026-06-08 Short-Term (Swing)   score=17.9 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HINDUNILVR   2026-06-08 Long-Term            score=19.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  HINDUNILVR   2026-06-08 Short-Term (Swing)   score=16.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ICICIBANK    2026-06-08 Long-Term            score=33.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ICICIBANK    2026-06-08 Short-Term (Swing)   score=28.9 grade=NONE  signal=NO TRADE  in_trade_file=False
+  INDUSINDBK   2026-06-08 Long-Term            score=56.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  INDUSINDBK   2026-06-08 Short-Term (Swing)   score=18.2 grade=NONE  signal=NO TRADE  in_trade_file=False
+  INFY         2026-06-08 Long-Term            score=34.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  INFY         2026-06-08 Short-Term (Swing)   score=31.1 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ITC          2026-06-08 Long-Term            score=10.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ITC          2026-06-08 Short-Term (Swing)   score=20.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  JIOFIN       2026-06-08 Long-Term            score=20.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  JIOFIN       2026-06-08 Short-Term (Swing)   score=24.1 grade=NONE  signal=NO TRADE  in_trade_file=False
+  JSWSTEEL     2026-06-08 Long-Term            score=45.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  JSWSTEEL     2026-06-08 Short-Term (Swing)   score=24.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  KOTAKBANK    2026-06-08 Long-Term            score=19.4 grade=NONE  signal=NO TRADE  in_trade_file=False
+  KOTAKBANK    2026-06-08 Short-Term (Swing)   score=27.9 grade=NONE  signal=NO TRADE  in_trade_file=False
+  LT           2026-06-08 Long-Term            score=36.2 grade=NONE  signal=NO TRADE  in_trade_file=False
+  LT           2026-06-08 Short-Term (Swing)   score=27.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  M&M          2026-06-08 Long-Term            score=10.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  M&M          2026-06-08 Short-Term (Swing)   score=21.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  MARUTI       2026-06-08 Long-Term            score=14.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  MARUTI       2026-06-08 Short-Term (Swing)   score=24.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  NESTLEIND    2026-06-08 Long-Term            score=53.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  NESTLEIND    2026-06-08 Short-Term (Swing)   score=20.8 grade=NONE  signal=NO TRADE  in_trade_file=False
+  NTPC         2026-06-08 Long-Term            score=40.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  NTPC         2026-06-08 Short-Term (Swing)   score=36.1 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ONGC         2026-06-08 Long-Term            score=43.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ONGC         2026-06-08 Short-Term (Swing)   score=23.1 grade=NONE  signal=NO TRADE  in_trade_file=False
+  POWERGRID    2026-06-08 Long-Term            score=42.1 grade=NONE  signal=NO TRADE  in_trade_file=False
+  POWERGRID    2026-06-08 Short-Term (Swing)   score=23.6 grade=NONE  signal=NO TRADE  in_trade_file=False
+  RELIANCE     2026-06-08 Long-Term            score=10.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  RELIANCE     2026-06-08 Short-Term (Swing)   score=21.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SBILIFE      2026-06-08 Long-Term            score=10.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SBILIFE      2026-06-08 Short-Term (Swing)   score=30.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SBIN         2026-06-08 Long-Term            score=33.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SBIN         2026-06-08 Short-Term (Swing)   score=37.4 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SHRIRAMFIN   2026-06-08 Long-Term            score=28.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SHRIRAMFIN   2026-06-08 Short-Term (Swing)   score=18.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SUNPHARMA    2026-06-08 Long-Term            score=43.4 grade=NONE  signal=NO TRADE  in_trade_file=False
+  SUNPHARMA    2026-06-08 Short-Term (Swing)   score=26.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TATACONSUM   2026-06-08 Long-Term            score=36.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TATACONSUM   2026-06-08 Short-Term (Swing)   score=21.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TATASTEEL    2026-06-08 Long-Term            score=53.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TATASTEEL    2026-06-08 Short-Term (Swing)   score=24.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TCS          2026-06-08 Long-Term            score=17.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TCS          2026-06-08 Short-Term (Swing)   score=26.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TECHM        2026-06-08 Long-Term            score=61.3 grade=C  signal=NO TRADE  in_trade_file=False
+  TECHM        2026-06-08 Short-Term (Swing)   score=48.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TITAN        2026-06-08 Long-Term            score=60.3 grade=C  signal=WATCH  in_trade_file=False
+  TITAN        2026-06-08 Short-Term (Swing)   score=29.5 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TMPV         2026-06-08 Long-Term            score=46.8 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TMPV         2026-06-08 Short-Term (Swing)   score=39.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TRENT        2026-06-08 Long-Term            score=29.3 grade=NONE  signal=NO TRADE  in_trade_file=False
+  TRENT        2026-06-08 Short-Term (Swing)   score=24.2 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ULTRACEMCO   2026-06-08 Long-Term            score=14.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  ULTRACEMCO   2026-06-08 Short-Term (Swing)   score=21.0 grade=NONE  signal=NO TRADE  in_trade_file=False
+  WIPRO        2026-06-08 Long-Term            score=17.7 grade=NONE  signal=NO TRADE  in_trade_file=False
+  WIPRO        2026-06-08 Short-Term (Swing)   score=33.8 grade=NONE  signal=NO TRADE  in_trade_file=False
+
+## Section 4 (robustness): trade-dataset date/regime reconciliation against master (trade dates are NOT used as the regime denominator -- they are far sparser by construction, since only score>=40-and-signal!=NO-TRADE rows reach the trade file)
+  Distinct (signal_date) values present in trade file: 402 (vs 476 distinct dates in master -- expected to be much smaller)
+  OK -- every date present in the trade file has a regime label matching the master dataset for that same date.
+
+## Section 2b (robustness): same funnel excluding established top-3 symbols per regime (symbol-level stages only; date denominator unchanged)
+
+  --- Early ---
+    BULLISH: stage(a) distinct regime dates = 11  [category-invariant, from date-level dedup]
+      Short-Term (Swing): (b) obs=528  (c) score>=40=388 [rate b->c: 73.5%]  (d) trades=40 [rate c->d: 10.3%]
+      Long-Term: (b) obs=528  (c) score>=40=392 [rate b->c: 74.2%]  (d) trades=18 [rate c->d: 4.6%]
+    STRONG_BEARISH: stage(a) distinct regime dates = 25  [category-invariant, from date-level dedup]
+      Short-Term (Swing): (b) obs=1200  (c) score>=40=223 [rate b->c: 18.6%]  (d) trades=11 [rate c->d: 4.9%]
+      Long-Term: (b) obs=1200  (c) score>=40=503 [rate b->c: 41.9%]  (d) trades=9 [rate c->d: 1.8%]
+
+  --- Middle ---
+    BULLISH: stage(a) distinct regime dates = 25  [category-invariant, from date-level dedup]
+      Short-Term (Swing): (b) obs=1200  (c) score>=40=934 [rate b->c: 77.8%]  (d) trades=88 [rate c->d: 9.4%]
+      Long-Term: (b) obs=1200  (c) score>=40=960 [rate b->c: 80.0%]  (d) trades=39 [rate c->d: 4.1%]
+    STRONG_BEARISH: stage(a) distinct regime dates = 35  [category-invariant, from date-level dedup]
+      Short-Term (Swing): (b) obs=1680  (c) score>=40=376 [rate b->c: 22.4%]  (d) trades=9 [rate c->d: 2.4%]
+      Long-Term: (b) obs=1680  (c) score>=40=599 [rate b->c: 35.7%]  (d) trades=8 [rate c->d: 1.3%]
+
+  --- Recent ---
+    BULLISH: stage(a) distinct regime dates = 15  [category-invariant, from date-level dedup]
+      Short-Term (Swing): (b) obs=720  (c) score>=40=541 [rate b->c: 75.1%]  (d) trades=67 [rate c->d: 12.4%]
+      Long-Term: (b) obs=720  (c) score>=40=588 [rate b->c: 81.7%]  (d) trades=35 [rate c->d: 6.0%]
+    STRONG_BEARISH: stage(a) distinct regime dates = 2  [category-invariant, from date-level dedup]
+      Short-Term (Swing): (b) obs=96  (c) score>=40=14 [rate b->c: 14.6%]  (d) trades=0 [rate c->d: 0.0%]
+      Long-Term: (b) obs=96  (c) score>=40=41 [rate b->c: 42.7%]  (d) trades=0 [rate c->d: 0.0%]
+
+## Section 5 (robustness): month-by-month regime dates and final trades, all three splits (cells below 20 observations flagged as descriptive/undersized)
+
+  --- BULLISH ---
+    2024-08: regime_dates=1  final_trades=10  [UNDERSIZED n<20]
+    2024-09: regime_dates=2  final_trades=5  [UNDERSIZED n<20]
+    2024-12: regime_dates=7  final_trades=32
+    2025-01: regime_dates=1  final_trades=18  [UNDERSIZED n<20]
+    2025-03: regime_dates=7  final_trades=68
+    2025-04: regime_dates=3  final_trades=15  [UNDERSIZED n<20]
+    2025-05: regime_dates=1  final_trades=4  [UNDERSIZED n<20]
+    2025-06: regime_dates=3  final_trades=5  [UNDERSIZED n<20]
+    2025-08: regime_dates=2  final_trades=16  [UNDERSIZED n<20]
+    2025-09: regime_dates=8  final_trades=40
+    2025-10: regime_dates=1  final_trades=1  [UNDERSIZED n<20]
+    2025-11: regime_dates=2  final_trades=6  [UNDERSIZED n<20]
+    2025-12: regime_dates=3  final_trades=14  [UNDERSIZED n<20]
+    2026-01: regime_dates=1  final_trades=15  [UNDERSIZED n<20]
+    2026-04: regime_dates=3  final_trades=31
+    2026-05: regime_dates=6  final_trades=44
+
+  --- STRONG_BEARISH ---
+    2024-10: regime_dates=6  final_trades=5  [UNDERSIZED n<20]
+    2024-11: regime_dates=4  final_trades=4  [UNDERSIZED n<20]
+    2025-01: regime_dates=15  final_trades=16  [UNDERSIZED n<20]
+    2025-02: regime_dates=13  final_trades=8  [UNDERSIZED n<20]
+    2025-03: regime_dates=10  final_trades=6  [UNDERSIZED n<20]
+    2025-08: regime_dates=11  final_trades=9  [UNDERSIZED n<20]
+    2025-09: regime_dates=1  final_trades=0  [UNDERSIZED n<20]
+    2026-06: regime_dates=2  final_trades=0  [UNDERSIZED n<20]
+
+## Section 6: Descriptive 5-trading-day moving-block bootstrap (seed=20260913, draws=20000) -- STRONG_BEARISH regime-date share and score>=40-conditional-on-STRONG_BEARISH rate, per split. Dependent/descriptive estimates only -- NOT independent-trade inference.
+
+  --- Early (n dates=143) ---
+    STRONG_BEARISH regime-date share: observed=17.5%  95% CI=[6.3%, 30.8%]
+    Score>=40-conditional-on-STRONG_BEARISH rate: observed=30.4%  95% CI=[28.6%, 32.7%]  (valid draws=19989/20000)
+
+  --- Middle (n dates=176) ---
+    STRONG_BEARISH regime-date share: observed=19.9%  95% CI=[9.1%, 33.0%]
+    Score>=40-conditional-on-STRONG_BEARISH rate: observed=30.4%  95% CI=[26.4%, 35.8%]  (valid draws=20000/20000)
+
+  --- Recent (n dates=157) ---
+    STRONG_BEARISH regime-date share: observed=1.3%  95% CI=[0.0%, 1.9%]
+    Score>=40-conditional-on-STRONG_BEARISH rate: observed=29.4%  95% CI=[29.4%, 35.3%]  (valid draws=6663/20000)
+
+## Conclusion (limited to regime-frequency evidence -- no causal or production claim)
+  Recent split contains 2 point-in-time STRONG_BEARISH regime date(s) -- the hypothesis is FALSIFIED. See Section 3's exhaustive trace and the quoted production-gate verification above for which specific downstream gate(s) account for the missing trades.
