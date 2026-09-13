@@ -1,112 +1,92 @@
 # VYOM Research — NEXT EXPERIMENT
 
-## Experiment: exact signal-gate versus non-overlap-censoring attribution
+## Experiment: artifact-only reproducibility audit of scheduler attribution
 
-### Why this experiment
+### Rationale, question, and hypothesis
 
-Experiment 7 correctly falsified the strict "zero regime dates" hypothesis:
-Recent has two point-in-time STRONG_BEARISH dates. Its funnel, however,
-combined score qualification, `_classify_signal`, and the non-overlap walk in
-one `score >= 40 -> trade` transition. The report therefore does **not**
-establish its claim that non-overlap, rather than an upstream signal rule,
-accounts for every missing Recent trade. Audit that distinction exactly.
+Experiment 8 reports seven Recent STRONG_BEARISH pre-scheduler-eligible rows
+as `skipped_by_open_trade`, but its script explicitly re-fetched the universe
+despite the approved specification's no-refetch guard. The output values match
+the canonical trade CSV, but an external re-fetch cannot establish a
+point-in-time reproducible schedule attribution by itself.
 
-### Single hypothesis and falsifier
+**Hypothesis:** the experiment-8 conclusion—that all seven eligible Recent
+STRONG_BEARISH rows were censored by a prior selected trade—can be independently
+verified using only immutable archived research artifacts, without network,
+refetching, new market data, or rerunning production scoring/simulation.
 
-**Hypothesis:** every Recent STRONG_BEARISH row which would pass the production
-pre-scheduler eligibility gate (`score >= 40` and `signal != 'NO TRADE'`) was
-actually bypassed because the canonical non-overlap walk was already inside a
-prior selected trade for the same symbol/category. Existing production signal
-classification is therefore not sufficient to account for the zero Recent
-STRONG_BEARISH trades.
+This is an integrity/reproducibility audit only. It neither tests returns nor
+recommends any change to the frozen non-overlap rule or strategy.
 
-The hypothesis is **falsified** if either:
+### Fixed artifacts and hard boundary
 
-1. no Recent STRONG_BEARISH row passes that exact pre-scheduler eligibility
-   gate (then upstream score/classification fully accounts for zero trades);
-2. any such row is reached by the canonical walk and is neither selected nor
-   rejected by the documented production `score < 40` / `signal == NO TRADE`
-   gate; or
-3. the exact canonical scheduling path cannot be reproduced against the
-   archived master/trade outputs. In case 3, report the attribution as
-   **unverified**, not as non-overlap evidence, and do not substitute another
-   data source or run.
+Use only these files, recording SHA-256 before and after reading each:
 
-This is a research audit of a frozen simulation path. It is not a proposal to
-change the non-overlap rule, signal policy, threshold, entry/exit logic, or
-anything in production.
+- `research/results/resistance_master_20260913_164146.csv`
+- `research/results/resistance_trades_20260913_164146.csv`
+- `research/results/scheduler_attribution_states_20260913_192107.csv`
+- `research/results/scheduler_attribution_report_20260913_192107.txt`
 
-### Fixed inputs and reproducibility guard
-
-- Canonical comparison files are exactly
-  `research/results/resistance_master_20260913_164146.csv` (SHA-256
-  `7d6d623480e64c37ac606f45909074134b96257630f43230a51b476f5981e6c7`) and
-  `research/results/resistance_trades_20260913_164146.csv` (SHA-256
-  `05b11415a0979d224048e6e993d24c9a064f25a7b622e13a60ab5bbfe9026369`).
-  Record hashes before and after; never edit them.
-- Use the same 51-symbol universe, both categories, history/censor buffer,
-  fixed `min_score=40`, date ordering, and non-overlap behavior as experiment
-  5. Do not refetch, replace, or modify the data source. If the original
-  point-in-time OHLC fixture is unavailable locally, the experiment may inspect
-  source/code and the canonical CSVs only; it must return the reproducibility
-  failure in the report rather than downloading different data.
-- Directly verify and use unchanged production functions:
-  `compute_bundle`, `market_regime.compute_regime_bundle`,
-  `classify_regime_at`, `score_short_term` / `score_long_term`,
-  `_grade_from_score`, `_classify_signal`, and `backtest._simulate_trade`.
-  Reuse the existing `run_ablation` traversal semantics exactly; do not
-  reimplement scoring, indicators, classification, or simulation.
+No network access, `load_universe`, `data_sources`, data download, production
+function invocation, new scoring, simulation, or data replacement is allowed.
+The existing canonical artifacts are the complete fixed evidence. Do not edit
+them or use a surrogate source.
 
 ### Precommitted methodology
 
-1. First create an exact gate taxonomy for **all 102** master rows on the two
-   Recent STRONG_BEARISH dates, without selecting examples: `score < 40`,
-   `40 <= score < 60`, `grade present + signal NO TRADE`, and
-   `pre-scheduler eligible` (`score >= 40` and `signal != NO TRADE`). Report
-   N, symbol, date, category, score, grade, `rr_ratio`, `chase_flag`, signal,
-   and the exact first production condition responsible for any `NO TRADE`.
-2. Build an additive research-only *instrumented wrapper* around the canonical
-   `run_ablation` walk. The wrapper must call the production functions named
-   above directly and preserve its iteration/update expression
-   `i = max(exit_idx + 1, i + 1)` verbatim. It may add audit records only; it
-   must not alter decisions or output selection.
-3. For every symbol/category, record each selected trade's signal date, entry
-   date, exit index/date, and the inclusive skipped-index interval created by
-   that exact update. At every Recent STRONG_BEARISH index, record one mutually
-   exclusive state: `reached_and_rejected_upstream`, `reached_and_selected`, or
-   `skipped_by_open_trade`, with the blocking selected trade's identifiers and
-   dates for the last state.
-4. Exact reconstruction check before interpreting attribution: compare the
-   wrapper's selected-trade keys and all canonical output columns available in
-   the CSV (including symbol, category, regime, signal date, return, exit
-   reason, entry, target, stop, and days held) against the fixed canonical
-   trade file. Require identical row count and zero mismatches. Compare the
-   master-level values on all two Recent dates as well. Do not loosen numerical
-   tolerances after seeing a mismatch; declare the result unverified if the
-   fixed comparison fails.
-5. As a fixed context-only robustness table, repeat the same state taxonomy for
-   every STRONG_BEARISH date in Early and Middle. Show N by split/category and
-   flag all cells below 20 as descriptive. Do not evaluate returns or test new
-   factors.
+1. Define the fixed 204-row target population solely from the master file:
+   both categories, `regime == 'STRONG_BEARISH'`, and the two Recent dates
+   2026-06-05 and 2026-06-08. Assert exactly 204 unique
+   `(symbol, category, date)` keys; otherwise stop and report an artifact
+   integrity failure.
+2. Join the state CSV to that population by the same key. Require one and only
+   one state row per master key; compare all shared static fields exactly
+   (`score`, `grade`, `signal`, `rr_ratio`, `chase_flag`, `regime`, and gate
+   bucket implied by the predeclared score/grade/signal taxonomy). Report N for
+   every state and gate cell. Do not repair discrepancies.
+3. Independently identify the pre-scheduler-eligible rows from the master
+   definition already used in experiment 8: `score >= 40` and
+   `signal != 'NO TRADE'`. Assert/report their N and keys; it must be seven if
+   the archived inputs are internally consistent. For each, require state
+   `skipped_by_open_trade` and a non-empty blocking symbol/category/signal-date
+   reference.
+4. Cross-check every blocking reference against the immutable canonical trade
+   CSV on `(symbol, category, blocking_signal_date)`, including entry price,
+   target, stop, exit reason, return, and days held. Report every match/missing
+   reference with N. This establishes that the cited blocking trade exists in
+   the canonical output, but must not claim to reconstruct its exit date or
+   skipped interval unless those fields exist in the canonical files.
+5. Make an explicit evidence-closure table for the critical claims:
+   `candidate eligibility`, `blocking selected trade exists`, `blocking trade
+   remained open through candidate date`, and `candidate was skipped by the
+   production walk`. Mark each as **independently verified**, **internally
+   consistent only**, or **not verifiable from archived artifacts**. No label
+   may be upgraded based on the experiment-8 re-fetch report.
 
-### Required conclusion discipline
+### Falsification criterion and conclusion rule
 
-Report the three hypothesis conditions explicitly, with their N. Only a
-zero-mismatch reconstruction plus at least one documented
-`skipped_by_open_trade` Recent pre-scheduler-eligible row supports the
-hypothesis. Any other result is evidence against it or unverified. Distinguish
-an observed scheduler effect from a causal explanation of the return anomaly;
-neither outcome supports a production recommendation.
+The hypothesis is **falsified** if any required key/field/state/trade-reference
+check fails, or if either of the two causal schedule facts—blocking trade still
+open on the candidate date, or the production walk skipping that index—cannot
+be independently established from the four fixed artifacts. In either case,
+the correct conclusion is: experiment 8 is internally consistent but its
+scheduler-attribution conclusion is **unverified under the no-refetch research
+boundary**. Do not reinterpret this as evidence against or for the return
+anomaly.
 
-### Deliverables and integrity verification
+If every check, including both schedule facts, is actually supportable from the
+archived artifacts, state exactly which artifact fields prove each fact. Do not
+infer missing exit-index/date information from calendar arithmetic.
 
-Create one additive research script and dated immutable report/CSV audit output
-under `research/results/`. Include source hashes, exact command, runtime,
-production-code line/function verification, taxonomy and event tables with N,
-full reconciliation results, limitations, and the falsification verdict.
+### Required report and integrity verification
+
+Create one additive research script and dated immutable audit report/CSV under
+`research/results/`. Include artifact hashes; command/runtime; all assertions
+and N; a complete mismatch/reference table; the evidence-closure table;
+limitations; and the predeclared verdict.
 
 Before and after execution, record `git status --short` and verify all 16
-frozen production files plus `tests/test_engine.py` remain unchanged. Only
-additive `research/` files are allowed. Do not edit `research/STATE.md` or this
-file. Syntax-check the research script before execution and quote the status
+frozen production files and `tests/test_engine.py` are unchanged. Only additive
+files under `research/` are allowed. Do not edit `research/STATE.md` or this
+file. Syntax-check the audit script before running and quote the verification
 evidence in the report.

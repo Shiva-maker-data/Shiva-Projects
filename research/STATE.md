@@ -25,8 +25,8 @@ under that precommitted test (see experiment 6 below).
 
 ## Status: awaiting Codex audit
 
-Last completed experiment: **Exact signal-gate vs non-overlap-censoring
-attribution audit** (2026-09-13, Codex-specified via
+Last completed experiment: **Artifact-only reproducibility audit of
+scheduler attribution** (2026-09-13, Codex-specified via
 `research/NEXT_EXPERIMENT.md`). Codex has not yet audited it or written a
 new `NEXT_EXPERIMENT.md`. Next action is the human asking Codex to perform
 the handoff per the short prompt in the VYOM handoff README.
@@ -337,6 +337,97 @@ the handoff per the short prompt in the VYOM handoff README.
   substantive re-run after fixing the comparison-code defect described
   above (not a re-run seeking a different result — the fix was applied
   once, uniformly, before re-running the whole script end-to-end).
+- **This experiment does not begin or recommend a next experiment** —
+  awaiting Codex's next audit per the VYOM loop.
+
+### 9. Artifact-only reproducibility audit of scheduler attribution — 2026-09-13
+- **Spec:** written by Codex in `research/NEXT_EXPERIMENT.md` after
+  auditing experiment 8, which had re-fetched the universe (via
+  `research.factor_data.load_universe`) to build its instrumented wrapper
+  — useful for an exact-reconstruction check, but not proof the
+  attribution is provable from already-archived artifacts alone. Run
+  exactly as specified, no substitutions.
+- **Report:** `research/results/scheduler_reproducibility_audit_report_20260913_193245.txt`
+- **Dataset:** `research/results/scheduler_reproducibility_xcheck_20260913_193245.csv`
+- **Hard boundary (enforced, not just stated):** this script imports only
+  `pandas`/`numpy`/`hashlib`/`pathlib`/`datetime`/`sys` — no
+  `research.factor_data`, `data_sources`, `analyzer`, `market_regime`,
+  `sector`, or `backtest` import exists in the file; no network access,
+  no production function calls, no re-fetch. Reads only 4 fixed,
+  pre-existing artifacts (SHA-256 recorded before AND after, all
+  unchanged): `resistance_master_20260913_164146.csv`,
+  `resistance_trades_20260913_164146.csv`,
+  `scheduler_attribution_states_20260913_192107.csv`,
+  `scheduler_attribution_report_20260913_192107.txt`.
+- **Question:** can experiment 8's conclusion — that all 7
+  pre-scheduler-eligible Recent STRONG_BEARISH rows were censored by a
+  prior selected trade — be independently verified using ONLY these four
+  already-archived artifacts, with no re-fetch or re-run of production
+  scoring/simulation?
+- **Result — mechanical checks (Steps 1-4): ALL PASSED.**
+  - Step 1: exactly 204 unique (symbol, category, date) keys in the fixed
+    Recent-STRONG_BEARISH population, defined from the master file alone.
+  - Step 2: all 204 master rows joined 1:1 to a states-artifact row;
+    gate-bucket classification recomputed independently from master
+    matched the states artifact's own gate_bucket for all 204 (after
+    normalizing a label-text-only difference between the two scripts'
+    bucket-naming strings — a comparison-code fix, not a data change);
+    among the 156 rows where the states artifact records score/grade/
+    signal/rr_ratio/regime (it structurally omits these for
+    skipped_by_open_trade rows), zero mismatches against master.
+  - Step 3: independently recomputing "score≥40 and signal≠NO TRADE"
+    from master alone reproduced the same 7 candidates as experiment 8,
+    all state=skipped_by_open_trade with a non-empty blocking reference.
+  - Step 4: all 7 cited blocking trades were found as exact matches in
+    the canonical (experiment-5-produced, independent of experiment 8's
+    wrapper) trades CSV, with entry/target/stop/exit/return/days_held
+    quoted directly (e.g. TITAN's blocking trade: signaled 2026-05-25,
+    entry 4151.90, exit via target1 at +12.02%, days_held=42).
+  - One real bug was found and fixed before trusting Step 2: the
+    gate-bucket comparison initially flagged 60 "mismatches" that were
+    purely a label-text difference between this script's short bucket
+    names and experiment 8's longer descriptive ones (e.g.
+    `"40<=score<60"` vs `"40<=score<60 (below grade floor C=60 -- always
+    NO TRADE)"`) — every case was an exact-prefix match, confirmed before
+    normalizing and re-running once.
+- **Result — evidence-closure table (Step 5), the decisive finding:**
+  - (a) candidate eligibility: **INDEPENDENTLY VERIFIED** for all 7
+    (computed directly from the master file).
+  - (b) blocking selected trade exists: **INDEPENDENTLY VERIFIED** for
+    all 7 (matched in the canonical trades CSV, independent of
+    experiment 8's wrapper).
+  - (c) blocking trade remained open through the candidate date:
+    **INTERNALLY CONSISTENT ONLY** — the only artifact with entry/exit
+    dates for the blocking trade is the states CSV's own
+    `blocking_entry_date`/`blocking_exit_date`, produced by experiment
+    8's own wrapper; the canonical trades CSV has no entry/exit-date
+    column (only `signal_date` and a `days_held` day-count), and this
+    audit does not infer dates via days_held arithmetic (excluded by
+    spec) — so no artifact independent of experiment 8 corroborates this.
+  - (d) candidate was skipped by the production walk: **INTERNALLY
+    CONSISTENT ONLY** — asserted solely by the states artifact's own
+    `state` column; neither the master nor the trades CSV records which
+    indices a non-overlap walk visited or skipped.
+- **Verdict: FALSIFIED per the predeclared criterion** (a causal schedule
+  fact — (c) or (d) — must be independently establishable from the four
+  fixed artifacts; neither is). **Correct conclusion, per spec: experiment
+  8 IS internally consistent** — every mechanically-checkable claim
+  (population, gate classification, blocking-trade existence) holds
+  exactly — **but its scheduler-attribution conclusion is UNVERIFIED under
+  this stricter no-refetch, artifact-only boundary**, because the two
+  causal schedule facts have no artifact independent of experiment 8's own
+  instrumented-wrapper output to corroborate them. This is explicitly NOT
+  reinterpreted as evidence for or against the STRONG_BEARISH-vs-BULLISH
+  return anomaly (experiments 1-6) — it narrows only how much evidentiary
+  weight experiment 8's specific attribution claim can bear.
+- **Verification:** all 4 artifact SHA-256s recorded before and after
+  (unchanged); `git status --short` before and after showed only new
+  files under `research/`, all 16 production files and
+  `tests/test_engine.py` unchanged; hard boundary (no production/network
+  imports) verified by inspecting this script's own import block, quoted
+  in the report; script syntax-checked before each run; one comparison-
+  code bug (gate-bucket label mismatch) found and fixed before the
+  trusted run, analogous to the sector_ticker fix in experiment 8.
 - **This experiment does not begin or recommend a next experiment** —
   awaiting Codex's next audit per the VYOM loop.
 

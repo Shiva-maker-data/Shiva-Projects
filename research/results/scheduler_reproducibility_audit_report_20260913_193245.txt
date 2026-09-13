@@ -1,0 +1,72 @@
+ARTIFACT-ONLY REPRODUCIBILITY AUDIT OF SCHEDULER ATTRIBUTION (research only, no production code/network/refetch)
+
+## Hypothesis and falsifier (fixed, from research/NEXT_EXPERIMENT.md)
+  H: experiment 8's conclusion -- all 7 eligible Recent STRONG_BEARISH rows were censored by a prior selected trade -- can be independently verified using ONLY the four fixed archived artifacts, with no network, refetch, new market data, or production scoring/simulation.
+  Falsified if any required key/field/state/trade-reference check fails, OR if either causal schedule fact (blocking trade still open on the candidate date; the walk skipping that index) cannot be independently established from the four fixed artifacts. In that case the correct conclusion is: experiment 8 is internally consistent but its attribution is UNVERIFIED under the no-refetch boundary -- not evidence for or against the return anomaly.
+
+## Provenance -- artifact hashes (recorded BEFORE reading)
+  resistance_master_20260913_164146.csv: 7d6d623480e64c37ac606f45909074134b96257630f43230a51b476f5981e6c7
+  resistance_trades_20260913_164146.csv: 05b11415a0979d224048e6e993d24c9a064f25a7b622e13a60ab5bbfe9026369
+  scheduler_attribution_states_20260913_192107.csv: b6598774edcc543ab84bceb765ee388acf0b2b1578b012d5db94c37874179cf7
+  scheduler_attribution_report_20260913_192107.txt: 30157570d1deba1f3ec1c15a428e90783fa6f83739ec63e671872149bd299f6a
+  Command: python -m research.scheduler_attribution_reproducibility_audit
+  Runtime: Python 3.14.7  pandas 3.0.5  numpy 2.5.3
+  Hard boundary check: this script imports only pandas, numpy, hashlib, pathlib, datetime, sys -- no research.factor_data, data_sources, analyzer, market_regime, sector, or backtest import exists in this file (verifiable by reading its import block above).
+
+  Loaded: master=48552 rows, trades=2083 rows, states=204 rows, report8=16561 chars (read for hash/quote purposes only, not parsed programmatically)
+
+## Step 1: fixed target population (master file only)
+  Rows matching regime==STRONG_BEARISH and date in {2026-06-05, 2026-06-08}: 204
+  Unique (symbol, category, date) keys: 204
+  OK -- exactly 204 unique keys, no duplicates.
+
+## Step 2: join to states artifact, one-to-one check, field comparison
+  States rows with a duplicated (symbol,category,date) key: 0
+  Master keys with a matching state row: 204 of 204
+  Gate-bucket recomputed from master vs states' own gate_bucket column: 204/204 match; 0 mismatch(es)
+
+  State counts across all 204: {'reached_and_rejected_upstream': 156, 'skipped_by_open_trade': 48}
+  Field comparison (score, grade, signal, rr_ratio, regime) is only MEANINGFUL for rows where the states artifact actually records them (state=reached_and_rejected_upstream or reached_and_selected, n=156); resolve_state's skipped_by_open_trade branch does not populate score/grade/signal/rr_ratio/chase_flag at all (structurally absent, not a discrepancy) for n=48 rows -- reported here, not silently skipped.
+  Among the 156 reached rows: score mismatches=0, grade mismatches=0, signal mismatches=0, rr_ratio mismatches=0, regime mismatches=0
+  Note: master has no chase_flag column at all -- chase_flag (present in the states artifact) cannot be cross-checked against master by construction of that artifact; this is an artifact-coverage limitation, not a discrepancy to repair.
+
+## Step 3: pre-scheduler-eligible rows, identified independently from master alone
+  Pre-scheduler-eligible rows (score>=40 and signal!=NO TRADE), from master alone: n=7
+    ADANIENT     Long-Term            2026-06-05 score=63.7 signal=WATCH
+    APOLLOHOSP   Long-Term            2026-06-05 score=64.0 signal=WATCH
+    APOLLOHOSP   Long-Term            2026-06-08 score=63.9 signal=WATCH
+    COALINDIA    Long-Term            2026-06-05 score=71.6 signal=WATCH
+    COALINDIA    Long-Term            2026-06-08 score=67.3 signal=WATCH
+    TITAN        Long-Term            2026-06-05 score=60.7 signal=WATCH
+    TITAN        Long-Term            2026-06-08 score=60.3 signal=WATCH
+  Of these 7, state==skipped_by_open_trade: 7; other state: 0
+  With a non-empty blocking signal_date + category reference: 7 of 7
+  Blocking symbol is not a separate stored field -- by construction of experiment 8's resolve_state (searches only trades_by_symbol[same symbol]), the blocking trade's symbol is necessarily the candidate row's own symbol; this is a structural property of the audited code (quoted from research/scheduler_attribution_experiment.py's resolve_state, read but not re-executed here), not an independently-stored artifact field.
+
+## Step 4: cross-check blocking references against the canonical (experiment-5) trades CSV
+  Blocking references matched exactly one canonical trades-CSV row: 7 of 7
+    ADANIENT     Long-Term            candidate_date=2026-06-05  blocking_signal_date=2026-05-28  entry_price=2987.80  target1=3057.78  stop_loss=2716.95  exit_reason=target1  return=2.34%  days_held=7
+    APOLLOHOSP   Long-Term            candidate_date=2026-06-05  blocking_signal_date=2026-06-03  entry_price=8270.00  target1=8527.43  stop_loss=7781.93  exit_reason=target1  return=3.11%  days_held=5
+    APOLLOHOSP   Long-Term            candidate_date=2026-06-08  blocking_signal_date=2026-06-03  entry_price=8270.00  target1=8527.43  stop_loss=7781.93  exit_reason=target1  return=3.11%  days_held=5
+    COALINDIA    Long-Term            candidate_date=2026-06-05  blocking_signal_date=2026-05-28  entry_price=458.90  target1=496.16  stop_loss=425.34  exit_reason=stop_loss  return=-7.31%  days_held=39
+    COALINDIA    Long-Term            candidate_date=2026-06-08  blocking_signal_date=2026-05-28  entry_price=458.90  target1=496.16  stop_loss=425.34  exit_reason=stop_loss  return=-7.31%  days_held=39
+    TITAN        Long-Term            candidate_date=2026-06-05  blocking_signal_date=2026-05-25  entry_price=4151.90  target1=4651.05  stop_loss=3828.39  exit_reason=target1  return=12.02%  days_held=42
+    TITAN        Long-Term            candidate_date=2026-06-08  blocking_signal_date=2026-05-25  entry_price=4151.90  target1=4651.05  stop_loss=3828.39  exit_reason=target1  return=12.02%  days_held=42
+  IMPORTANT: the canonical trades CSV stores `signal_date` and `days_held` (a calendar-day count) but NO entry_date or exit_date column. Per the spec, exit dates/skipped intervals are NOT inferred from days_held arithmetic here -- this cross-check establishes only that the cited blocking trade exists in the canonical, independently-produced trade output, nothing about its exit timing.
+
+## Step 5: evidence-closure table (per the four critical claims, for all 7 candidates)
+  a) candidate_eligibility (score>=40, signal!=NO TRADE): source=master file directly (this script's own Step 3 computation) -> INDEPENDENTLY VERIFIED for all 7.
+  b) blocking_selected_trade_exists: cross-checked against the canonical (experiment-5) trades CSV in Step 4, independent of experiment 8's own wrapper output -> INDEPENDENTLY VERIFIED for all 7.
+  c) blocking_trade_remained_open_through_candidate_date: the ONLY artifact carrying entry/exit dates for the blocking trade is scheduler_attribution_states_*.csv's own blocking_entry_date/blocking_exit_date fields -- values produced by experiment 8's OWN instrumented wrapper. The canonical trades CSV (independent of experiment 8) has no entry_date/exit_date column, and this audit does not infer one via days_held arithmetic (excluded by spec). -> INTERNALLY CONSISTENT ONLY for all 7 -- not independently verifiable from an artifact outside experiment 8's own walk output.
+  d) candidate_was_skipped_by_the_production_walk: asserted solely by the states artifact's own `state` column (experiment 8's own output). Neither the master nor the canonical trades CSV records which indices a non-overlap walk visited or skipped -- there is no artifact independent of experiment 8's own wrapper that could corroborate or contradict this claim. -> INTERNALLY CONSISTENT ONLY for all 7 -- not independently verifiable from the fixed artifacts.
+
+  Both causal schedule facts (c and d) independently established from the four fixed artifacts: False
+
+## Verdict
+  FALSIFIED per the predeclared criterion (a causal schedule fact cannot be independently established from the four fixed artifacts). Correct conclusion, per spec: experiment 8 IS internally consistent -- its population definition, gate-bucket classification, and cited blocking-trade references all check out exactly against independent artifacts where such artifacts exist (Steps 1-4 all passed) -- but its scheduler-attribution conclusion (that these 7 candidates were specifically censored by an open trade, as opposed to some other unrecorded mechanism) is UNVERIFIED under this experiment's strict no-refetch, artifact-only boundary, because neither of the two causal schedule facts has an artifact independent of experiment 8's own instrumented-wrapper output to corroborate it. This is NOT reinterpreted as evidence for or against the STRONG_BEARISH-vs-BULLISH return anomaly.
+
+## Post-run artifact integrity re-check (hashes must be unchanged)
+  resistance_master_20260913_164146.csv: 7d6d623480e64c37ac606f45909074134b96257630f43230a51b476f5981e6c7  (unchanged)
+  resistance_trades_20260913_164146.csv: 05b11415a0979d224048e6e993d24c9a064f25a7b622e13a60ab5bbfe9026369  (unchanged)
+  scheduler_attribution_states_20260913_192107.csv: b6598774edcc543ab84bceb765ee388acf0b2b1578b012d5db94c37874179cf7  (unchanged)
+  scheduler_attribution_report_20260913_192107.txt: 30157570d1deba1f3ec1c15a428e90783fa6f83739ec63e671872149bd299f6a  (unchanged)
