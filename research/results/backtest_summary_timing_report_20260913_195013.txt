@@ -1,0 +1,136 @@
+INDEPENDENT BACKTEST-SUMMARY TIMING CORROBORATION AUDIT (research only, read-only artifact cross-check)
+
+## Hypothesis and falsifier (fixed, from research/NEXT_EXPERIMENT.md)
+  H: at least one pre-experiment-8 backtest_results/trades_*.csv summary independently contains all 7 cited blocking trades and confirms each exit_date >= its associated candidate date. Corroborates open-trade TIMING only -- cannot prove the scheduler skipped a candidate index.
+  Falsified unless at least one semantically comparable, pre-experiment-8, non-duplicate summary matches all 7 canonical blocking trades exactly AND has exit_date >= candidate_date for every one. Missing/multiple/conflicting/incomparable records count as evidence against, not filtered.
+  Neither outcome is evidence for or against the STRONG_BEARISH-vs-BULLISH return anomaly, and neither supports a production change. This can at most upgrade blocking_trade_remained_open_through_candidate_date; candidate_was_skipped_by_the_production_walk remains unverified regardless (no summary file records visited/skipped indices).
+
+## Scope boundary
+  This script imports only hashlib, sys, pathlib, datetime, numpy, pandas -- no production or data_sources import, no network call, no new backtest run anywhere in this file.
+
+## Fixed inputs
+  scheduler_reproducibility_xcheck_20260913_193245.csv: SHA-256=1f035bdeae2e3c6a4745943e306c3c09901a3bc986c5663d8f591492a721a0bd
+  resistance_trades_20260913_164146.csv: SHA-256=05b11415a0979d224048e6e993d24c9a064f25a7b622e13a60ab5bbfe9026369
+  Candidate/blocking-trade records: 7 rows (expect 7)
+
+## Step 1: backtest.py semantics, verified by read-only code inspection (quoted, not executed)
+  signal_date = str(df.index[i].date()) -- the day the score/signal was computed (same meaning as run_ablation's signal_date/master's date). entry_date = str(df.index[i+1].date()) -- next trading day's Open (same convention). exit_date = str(df.index[exit_idx].date()) via _simulate_trade's target1/stop_loss/time_exit logic -- structurally the SAME simulation rule as backtest._simulate_trade, which research/factor_data.py's run_ablation also calls unchanged.
+  threshold column = the min_score value passed to that backtest pass (backtest.py lines 176-177); filtering threshold==40 selects the pass equivalent to run_ablation's min_score=40.0.
+  entry_price/exit_price/strategy_return_pct are ROUND()ed to 2 decimal places at construction (backtest.py TradeResult, lines 180-184) -- UNLIKE research/factor_data.py's run_ablation, which stores full float precision. This is a VERIFIED, code-level representation difference (not a data error), so comparisons below normalize by rounding the canonical (unrounded) value to 2dp before applying the predeclared 1e-6 numeric tolerance, rather than comparing raw floats.
+  ** MATERIAL NON-OVERLAP SEMANTIC DIFFERENCE, VERIFIED FROM CODE **: backtest.py's _backtest_one walk gate is `if idea.score < min_score: skip` (score ONLY, backtest.py line 157) -- it does NOT check `signal == 'NO TRADE'`. research/factor_data.py's run_ablation walk gate is `if ablated_score < min_score or signal == 'NO TRADE': skip` (score AND signal). This means a score>=40 row with signal=='NO TRADE' (known to exist -- see experiment 9/10's gate taxonomy, e.g. the STRONG_BEARISH B/C-grade override) would be TAKEN as a trade by backtest.py's walk but SKIPPED by run_ablation's walk. The two walks can therefore diverge in which trades are selected and which indices get skipped, even at the same symbol/category/threshold=40. This is a KNOWN, quantified caveat -- not an unknown one -- so files are NOT marked wholesale incomparable, but any match found below does not by itself prove run_ablation's specific walk; it corroborates backtest.py's independently-run walk, which used a looser (superset) selection rule.
+  Category/symbol labels: both paths use analyzer.CATEGORY_SHORT_TERM/CATEGORY_LONG_TERM string constants and symbols.py's raw symbol strings -- confirmed identical convention by inspection.
+
+## File discovery (deterministic by filename pattern + required-column schema)
+  Glob pattern: backtest_results/trades_*.csv -> 7 files found
+    backtest_results\trades_20260911_232733.csv   sha256=d3724fe2747375d4...  size=    46856  mtime=2026-09-11 23:27:33.513606  required_cols_present=True  pre_experiment8=True
+    backtest_results\trades_20260911_232937.csv   sha256=1b40c80d62af478f...  size=   971479  mtime=2026-09-11 23:29:37.688842  required_cols_present=True  pre_experiment8=True
+    backtest_results\trades_20260913_151858.csv   sha256=ef273bffa9e4381c...  size=    54007  mtime=2026-09-13 15:18:58.945127  required_cols_present=True  pre_experiment8=True
+    backtest_results\trades_20260913_152145.csv   sha256=09ef7a20af481305...  size=  1419622  mtime=2026-09-13 15:21:45.928940  required_cols_present=True  pre_experiment8=True
+    backtest_results\trades_20260913_152332.csv   sha256=7e6b5fa893b76125...  size=  1419622  mtime=2026-09-13 15:23:32.859689  required_cols_present=True  pre_experiment8=True
+    backtest_results\trades_20260913_154720.csv   sha256=46df099034e4cc0e...  size=    66669  mtime=2026-09-13 15:47:20.347143  required_cols_present=True  pre_experiment8=True
+    backtest_results\trades_20260913_154812.csv   sha256=9a1e110b0984c0d9...  size=  1444135  mtime=2026-09-13 15:48:12.753711  required_cols_present=True  pre_experiment8=True
+  No byte-identical duplicate files found.
+  Files created at/after experiment-8 report timestamp (2026-09-13 19:21:07): 0 -- reported, excluded from independent-evidence use: []
+
+  Eligible (schema-complete, pre-experiment-8) files: 7 of 7
+  Of these, first-of-duplicate-group (counted as one replication artifact each): 7
+
+## Canonical blocking-trade identity (independently re-derived from resistance_trades.csv, not from the xcheck cache)
+  Re-derived canonical identity for 7 of 7 candidates.
+
+## Step 2/3: per-file matching (symbol, category, blocking_signal_date, threshold=40) and field/timing comparison
+
+  --- backtest_results\trades_20260911_232733.csv (dup_group_first=True) ---
+    All 7 matched exactly with fields agreeing: False  |  All 7 exit_date>=candidate_date: False
+      ADANIENT     Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  n_match=1  exit_date=2026-06-05  vs_candidate=>=  fields_match=True 
+      APOLLOHOSP   Long-Term            cand=2026-06-05  blocking_sig=2026-06-03  n_match=1  exit_date=2026-06-09  vs_candidate=>=  fields_match=True 
+      APOLLOHOSP   Long-Term            cand=2026-06-08  blocking_sig=2026-06-03  n_match=1  exit_date=2026-06-09  vs_candidate=>=  fields_match=True 
+      COALINDIA    Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+      COALINDIA    Long-Term            cand=2026-06-08  blocking_sig=2026-05-28  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+      TITAN        Long-Term            cand=2026-06-05  blocking_sig=2026-05-25  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+      TITAN        Long-Term            cand=2026-06-08  blocking_sig=2026-05-25  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+
+  --- backtest_results\trades_20260911_232937.csv (dup_group_first=True) ---
+    All 7 matched exactly with fields agreeing: False  |  All 7 exit_date>=candidate_date: False
+      ADANIENT     Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  n_match=1  exit_date=2026-06-05  vs_candidate=>=  fields_match=True 
+      APOLLOHOSP   Long-Term            cand=2026-06-05  blocking_sig=2026-06-03  n_match=1  exit_date=2026-06-09  vs_candidate=>=  fields_match=True 
+      APOLLOHOSP   Long-Term            cand=2026-06-08  blocking_sig=2026-06-03  n_match=1  exit_date=2026-06-09  vs_candidate=>=  fields_match=True 
+      COALINDIA    Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  n_match=1  exit_date=2026-07-07  vs_candidate=>=  fields_match=True 
+      COALINDIA    Long-Term            cand=2026-06-08  blocking_sig=2026-05-28  n_match=1  exit_date=2026-07-07  vs_candidate=>=  fields_match=True 
+      TITAN        Long-Term            cand=2026-06-05  blocking_sig=2026-05-25  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+      TITAN        Long-Term            cand=2026-06-08  blocking_sig=2026-05-25  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+
+  --- backtest_results\trades_20260913_151858.csv (dup_group_first=True) ---
+    All 7 matched exactly with fields agreeing: False  |  All 7 exit_date>=candidate_date: False
+      ADANIENT     Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  n_match=1  exit_date=2026-06-05  vs_candidate=>=  fields_match=True 
+      APOLLOHOSP   Long-Term            cand=2026-06-05  blocking_sig=2026-06-03  n_match=1  exit_date=2026-06-09  vs_candidate=>=  fields_match=True 
+      APOLLOHOSP   Long-Term            cand=2026-06-08  blocking_sig=2026-06-03  n_match=1  exit_date=2026-06-09  vs_candidate=>=  fields_match=True 
+      COALINDIA    Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+      COALINDIA    Long-Term            cand=2026-06-08  blocking_sig=2026-05-28  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+      TITAN        Long-Term            cand=2026-06-05  blocking_sig=2026-05-25  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+      TITAN        Long-Term            cand=2026-06-08  blocking_sig=2026-05-25  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+
+  --- backtest_results\trades_20260913_152145.csv (dup_group_first=True) ---
+    All 7 matched exactly with fields agreeing: False  |  All 7 exit_date>=candidate_date: False
+      ADANIENT     Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  n_match=1  exit_date=2026-06-05  vs_candidate=>=  fields_match=True 
+      APOLLOHOSP   Long-Term            cand=2026-06-05  blocking_sig=2026-06-03  n_match=1  exit_date=2026-06-09  vs_candidate=>=  fields_match=True 
+      APOLLOHOSP   Long-Term            cand=2026-06-08  blocking_sig=2026-06-03  n_match=1  exit_date=2026-06-09  vs_candidate=>=  fields_match=True 
+      COALINDIA    Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  n_match=1  exit_date=2026-07-07  vs_candidate=>=  fields_match=True 
+      COALINDIA    Long-Term            cand=2026-06-08  blocking_sig=2026-05-28  n_match=1  exit_date=2026-07-07  vs_candidate=>=  fields_match=True 
+      TITAN        Long-Term            cand=2026-06-05  blocking_sig=2026-05-25  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+      TITAN        Long-Term            cand=2026-06-08  blocking_sig=2026-05-25  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+
+  --- backtest_results\trades_20260913_152332.csv (dup_group_first=True) ---
+    All 7 matched exactly with fields agreeing: False  |  All 7 exit_date>=candidate_date: False
+      ADANIENT     Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  n_match=1  exit_date=2026-06-05  vs_candidate=>=  fields_match=True 
+      APOLLOHOSP   Long-Term            cand=2026-06-05  blocking_sig=2026-06-03  n_match=1  exit_date=2026-06-09  vs_candidate=>=  fields_match=True 
+      APOLLOHOSP   Long-Term            cand=2026-06-08  blocking_sig=2026-06-03  n_match=1  exit_date=2026-06-09  vs_candidate=>=  fields_match=True 
+      COALINDIA    Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  n_match=1  exit_date=2026-07-07  vs_candidate=>=  fields_match=True 
+      COALINDIA    Long-Term            cand=2026-06-08  blocking_sig=2026-05-28  n_match=1  exit_date=2026-07-07  vs_candidate=>=  fields_match=True 
+      TITAN        Long-Term            cand=2026-06-05  blocking_sig=2026-05-25  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+      TITAN        Long-Term            cand=2026-06-08  blocking_sig=2026-05-25  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+
+  --- backtest_results\trades_20260913_154720.csv (dup_group_first=True) ---
+    All 7 matched exactly with fields agreeing: False  |  All 7 exit_date>=candidate_date: False
+      ADANIENT     Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  n_match=1  exit_date=2026-06-05  vs_candidate=>=  fields_match=True 
+      APOLLOHOSP   Long-Term            cand=2026-06-05  blocking_sig=2026-06-03  n_match=1  exit_date=2026-06-09  vs_candidate=>=  fields_match=True 
+      APOLLOHOSP   Long-Term            cand=2026-06-08  blocking_sig=2026-06-03  n_match=1  exit_date=2026-06-09  vs_candidate=>=  fields_match=True 
+      COALINDIA    Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+      COALINDIA    Long-Term            cand=2026-06-08  blocking_sig=2026-05-28  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+      TITAN        Long-Term            cand=2026-06-05  blocking_sig=2026-05-25  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+      TITAN        Long-Term            cand=2026-06-08  blocking_sig=2026-05-25  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+
+  --- backtest_results\trades_20260913_154812.csv (dup_group_first=True) ---
+    All 7 matched exactly with fields agreeing: False  |  All 7 exit_date>=candidate_date: False
+      ADANIENT     Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  n_match=1  exit_date=2026-06-05  vs_candidate=>=  fields_match=True 
+      APOLLOHOSP   Long-Term            cand=2026-06-05  blocking_sig=2026-06-03  n_match=1  exit_date=2026-06-09  vs_candidate=>=  fields_match=True 
+      APOLLOHOSP   Long-Term            cand=2026-06-08  blocking_sig=2026-06-03  n_match=1  exit_date=2026-06-09  vs_candidate=>=  fields_match=True 
+      COALINDIA    Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  n_match=1  exit_date=2026-07-07  vs_candidate=>=  fields_match=True 
+      COALINDIA    Long-Term            cand=2026-06-08  blocking_sig=2026-05-28  n_match=1  exit_date=2026-07-07  vs_candidate=>=  fields_match=True 
+      TITAN        Long-Term            cand=2026-06-05  blocking_sig=2026-05-25  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+      TITAN        Long-Term            cand=2026-06-08  blocking_sig=2026-05-25  n_match=0  exit_date=N/A  vs_candidate=missing  fields_match=False 0 matches (expected exactly 1)
+
+## Step 4: agreement across all comparable pre-experiment-8 files (duplicates flagged, not double-counted)
+  Unique (non-duplicate) eligible files: 7
+  Of these, fully qualifying (all 7 matched, fields agree, all exit_date>=candidate_date): 0: []
+
+## Complete seven-row summary table
+  ADANIENT     Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  exit_vs_candidate=['>=']  n_match=[1]
+  APOLLOHOSP   Long-Term            cand=2026-06-05  blocking_sig=2026-06-03  exit_vs_candidate=['>=']  n_match=[1]
+  APOLLOHOSP   Long-Term            cand=2026-06-08  blocking_sig=2026-06-03  exit_vs_candidate=['>=']  n_match=[1]
+  COALINDIA    Long-Term            cand=2026-06-05  blocking_sig=2026-05-28  exit_vs_candidate=['>=', 'missing']  n_match=[0, 1]
+  COALINDIA    Long-Term            cand=2026-06-08  blocking_sig=2026-05-28  exit_vs_candidate=['>=', 'missing']  n_match=[0, 1]
+  TITAN        Long-Term            cand=2026-06-05  blocking_sig=2026-05-25  exit_vs_candidate=['missing']  n_match=[0]
+  TITAN        Long-Term            cand=2026-06-08  blocking_sig=2026-05-25  exit_vs_candidate=['missing']  n_match=[0]
+  Candidates with consistent exit_date>=candidate_date across every unique comparable file: 3 of 7
+
+## Step 5: evidence-closure impact
+  This experiment can at most upgrade claim (c) blocking_trade_remained_open_through_candidate_date.
+  Claim (d) candidate_was_skipped_by_the_production_walk remains UNVERIFIED regardless of this experiment's outcome -- no backtest_results summary records which indices a walk visited or skipped, only which trades it ultimately selected.
+
+## Verdict
+  FALSIFIED: no unique, pre-experiment-8, schema-complete summary matched all 7 canonical blocking trades with agreeing fields and exit_date>=candidate_date for every one (see Step 4 for which candidates/files fell short). Both blocking_trade_remained_open_through_candidate_date and candidate_was_skipped_by_the_production_walk remain UNVERIFIED under the no-refetch boundary, consistent with experiment 9. Not evidence for or against the STRONG_BEARISH-vs-BULLISH return anomaly; no production change implied.
+
+## Post-run artifact integrity re-check
+  scheduler_reproducibility_xcheck_20260913_193245.csv: unchanged
+  resistance_trades_20260913_164146.csv: unchanged

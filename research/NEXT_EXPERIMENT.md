@@ -1,82 +1,92 @@
 # VYOM Research — NEXT EXPERIMENT
 
-## Experiment: local point-in-time raw-data-fixture availability audit
+## Experiment: independent backtest-summary timing corroboration audit
 
 ### Single question and hypothesis
 
-Experiment 9 established that the scheduler-attribution claim cannot be
-independently verified from the existing master/trade/state artifacts because
-they do not preserve the raw OHLC inputs, exact exit dates, or visited-index
-trace. Before any further scheduler or return research is considered, test
-whether a frozen local source-data fixture exists that could make a no-refetch
-reconstruction possible.
+Experiment 10 found no raw-data fixture, but it identified seven pre-existing
+`backtest_results/trades_*.csv` summaries that contain entry and exit dates.
+Experiment 9 could independently verify that the seven cited blocking trades
+exist, but not that they remained open through the seven Recent
+STRONG_BEARISH candidate dates.
 
-**Hypothesis:** the repository/workspace already contains an immutable local
-point-in-time data fixture sufficient to reproduce the experiment-5 population
-and experiment-8 scheduling path without downloading, changing, or substituting
-any data source.
+**Hypothesis:** at least one pre-experiment-8 backtest summary generated from
+the same frozen strategy setup independently contains all seven cited blocking
+trades and confirms each recorded exit date is on or after its associated
+candidate date. This would corroborate the *open-trade timing* fact only; it
+cannot by itself prove the scheduler skipped a candidate index.
 
-This is an archival-availability audit, not a backtest, factor test, or strategy
-proposal. It must not run scoring, simulate trades, or make any causal claim.
+### Strict scope and fixed inputs
 
-### Absolute boundary
+This is a read-only artifact cross-check. Do not call network code,
+`load_universe`, data sources, scoring, indicators, regime classification, or
+trade simulation. Do not modify production, re-run a backtest, change settings,
+or use a new data source.
 
-Do not call network code, `load_universe`, `data_sources`, or any production
-scoring/indicator/regime/simulation function. Do not download, create, alter,
-or replace raw market data. Read-only inspection of local workspace files and
-the immutable research artifacts is the entire experiment.
+Use only:
 
-### Fixed evidence and required inventory
+- the seven candidate/blocking-trade records in
+  `research/results/scheduler_reproducibility_xcheck_20260913_193245.csv`;
+- `research/results/resistance_trades_20260913_164146.csv` for the canonical
+  blocking-trade identity; and
+- every existing `backtest_results/trades_*.csv` with all required columns
+  `symbol`, `category`, `threshold`, `signal_date`, `entry_date`, `exit_date`,
+  `entry_price`, `exit_price`, `exit_reason`, `days_held`, and
+  `strategy_return_pct`.
 
-1. Record SHA-256 and row/date coverage for the canonical master/trade files:
-   `resistance_master_20260913_164146.csv` and
-   `resistance_trades_20260913_164146.csv`.
-2. Perform a deterministic, read-only file inventory under the VYOM repository
-   excluding `.git`, `.venv`, `__pycache__`, and tool caches. Use a fixed,
-   documented extension set only: `.csv`, `.parquet`, `.feather`, `.pkl`,
-   `.pickle`, `.json`, `.sqlite`, `.db`, `.h5`, `.hdf`, `.xlsx`, and `.zip`.
-   List relative path, size, SHA-256, and a non-mutating schema/date-range
-   probe for every candidate. Do not inspect home directories or external
-   cache locations.
-3. Define the necessary fixture coverage before examining candidates:
-   daily OHLCV rows for each of the canonical 51 symbols, sufficient NIFTY
-   index history for `RegimeBundle`, required sector-index history for
-   `SectorTrendBundle`, and the signal-to-exit historical span needed by the
-   canonical master/trade dates. The report must derive the required symbol set,
-   signal-date range, and latest required outcome date from the canonical files,
-   showing N throughout.
-4. For every candidate that plausibly contains market data, assess only whether
-   it has the required identifiers, Date/OHLCV fields, row counts, and date
-   coverage. Do not compute indicators or scores. Create a per-required-series
-   coverage table with `present`, `missing`, `partial`, or `unreadable` and N
-   dates/rows; retain unreadable files as evidence rather than ignoring them.
-5. Compare any discovered fixture's listed source/metadata fields, if present,
-   to the data-source identity implied by the existing research code. State
-   explicitly that matching coverage does not prove values are identical to the
-   originally fetched data; no data-source substitution is allowed.
+Discover the last group deterministically by filename and schema; do not select
+one output after seeing its values. Record SHA-256, size, modification time,
+schema, row count, and date range for every discovered summary. Explicitly
+exclude files created after experiment 8's report timestamp
+`2026-09-13 19:21:07`; report them but do not use them as independent evidence.
 
-### Falsification and conclusion rule
+### Precommitted methodology
 
-The hypothesis is **falsified** if any required component, symbol, index,
-field, or necessary date interval is absent, partial, unreadable, or lacks an
-immutable local artifact. In that case conclude only that a no-refetch exact
-reconstruction is currently unavailable; experiment 8 remains internally
-consistent but unverified under the research boundary. Do not use the absence
-as evidence about the STRONG_BEARISH return anomaly.
+1. Verify from `backtest.py` by read-only code inspection what each summary's
+   `signal_date`, `entry_date`, `exit_date`, threshold, non-overlap behavior,
+   and return fields mean. Verify the file's threshold is exactly `40` and that
+   category/symbol labels match the canonical trade convention. If any semantic
+   equivalence is unknown, label that file incomparable rather than mapping it.
+2. For each of the seven candidate records, match to every eligible summary on
+   `(symbol, category, blocking_signal_date, threshold=40)`. Require exactly
+   one match per candidate within a given comparable file; report zero or
+   multiple matches as failures, with N. Compare matching entry price, exit
+   reason, strategy return, and days held to the canonical trade CSV using a
+   predeclared tolerance of `1e-6` for numeric CSV round-trip fields.
+3. Independently compare the summary's stored `exit_date` to its associated
+   candidate date. Report `exit_date > candidate_date`, `==`, `<`, missing, and
+   unreadable separately, with N and a complete seven-row table. Do not infer
+   dates from `days_held` or use calendar arithmetic.
+4. Treat each qualifying backtest summary as a replication artifact, not an
+   independent draw. Report agreement across all comparable pre-experiment-8
+   files and flag repeated byte-identical files by SHA-256 so duplicate exports
+   are not counted as independent corroboration.
+5. Keep the evidence-closure distinction explicit: this experiment can at most
+   upgrade `blocking_trade_remained_open_through_candidate_date`; it cannot
+   establish `candidate_was_skipped_by_the_production_walk`, because a summary
+   file does not record visited/skipped indices.
 
-The hypothesis may be called **provisionally supported** only if every required
-component is locally present with complete coverage and stable hashes. Even
-then, state that numeric equality to the original fetched inputs remains
-unproven until a future human-approved, separately specified validation can use
-the archived fixture—do not perform that validation here.
+### Falsification criterion and required conclusion
+
+The hypothesis is **falsified** unless at least one semantically comparable,
+pre-experiment-8, non-duplicate summary matches all seven canonical blocking
+trades exactly and has `exit_date >= candidate_date` for every one. Any missing,
+multiple, conflicting, or semantically incomparable record is evidence against
+timing corroboration and must be reported rather than filtered.
+
+If supported, conclude only that open-trade timing is independently corroborated
+by the specified archived summary. Retain the experiment-9 finding that the
+walk-skipping fact remains unverified. If falsified, retain both facts as
+unverified under the no-refetch boundary. Neither outcome is evidence for or
+against the STRONG_BEARISH-versus-BULLISH return anomaly and neither supports a
+production change.
 
 ### Required report and integrity verification
 
-Add one research-only audit script and immutable dated report/coverage CSV in
-`research/results/`. Include the exact inventory command, exclusions,
-extensions, artifact hashes, schema/coverage table with N, all missing or
-unreadable inputs, point-in-time/provenance limitations, hypothesis verdict,
-and no-strategy-change statement.
+Create one additive research-only script and dated immutable report/CSV under
+`research/results/`, including all file hashes, eligibility decisions, N,
+seven-row match table, duplicate analysis, field/timing comparisons,
+point-in-time/provenance caveats, and verdict.
 
 Before and after execution, record `git status --short` and verify all 16
 frozen production files and `tests/test_engine.py` are unchanged. Only additive

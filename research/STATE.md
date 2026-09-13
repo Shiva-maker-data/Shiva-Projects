@@ -25,8 +25,8 @@ under that precommitted test (see experiment 6 below).
 
 ## Status: awaiting Codex audit
 
-Last completed experiment: **Local point-in-time raw-data-fixture
-availability audit** (2026-09-13, Codex-specified via
+Last completed experiment: **Independent backtest-summary timing
+corroboration audit** (2026-09-13, Codex-specified via
 `research/NEXT_EXPERIMENT.md`). Codex has not yet audited it or written a
 new `NEXT_EXPERIMENT.md`. Next action is the human asking Codex to perform
 the handoff per the short prompt in the VYOM handoff README.
@@ -490,6 +490,62 @@ the handoff per the short prompt in the VYOM handoff README.
   cell raising `ValueError: ambiguous truth value`) found and fixed
   before the trusted run — an `isinstance` check replaced the faulty
   `pd.notna` call, no change to the inventory logic or extension set.
+- **This experiment does not begin or recommend a next experiment** —
+  awaiting Codex's next audit per the VYOM loop.
+
+### 11. Independent backtest-summary timing corroboration audit — 2026-09-13
+- **Spec:** written by Codex in `research/NEXT_EXPERIMENT.md` after
+  auditing experiment 10, which found 7 pre-existing
+  `backtest_results/trades_*.csv` summaries (production `backtest.py`'s
+  own output) carrying `entry_date`/`exit_date` — potentially able to
+  corroborate the one causal fact experiment 9 left unverified
+  (`blocking_trade_remained_open_through_candidate_date`). Run exactly as
+  specified.
+- **Report:** `research/results/backtest_summary_timing_report_20260913_195013.txt`
+- **Datasets:** `research/results/backtest_summary_timing_files_20260913_195013.csv`
+  (7-file inventory), `research/results/backtest_summary_timing_sevenrow_20260913_195013.csv`
+  (per-candidate consensus table)
+- **Fixed inputs:** `research/results/scheduler_reproducibility_xcheck_20260913_193245.csv`
+  and `research/results/resistance_trades_20260913_164146.csv` (both
+  SHA-256-verified unchanged before/after); all 7
+  `backtest_results/trades_*.csv` files (deterministic glob discovery, all
+  pre-experiment-8 by mtime, all schema-complete, no byte-identical
+  duplicates).
+- **Key verified caveat (Step 1, from reading `backtest.py`, not
+  executing it):** `backtest.py`'s own walk gate is `score < min_score`
+  ONLY (no `signal == "NO TRADE"` check) — a materially LOOSER
+  non-overlap rule than `run_ablation`'s `score < min_score OR signal ==
+  "NO TRADE"`. The two walks can genuinely diverge in which trades get
+  selected and which indices get skipped, even at identical
+  symbol/category/threshold=40. Also verified: `backtest.py` rounds
+  `entry_price`/`exit_price`/`strategy_return_pct` to 2 decimals at
+  construction (research's `run_ablation` does not) — comparisons
+  normalized for this quoted, code-verified rounding before applying the
+  predeclared 1e-6 tolerance.
+- **Result:** of the 7 candidates, ADANIENT and both APOLLOHOSP rows
+  matched consistently (`exit_date >= candidate_date`, fields agreeing)
+  across all 7 unique files; COALINDIA matched in 4 of 7 files
+  (consistently `>=` where matched, `missing` in the 3 smallest/limited-
+  universe files); **TITAN matched in ZERO of the 7 files** — a concrete,
+  empirical instance of the Step-1 semantic-divergence caveat actually
+  manifesting (backtest.py's looser walk apparently selects a different
+  trade sequence for TITAN Long-Term, so no summary contains a trade
+  signaled 2026-05-25 for it at all). No single file matched all 7 with
+  agreeing fields and correct timing.
+- **Verdict: FALSIFIED** per the predeclared criterion (requires one
+  file to fully qualify on all 7; none did). `blocking_trade_remained_
+  open_through_candidate_date` and `candidate_was_skipped_by_the_
+  production_walk` both remain UNVERIFIED under the no-refetch boundary,
+  consistent with experiment 9. Explicitly not evidence for or against
+  the STRONG_BEARISH-vs-BULLISH return anomaly (experiments 1-6); no
+  production change implied.
+- **Verification:** both fixed-input SHA-256s matched before and after;
+  `git status --short` before and after showed only new files under
+  `research/`, all 16 production files and `tests/test_engine.py`
+  unchanged; scope boundary (no production/network imports) verified by
+  inspecting this script's own import block, quoted in the report; script
+  syntax-checked before running; single run, no code changes needed
+  mid-run.
 - **This experiment does not begin or recommend a next experiment** —
   awaiting Codex's next audit per the VYOM loop.
 

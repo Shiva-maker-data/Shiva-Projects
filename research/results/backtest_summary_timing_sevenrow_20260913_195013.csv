@@ -1,0 +1,8 @@
+symbol,category,candidate_date,blocking_signal_date,exit_vs_candidate_across_unique_files,n_match_across_unique_files
+ADANIENT,Long-Term,2026-06-05,2026-05-28,['>='],[1]
+APOLLOHOSP,Long-Term,2026-06-05,2026-06-03,['>='],[1]
+APOLLOHOSP,Long-Term,2026-06-08,2026-06-03,['>='],[1]
+COALINDIA,Long-Term,2026-06-05,2026-05-28,"['>=', 'missing']","[0, 1]"
+COALINDIA,Long-Term,2026-06-08,2026-05-28,"['>=', 'missing']","[0, 1]"
+TITAN,Long-Term,2026-06-05,2026-05-25,['missing'],[0]
+TITAN,Long-Term,2026-06-08,2026-05-25,['missing'],[0]
