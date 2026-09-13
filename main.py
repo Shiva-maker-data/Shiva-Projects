@@ -48,6 +48,7 @@ from narrative import write_rationale
 from positions import (
     already_open_keys, idea_to_open_position, load_open_positions, reconcile, save_open_positions,
 )
+from local_tracking import export_daily_results_local
 from report import build_html_report
 from sheets_export import export_daily_results
 
@@ -204,6 +205,11 @@ def run() -> None:
     # Sheets for later accuracy analysis. No-ops cleanly if not configured,
     # and never affects the email pipeline if it fails.
     export_daily_results(picks_by_category, closed_positions, started)
+
+    # Always log the same data to local CSVs under tracking/ too, so
+    # suggestion/outcome history accumulates even without Google Sheets
+    # configured. Also best-effort -- never affects the email pipeline.
+    export_daily_results_local(picks_by_category, closed_positions, started)
 
     total_picks = sum(len(v) for v in picks_by_category.values())
     logger.info("Selected %d total picks across categories. Writing rationales...", total_picks)

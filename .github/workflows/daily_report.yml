@@ -38,17 +38,18 @@ jobs:
           RISK_PER_TRADE_PCT: ${{ secrets.RISK_PER_TRADE_PCT }}
         run: python main.py
 
-      # state/open_positions.json is the only thing that needs to survive
-      # between runs (GitHub Actions gives every run a fresh checkout, no
-      # persistent disk) -- commit just that file back so tomorrow's run
-      # knows what's already "open" and doesn't re-suggest it.
-      - name: Persist open-positions state
+      # state/open_positions.json and tracking/*.csv are the only things that
+      # need to survive between runs (GitHub Actions gives every run a fresh
+      # checkout, no persistent disk) -- commit them back so tomorrow's run
+      # knows what's already "open", and the suggestion/outcome history in
+      # tracking/ keeps accumulating instead of being thrown away each run.
+      - name: Persist open-positions state and tracking history
         if: always()  # commit state even if the email step above had issues, so we don't lose track
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add state/open_positions.json
-          git diff --staged --quiet || git commit -m "Update open positions [skip ci]"
+          git add state/open_positions.json tracking/
+          git diff --staged --quiet || git commit -m "Update open positions and tracking history [skip ci]"
           git push
 
       - name: Upload today's report as an artifact
