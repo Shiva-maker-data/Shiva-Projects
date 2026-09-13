@@ -7,3 +7,8 @@ python-dotenv>=1.0
 # Optional -- only needed if you set ANTHROPIC_API_KEY in .env to get
 # Claude-written rationales instead of the built-in template text.
 anthropic>=0.40
+
+# Optional -- only needed if you set GOOGLE_SERVICE_ACCOUNT_JSON + GOOGLE_SHEET_ID
+# in .env to export daily suggestions/outcomes to a Google Sheet.
+gspread>=6.0
+google-auth>=2.30

@@ -206,6 +206,42 @@ can't be done on your behalf):
    Scheduler job (`Unregister-ScheduledTask -TaskName 'NiftySensexDailyAgent' -Confirm:$false`)
    so you don't get two emails a day.
 
+### 7. (Optional) Google Sheets export -- for accuracy tracking over time
+
+Logs every day's suggestions to one tab and every resolved outcome (target
+hit / stopped out / timed out, with the real return) to another, so they
+accumulate into clean, aggregatable data -- what you'd actually need before
+trusting any accuracy claim, or before training a real model on the same
+features someday instead of hand-tuned rule weights. Entirely optional and
+degrades to a no-op if not configured; never affects the email if it fails.
+
+One-time setup (needs your own Google account):
+1. Create a Google Sheet (sheets.google.com) -- any name. Copy its **Sheet
+   ID** from the URL: `docs.google.com/spreadsheets/d/`**`THIS_PART`**`/edit`
+2. Go to **console.cloud.google.com** → create a project (or use an
+   existing one) → **APIs & Services → Library** → search "Google Sheets
+   API" → **Enable**
+3. **APIs & Services → Credentials → Create Credentials → Service
+   Account** → give it any name → Create and continue → Done
+4. Click into the new service account → **Keys** tab → **Add Key → Create
+   new key → JSON** → this downloads a `.json` file. Keep it private, it's
+   a credential.
+5. Open that JSON file, copy the `"client_email"` value (looks like
+   `xxxx@xxxx.iam.gserviceaccount.com`) → go back to your Google Sheet →
+   **Share** → paste that email → give it **Editor** access → Send
+6. Add two GitHub Secrets (Settings → Secrets and variables → Actions):
+   - `GOOGLE_SHEET_ID` -- the ID from step 1
+   - `GOOGLE_SERVICE_ACCOUNT_JSON` -- the ENTIRE content of the downloaded
+     `.json` file, pasted as-is
+7. Run the workflow (manual trigger or wait for the schedule) -- it'll
+   auto-create two tabs, "Daily Suggestions" and "Resolutions", the first
+   time it successfully writes.
+
+**Known scope limit:** only Short-Term/Long-Term picks get a matching
+"Resolutions" row (Intraday isn't position-tracked across days at all --
+see `positions.py`). Intraday suggestions still get logged for the record,
+but you won't get an accuracy readout on them from this data alone.
+
 ## Project layout
 
 | File | Purpose |
@@ -215,6 +251,7 @@ can't be done on your behalf):
 | `indicators.py` | RSI, MACD, SMA/EMA, Bollinger Bands, ATR, VWAP, etc. |
 | `analyzer.py` | Scoring rules per horizon + entry/target/stop-loss (and %) calculation |
 | `positions.py` | Tracks open Short-Term/Long-Term picks across days; closes them out on target/stop/timeout |
+| `sheets_export.py` | Logs daily suggestions + resolved outcomes to a Google Sheet (optional) |
 | `narrative.py` | Per-pick rationale text (Claude if configured, else template) |
 | `report.py` | HTML email layout, incl. the Position Updates section |
 | `emailer.py` | Gmail SMTP sending |

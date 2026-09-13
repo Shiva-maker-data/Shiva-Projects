@@ -46,6 +46,7 @@ from positions import (
     already_open_keys, idea_to_open_position, load_open_positions, reconcile, save_open_positions,
 )
 from report import build_html_report
+from sheets_export import export_daily_results
 
 LOG_DIR = BASE_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)
@@ -152,6 +153,11 @@ def run() -> None:
         for idea in picks_by_category[category]:
             still_open.append(idea_to_open_position(idea, today))
     save_open_positions(still_open)
+
+    # Best-effort: log today's suggestions + any resolved outcomes to Google
+    # Sheets for later accuracy analysis. No-ops cleanly if not configured,
+    # and never affects the email pipeline if it fails.
+    export_daily_results(picks_by_category, closed_positions, started)
 
     total_picks = sum(len(v) for v in picks_by_category.values())
     logger.info("Selected %d total picks across categories. Writing rationales...", total_picks)
