@@ -6,7 +6,9 @@ Reads configuration from environment variables (loaded from .env by
 python-dotenv in main.py):
   EMAIL_SENDER        -- Gmail address the report is sent FROM
   EMAIL_APP_PASSWORD  -- 16-character Gmail App Password for that account
-  EMAIL_RECIPIENT     -- address the report is sent TO
+  EMAIL_RECIPIENT     -- address(es) the report is sent TO. Supports more
+                          than one: comma-separate them, e.g.
+                          "person1@gmail.com, person2@gmail.com"
 """
 from __future__ import annotations
 
@@ -25,10 +27,12 @@ SMTP_PORT = 465
 def send_report_email(html_body: str, subject: str) -> bool:
     sender = os.getenv("EMAIL_SENDER")
     password = os.getenv("EMAIL_APP_PASSWORD")
-    recipient = os.getenv("EMAIL_RECIPIENT")
+    recipient_raw = os.getenv("EMAIL_RECIPIENT")
+    recipients = [r.strip() for r in recipient_raw.split(",")] if recipient_raw else []
+    recipients = [r for r in recipients if r]  # drop empties from stray commas
 
     missing = [name for name, val in [
-        ("EMAIL_SENDER", sender), ("EMAIL_APP_PASSWORD", password), ("EMAIL_RECIPIENT", recipient)
+        ("EMAIL_SENDER", sender), ("EMAIL_APP_PASSWORD", password), ("EMAIL_RECIPIENT", recipients)
     ] if not val]
     if missing:
         logger.error("Cannot send email -- missing env vars: %s. Check your .env file.", ", ".join(missing))
@@ -37,14 +41,14 @@ def send_report_email(html_body: str, subject: str) -> bool:
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"] = sender
-    msg["To"] = recipient
+    msg["To"] = ", ".join(recipients)
     msg.attach(MIMEText(html_body, "html"))
 
     try:
         with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=30) as server:
             server.login(sender, password)
-            server.sendmail(sender, [recipient], msg.as_string())
-        logger.info("Report email sent to %s", recipient)
+            server.sendmail(sender, recipients, msg.as_string())
+        logger.info("Report email sent to %s", ", ".join(recipients))
         return True
     except smtplib.SMTPAuthenticationError:
         logger.error(
