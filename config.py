@@ -111,6 +111,19 @@ RR_MIN_ACCEPTABLE = 1.5   # below this, the RR-quality score component is 0
 RR_GOOD = 2.0             # at/above this, RR-quality score component is maxed
 
 # ---------------------------------------------------------------------------
+# ATR multipliers for stop-loss / target1 / target2, per category. Centralized
+# here (previously inline literals in analyzer.py's score_* functions) so
+# every number that affects a decision lives in one traceable place.
+# Plain string keys (not analyzer.CATEGORY_* constants) to avoid a circular
+# import, since analyzer.py imports this module.
+# ---------------------------------------------------------------------------
+ATR_MULTIPLIERS = {
+    "intraday": {"sl": 1.0, "t1": 1.2, "t2": 2.0},
+    "short_term": {"sl": 1.5, "t1": 2.0, "t2": 3.2},
+    "long_term": {"sl": 3.0, "t1": 4.5, "t2": 8.0},
+}
+
+# ---------------------------------------------------------------------------
 # Factor weights -- every category's 100-point breakdown, named and
 # centralized so no weight is a bare magic number inside analyzer.py.
 # Each category's weights must sum to 100.

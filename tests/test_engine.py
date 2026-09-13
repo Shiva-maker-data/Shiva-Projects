@@ -20,6 +20,7 @@ import config as cfg
 import indicators as ind
 import market_regime as regime_mod
 import position_sizing as sizing
+import sector as sector_mod
 from analyzer import (
     _classify_signal, _entry_and_chase, _grade_from_score, _rr_quality_fraction,
     check_data_quality, compute_bundle,
@@ -212,6 +213,59 @@ class TestBundleConsistency:
         idea_from_truncated = score_short_term("TEST", truncated_bundle, idx=None)
 
         assert idea_from_full.score == idea_from_truncated.score
+
+
+class TestSectorPointInTime:
+    """Same lookahead-safety guarantee as TestBundleConsistency, but for the
+    sector/relative-strength point-in-time functions added for backtest.py."""
+
+    def test_sector_trend_bundle_matches_direct_classification(self):
+        rng = np.random.default_rng(3)
+        closes = pd.Series(100 + rng.normal(0, 1, 200).cumsum())
+        df = _make_ohlcv(list(closes))
+        bundle = sector_mod.compute_sector_trend_bundle(df)
+        idx = 150
+        trend_from_bundle = sector_mod.classify_sector_trend_at(bundle, idx)
+
+        truncated = df.iloc[: idx + 1]
+        direct_bundle = sector_mod.compute_sector_trend_bundle(truncated)
+        trend_direct = sector_mod.classify_sector_trend_at(direct_bundle, len(truncated) - 1)
+        assert trend_from_bundle == trend_direct
+
+    def test_relative_strength_at_matches_manual_calc(self):
+        stock = _make_ohlcv([100 + i for i in range(100)])["Close"]  # +1/day
+        nifty = _make_ohlcv([1000 + i * 0.5 for i in range(100)])["Close"]  # +0.5/day
+        rs = sector_mod.compute_relative_strength_at(stock, stock_idx=80, nifty_close=nifty, lookback_days=20)
+        stock_ret = (stock.iloc[80] / stock.iloc[60] - 1) * 100
+        nifty_ret = (nifty.iloc[80] / nifty.iloc[60] - 1) * 100
+        assert rs == pytest.approx(stock_ret - nifty_ret, abs=0.01)
+
+    def test_relative_strength_at_none_when_insufficient_history(self):
+        stock = _make_ohlcv([100] * 10)["Close"]
+        nifty = _make_ohlcv([1000] * 10)["Close"]
+        assert sector_mod.compute_relative_strength_at(stock, stock_idx=5, nifty_close=nifty, lookback_days=20) is None
+
+    def test_point_in_time_confirmation_falls_back_gracefully_when_unmapped(self):
+        df = _make_ohlcv([100 + i * 0.1 for i in range(60)])
+        bundle = compute_bundle(df)
+        conf = sector_mod.build_point_in_time_confirmation(
+            "NOT_A_REAL_SYMBOL", bundle, stock_idx=50, sector_bundles={}, nifty_close=None, lookback_days=20)
+        assert conf.alignment == sector_mod.NO_SECTOR_DATA
+        assert conf.sector_trend == "UNKNOWN"
+
+    def test_point_in_time_confirmation_uses_sector_bundle_when_mapped(self):
+        df = _make_ohlcv([100 + i * 0.5 for i in range(120)])  # steadily rising stock
+        bundle = compute_bundle(df)
+        sector_df = _make_ohlcv([100 + i * 0.5 for i in range(120)])  # sector also rising in lockstep
+        sector_bundle = sector_mod.compute_sector_trend_bundle(sector_df)
+        real_ticker = next(iter(sector_mod.SECTOR_MAP.values()))
+        real_symbol = next(s for s, t in sector_mod.SECTOR_MAP.items() if t == real_ticker)
+
+        conf = sector_mod.build_point_in_time_confirmation(
+            real_symbol, bundle, stock_idx=100, sector_bundles={real_ticker: sector_bundle},
+            nifty_close=None, lookback_days=20)
+        assert conf.sector_ticker == real_ticker
+        assert conf.sector_trend in ("BULLISH", "NEUTRAL", "BEARISH")  # exercised without crashing
 
 
 if __name__ == "__main__":

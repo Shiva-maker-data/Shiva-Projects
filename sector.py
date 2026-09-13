@@ -16,6 +16,8 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 
+import pandas as pd
+
 import config as cfg
 import data_sources as ds
 import indicators as ind
@@ -102,6 +104,104 @@ def _sector_trend(sector_ticker: str) -> str | None:
         trend = "NEUTRAL"
     _sector_trend_cache[sector_ticker] = trend
     return trend
+
+
+@dataclass
+class SectorTrendBundle:
+    """Vectorized sector-index inputs over full history -- same pattern as
+    market_regime.RegimeBundle / analyzer.IndicatorBundle. Reading
+    .iloc[idx] is point-in-time safe, which is what lets backtest.py
+    evaluate 'what was this stock's sector trend on that historical day'
+    using the SAME classification logic (_sector_trend's thresholds) the
+    live path uses, instead of a separate reimplementation that could drift."""
+    close: pd.Series
+    sma: pd.Series
+
+
+def compute_sector_trend_bundle(sector_df) -> SectorTrendBundle:
+    close = sector_df["Close"]
+    return SectorTrendBundle(close=close, sma=ind.sma(close, cfg.SECTOR_SMA_WINDOW))
+
+
+def classify_sector_trend_at(bundle: SectorTrendBundle, idx: int) -> str:
+    """Point-in-time sector trend label at row `idx`. Falls back to NEUTRAL
+    if there isn't enough trailing history yet (mirrors _sector_trend's
+    thresholds exactly: >1.01x SMA = BULLISH, <0.99x = BEARISH)."""
+    sma = bundle.sma.iloc[idx]
+    if pd.isna(sma):
+        return "NEUTRAL"
+    price = bundle.close.iloc[idx]
+    if price > sma * 1.01:
+        return "BULLISH"
+    if price < sma * 0.99:
+        return "BEARISH"
+    return "NEUTRAL"
+
+
+def compute_relative_strength_at(stock_close: pd.Series, stock_idx: int, nifty_close: pd.Series,
+                                  lookback_days: int) -> float | None:
+    """Point-in-time relative strength: stock's return over the lookback
+    window (in the stock's own trading-day positions) minus NIFTY's return
+    over the SAME calendar dates (found by aligning to NIFTY's own index,
+    since the two calendars can differ slightly around holidays)."""
+    if stock_idx - lookback_days < 0:
+        return None
+    stock_ret = (stock_close.iloc[stock_idx] / stock_close.iloc[stock_idx - lookback_days] - 1) * 100
+
+    date_now = stock_close.index[stock_idx]
+    date_then = stock_close.index[stock_idx - lookback_days]
+    pos_now = nifty_close.index.searchsorted(date_now, side="right") - 1
+    pos_then = nifty_close.index.searchsorted(date_then, side="right") - 1
+    if pos_now < 0 or pos_then < 0:
+        return None
+    nifty_ret = (nifty_close.iloc[pos_now] / nifty_close.iloc[pos_then] - 1) * 100
+    return round(float(stock_ret - nifty_ret), 2)
+
+
+def build_point_in_time_confirmation(symbol: str, stock_bundle, stock_idx: int,
+                                      sector_bundles: dict[str, SectorTrendBundle],
+                                      nifty_close: pd.Series | None, lookback_days: int) -> "SectorConfirmation":
+    """Assembles a SectorConfirmation at a specific historical point, using
+    the SAME alignment/classification rules as the live path -- what
+    backtest.py uses instead of passing sector_confirmation=None."""
+    sector_ticker = SECTOR_MAP.get(symbol)
+
+    rel_strength = None
+    if nifty_close is not None:
+        rel_strength = compute_relative_strength_at(stock_bundle.close, stock_idx, nifty_close, lookback_days)
+
+    if sector_ticker is None or sector_ticker not in sector_bundles:
+        return SectorConfirmation(
+            sector_ticker=sector_ticker, sector_trend="UNKNOWN", alignment=NO_SECTOR_DATA,
+            score_multiplier=cfg.SECTOR_SCORE_MULTIPLIER[NO_SECTOR_DATA],
+            relative_strength_pct=rel_strength, reasons=[],
+        )
+
+    s_bundle = sector_bundles[sector_ticker]
+    sec_idx = s_bundle.close.index.searchsorted(stock_bundle.close.index[stock_idx], side="right") - 1
+    if sec_idx < 0:
+        trend = "UNKNOWN"
+    else:
+        trend = classify_sector_trend_at(s_bundle, sec_idx)
+
+    price = stock_bundle.close.iloc[stock_idx]
+    sma50 = stock_bundle.sma50.iloc[stock_idx]
+    stock_bullish = bool(pd.notna(sma50) and price > sma50)
+
+    if trend == "UNKNOWN":
+        alignment = NO_SECTOR_DATA
+    elif stock_bullish and trend == "BULLISH":
+        alignment = ALIGNED_BULLISH
+    elif stock_bullish and trend == "BEARISH":
+        alignment = SECTOR_CONTRA
+    else:
+        alignment = SECTOR_NEUTRAL
+
+    return SectorConfirmation(
+        sector_ticker=sector_ticker, sector_trend=trend, alignment=alignment,
+        score_multiplier=cfg.SECTOR_SCORE_MULTIPLIER[alignment],
+        relative_strength_pct=rel_strength, reasons=[],
+    )
 
 
 def compute_relative_strength(stock_close, nifty_close, lookback_days: int) -> float | None:

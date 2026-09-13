@@ -497,8 +497,9 @@ def score_long_term(symbol: str, bundle: IndicatorBundle, idx: int | None = None
     entry_low, entry_high, entry_type, chase_flag = _entry_and_chase(
         price, atr_value, support, max(resistance, high_52w), near_breakout, near_pullback)
 
+    m = cfg.ATR_MULTIPLIERS["long_term"]
     target1, target2, stop_loss = _levels_from_atr(
-        price, atr_value, 0, max(resistance, high_52w), sl_mult=3.0, t1_mult=4.5, t2_mult=8.0)
+        price, atr_value, 0, max(resistance, high_52w), sl_mult=m["sl"], t1_mult=m["t1"], t2_mult=m["t2"])
 
     return _finalize_idea(
         symbol, CATEGORY_LONG_TERM, price, entry_low, entry_high, target1, target2, stop_loss,
@@ -564,8 +565,9 @@ def score_short_term(symbol: str, bundle: IndicatorBundle, idx: int | None = Non
     entry_low, entry_high, entry_type, chase_flag = _entry_and_chase(
         price, atr_value, support, resistance, near_breakout, near_pullback)
 
+    m = cfg.ATR_MULTIPLIERS["short_term"]
     target1, target2, stop_loss = _levels_from_atr(
-        price, atr_value, support, resistance, sl_mult=1.5, t1_mult=2.0, t2_mult=3.2)
+        price, atr_value, support, resistance, sl_mult=m["sl"], t1_mult=m["t1"], t2_mult=m["t2"])
 
     return _finalize_idea(
         symbol, CATEGORY_SHORT_TERM, price, entry_low, entry_high, target1, target2, stop_loss,
@@ -669,8 +671,9 @@ def score_intraday(symbol: str, daily_bundle: IndicatorBundle, intraday_df: pd.D
         entry_low, entry_high, entry_type = price * 0.998, price * 1.006, ENTRY_CONTINUATION
     chase_flag = price > entry_high + cfg.CHASE_ATR_MULTIPLE * atr_value
 
+    m = cfg.ATR_MULTIPLIERS["intraday"]
     target1, target2, stop_loss = _levels_from_atr(
-        price, atr_value, support, resistance, sl_mult=1.0, t1_mult=1.2, t2_mult=2.0)
+        price, atr_value, support, resistance, sl_mult=m["sl"], t1_mult=m["t1"], t2_mult=m["t2"])
 
     return _finalize_idea(
         symbol, CATEGORY_INTRADAY, price, entry_low, entry_high, target1, target2, stop_loss,

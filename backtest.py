@@ -12,15 +12,15 @@ Methodology (read this before trusting the numbers):
   pattern as IndicatorBundle) and sliced at each historical idx, so a
   signal's "Market Regime" score factor reflects what the regime actually
   was on that historical day -- not today's regime applied retroactively.
-- KNOWN LIMITATION: Sector confirmation and relative-strength are NOT
-  point-in-time backtested here (sector_confirmation=None is passed to
-  every call) -- extending the same point-in-time-bundle approach to ~9
-  sector indices with correct date-alignment is a real follow-up, not yet
-  done. Those two factors fall back to their documented neutral defaults
-  in every backtested score, same as the live path does when sector data
-  is genuinely unavailable. This means backtested scores are NOT identical
-  in magnitude to what would have shown live (which does have sector data)
-  -- only the Market-Regime-aware core is validated end-to-end here.
+- Point-in-time correct for Sector Strength and Relative Strength too, as
+  of this version: every unique sector index in sector.SECTOR_MAP is
+  prefetched once into a SectorTrendBundle (same pattern as
+  IndicatorBundle/RegimeBundle) and sliced at each historical idx via
+  sector.build_point_in_time_confirmation, using the Long-Term-specific
+  60-day RS lookback for that category and the 20-day default for
+  Short-Term -- matching what actually ships live. Stocks with no sector
+  mapping (see sector.py's SECTOR_MAP comments) still fall back to the
+  documented neutral default, same as live.
 - Non-overlapping trades per stock/category/threshold: once a signal
   fires, no new signal is considered until that trade resolves (hits
   target1, hits stop-loss, or times out at 90 days).
@@ -67,6 +67,7 @@ import pandas as pd
 import config as cfg
 import data_sources as ds
 import market_regime as regime_mod
+import sector as sector_mod
 import symbols as sym
 from analyzer import (
     CATEGORY_LONG_TERM, CATEGORY_SHORT_TERM,
@@ -127,10 +128,12 @@ def _simulate_trade(df: pd.DataFrame, entry_idx: int, target1: float, stop_loss:
 
 
 def _backtest_one(symbol: str, category: str, df: pd.DataFrame, bundle: IndicatorBundle,
-                   regime_bundle: regime_mod.RegimeBundle | None, min_score: float) -> list[TradeResult]:
+                   regime_bundle: regime_mod.RegimeBundle | None,
+                   sector_bundles: dict[str, sector_mod.SectorTrendBundle], min_score: float) -> list[TradeResult]:
     scorer = SCORERS[category]
     results: list[TradeResult] = []
     censor_date = df.index[-1] - pd.Timedelta(days=CENSOR_BUFFER_DAYS)
+    rs_lookback = cfg.RS_LOOKBACK_DAYS_LONG if category == CATEGORY_LONG_TERM else cfg.RS_LOOKBACK_DAYS
 
     i = MIN_WARMUP_DAYS
     while i < len(df) - 1:
@@ -138,6 +141,7 @@ def _backtest_one(symbol: str, category: str, df: pd.DataFrame, bundle: Indicato
             break
 
         regime_label = None
+        nifty_close = regime_bundle.close if regime_bundle is not None else None
         if regime_bundle is not None:
             # Align by date: regime_bundle is indexed by NIFTY's own trading
             # calendar, which can differ slightly from the stock's (holidays
@@ -146,7 +150,10 @@ def _backtest_one(symbol: str, category: str, df: pd.DataFrame, bundle: Indicato
             if regime_idx >= 0:
                 regime_label = regime_mod.classify_regime_at(regime_bundle, regime_idx)
 
-        idea = scorer(symbol, bundle, i, regime_label=regime_label, sector_confirmation=None, data_note="")
+        sector_confirmation = sector_mod.build_point_in_time_confirmation(
+            symbol, bundle, i, sector_bundles, nifty_close, rs_lookback)
+
+        idea = scorer(symbol, bundle, i, regime_label=regime_label, sector_confirmation=sector_confirmation, data_note="")
         if idea.score < min_score:
             i += 1
             continue
@@ -182,8 +189,9 @@ def _backtest_one(symbol: str, category: str, df: pd.DataFrame, bundle: Indicato
     return results
 
 
-def backtest_symbol(raw_symbol: str, categories: list[str], thresholds: list[float],
-                     history_period: str, regime_bundle: regime_mod.RegimeBundle | None) -> list[TradeResult]:
+def backtest_symbol(raw_symbol: str, categories: list[str], thresholds: list[float], history_period: str,
+                     regime_bundle: regime_mod.RegimeBundle | None,
+                     sector_bundles: dict[str, sector_mod.SectorTrendBundle]) -> list[TradeResult]:
     yf_ticker = sym.to_yf_ticker(raw_symbol)
     df = ds.fetch_daily_history(yf_ticker, period=history_period)
     if df is None or len(df) < MIN_WARMUP_DAYS + 30:
@@ -194,8 +202,19 @@ def backtest_symbol(raw_symbol: str, categories: list[str], thresholds: list[flo
     results: list[TradeResult] = []
     for category in categories:
         for threshold in thresholds:
-            results.extend(_backtest_one(raw_symbol, category, df, bundle, regime_bundle, threshold))
+            results.extend(_backtest_one(raw_symbol, category, df, bundle, regime_bundle, sector_bundles, threshold))
     return results
+
+
+def _prefetch_sector_bundles(history_period: str) -> dict[str, sector_mod.SectorTrendBundle]:
+    bundles = {}
+    for ticker in set(sector_mod.SECTOR_MAP.values()):
+        df = ds.fetch_daily_history(ticker, period=history_period)
+        if df is not None:
+            bundles[ticker] = sector_mod.compute_sector_trend_bundle(df)
+        else:
+            logger.warning("Could not fetch sector index %s -- stocks mapped to it fall back to neutral.", ticker)
+    return bundles
 
 
 def run_backtest(categories: list[str], thresholds: list[float], history_period: str,
@@ -206,9 +225,13 @@ def run_backtest(categories: list[str], thresholds: list[float], history_period:
     if regime_bundle is None:
         logger.warning("Could not fetch NIFTY -- backtest will run with Market Regime defaulted to neutral throughout.")
 
+    logger.info("Fetching each unique sector index once to build point-in-time sector bundles...")
+    sector_bundles = _prefetch_sector_bundles(history_period)
+    logger.info("Sector bundles ready for %d/%d indices.", len(sector_bundles), len(set(sector_mod.SECTOR_MAP.values())))
+
     all_results: list[TradeResult] = []
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
-        futures = {pool.submit(backtest_symbol, s, categories, thresholds, history_period, regime_bundle): s
+        futures = {pool.submit(backtest_symbol, s, categories, thresholds, history_period, regime_bundle, sector_bundles): s
                    for s in universe}
         done = 0
         for fut in as_completed(futures):
@@ -311,6 +334,25 @@ def summarize(df: pd.DataFrame) -> str:
             lines.append(f"    [{cat}] n={len(gc)}  20%-hit-rate={gc['hit_20pct_raw'].mean()*100:.1f}%  "
                           f"expectancy={compute_performance_metrics(gc['strategy_return_pct']).get('expectancy_pct', 'n/a')}%/trade")
         lines.append("")
+
+    # Discrete, non-overlapping score buckets (unlike the >= threshold sweep
+    # above, which is cumulative). Uses the threshold==0 pass since that's
+    # the one that captures every signal with its own individual score.
+    unfiltered = resolved[resolved["threshold"] == resolved["threshold"].min()].copy()
+    bucket_edges = [(0, 60, "<60 (no grade)"), (60, 70, "60-69 (C)"), (70, 80, "70-79 (B)"),
+                     (80, 90, "80-89 (A)"), (90, 101, "90-100 (A+)")]
+    lines.append("=== Performance by discrete score bucket (non-overlapping, unfiltered pass) ===")
+    for lo, hi, label in bucket_edges:
+        gb = unfiltered[(unfiltered["score"] >= lo) & (unfiltered["score"] < hi)]
+        if gb.empty:
+            lines.append(f"  {label}: no trades.")
+            continue
+        m = compute_performance_metrics(gb["strategy_return_pct"])
+        hit_rate = gb["hit_20pct_raw"].mean() * 100
+        lines.append(f"  {label}: n={len(gb)}  20%-hit-rate={hit_rate:.1f}%  win_rate={m['win_rate_pct']}%  "
+                      f"expectancy={m['expectancy_pct']}%/trade  profit_factor={m['profit_factor']}  "
+                      f"max_drawdown={m['max_drawdown_pct']}%")
+    lines.append("")
 
     live_threshold = 40.0 if (resolved["threshold"] == 40.0).any() else resolved["threshold"].min()
     live = resolved[resolved["threshold"] == live_threshold]

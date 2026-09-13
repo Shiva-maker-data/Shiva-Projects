@@ -41,7 +41,7 @@ import sector as sector_mod
 import symbols as sym
 from analyzer import (
     CATEGORY_INTRADAY, CATEGORY_LONG_TERM, CATEGORY_SHORT_TERM,
-    compute_bundle, rank_and_select, score_intraday, score_long_term, score_short_term,
+    check_data_quality, compute_bundle, rank_and_select, score_intraday, score_long_term, score_short_term,
 )
 from emailer import send_report_email
 from narrative import write_rationale
@@ -78,6 +78,16 @@ def analyze_symbol(raw_symbol: str, regime_label: str | None, nifty_close) -> di
     if daily_df is None:
         return None
 
+    # Data-quality gate (analyzer.check_data_quality) -- previously
+    # implemented and unit-tested but never actually called from the live
+    # pipeline. Stale bars, abnormal single-day moves (possible corporate
+    # action/bad print), or missing OHLC now skip the symbol here instead
+    # of silently flowing into scoring.
+    quality_ok, quality_note = check_data_quality(daily_df, idx=len(daily_df) - 1, now=pd.Timestamp.now())
+    if not quality_ok:
+        logger.warning("Data quality check failed for %s: %s", raw_symbol, quality_note)
+        return None
+
     intraday_df = ds.fetch_intraday_history(yf_ticker, period="5d", interval="15m")
     nse_quote = ds.get_nse_quote(raw_symbol)
     price_check = ds.cross_check_price(float(daily_df["Close"].iloc[-1]), nse_quote)
@@ -86,15 +96,22 @@ def analyze_symbol(raw_symbol: str, regime_label: str | None, nifty_close) -> di
 
     # Sector confirmation needs a preliminary "is this stock's own signal
     # bullish" reading to judge alignment -- price above its 50-day SMA is
-    # a reasonable, cheap proxy shared by both categories.
+    # a reasonable, cheap proxy shared by both categories. Relative
+    # strength uses a DIFFERENT lookback per category (20d Short-Term, 60d
+    # Long-Term, per config.py's RS_LOOKBACK_DAYS / RS_LOOKBACK_DAYS_LONG)
+    # -- previously both categories silently used the 20-day default.
     stock_bullish = bool(pd.notna(bundle.sma50.iloc[-1]) and bundle.close.iloc[-1] > bundle.sma50.iloc[-1])
-    sector_confirmation = sector_mod.get_sector_confirmation(
-        raw_symbol, stock_bullish, nifty_close=nifty_close, stock_close=bundle.close)
+    sector_confirmation_st = sector_mod.get_sector_confirmation(
+        raw_symbol, stock_bullish, nifty_close=nifty_close, stock_close=bundle.close,
+        lookback_days=cfg.RS_LOOKBACK_DAYS)
+    sector_confirmation_lt = sector_mod.get_sector_confirmation(
+        raw_symbol, stock_bullish, nifty_close=nifty_close, stock_close=bundle.close,
+        lookback_days=cfg.RS_LOOKBACK_DAYS_LONG)
 
     lt_idea = score_long_term(raw_symbol, bundle, regime_label=regime_label,
-                               sector_confirmation=sector_confirmation, data_note=price_check.note)
+                               sector_confirmation=sector_confirmation_lt, data_note=price_check.note)
     st_idea = score_short_term(raw_symbol, bundle, regime_label=regime_label,
-                                sector_confirmation=sector_confirmation, data_note=price_check.note)
+                                sector_confirmation=sector_confirmation_st, data_note=price_check.note)
     id_idea = score_intraday(raw_symbol, bundle, intraday_df, regime_label=regime_label, data_note=price_check.note)
 
     return {"symbol": raw_symbol, "ideas": [lt_idea, st_idea, id_idea], "daily_df": daily_df}
