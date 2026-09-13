@@ -1,95 +1,42 @@
-# VYOM Research — NEXT EXPERIMENT
+# Experiment 12 — Frozen raw-data fixture and baseline reproducibility audit
 
-## Experiment: independent backtest-summary timing corroboration audit
+## Status
 
-### Single question and hypothesis
+Approved research-only specification. Do not run until this file is reviewed.
 
-Experiment 10 found no raw-data fixture, but it identified seven pre-existing
-`backtest_results/trades_*.csv` summaries that contain entry and exit dates.
-Experiment 9 could independently verify that the seven cited blocking trades
-exist, but not that they remained open through the seven Recent
-STRONG_BEARISH candidate dates.
+## Hypothesis
 
-**Hypothesis:** at least one pre-experiment-8 backtest summary generated from
-the same frozen strategy setup independently contains all seven cited blocking
-trades and confirms each recorded exit date is on or after its associated
-candidate date. This would corroborate the *open-trade timing* fact only; it
-cannot by itself prove the scheduler skipped a candidate index.
+An immutable local fixture, captured through the existing data-fetch path, will allow the canonical experiment-5 population and trade outcomes to be regenerated without network access or production-code changes.
 
-### Strict scope and fixed inputs
+## Falsification criterion
 
-This is a read-only artifact cross-check. Do not call network code,
-`load_universe`, data sources, scoring, indicators, regime classification, or
-trade simulation. Do not modify production, re-run a backtest, change settings,
-or use a new data source.
+Reject the hypothesis if any required series, date range, required OHLCV field, or required provenance/hash record is missing, or if an offline rerun cannot reproduce the archived experiment-5 master/trade artifacts within predeclared numeric tolerances.
 
-Use only:
+## Fixed scope
 
-- the seven candidate/blocking-trade records in
-  `research/results/scheduler_reproducibility_xcheck_20260913_193245.csv`;
-- `research/results/resistance_trades_20260913_164146.csv` for the canonical
-  blocking-trade identity; and
-- every existing `backtest_results/trades_*.csv` with all required columns
-  `symbol`, `category`, `threshold`, `signal_date`, `entry_date`, `exit_date`,
-  `entry_price`, `exit_price`, `exit_reason`, `days_held`, and
-  `strategy_return_pct`.
+- Use exactly the existing 51-stock universe, NIFTY regime index, and nine sector indices documented in `research/STATE.md`.
+- Use the same historical window, warm-up, lookback, forward-outcome horizon, categories, threshold, and non-overlap settings as experiment 5.
+- Use the existing repository data-fetch mechanism only. Do not add a data source, alter fetch parameters, or change production code.
+- Capture raw OHLCV plus ticker, interval, retrieval timestamp, requested range, timezone, library/version metadata, and SHA-256 for every file.
 
-Discover the last group deterministically by filename and schema; do not select
-one output after seeing its values. Record SHA-256, size, modification time,
-schema, row count, and date range for every discovered summary. Explicitly
-exclude files created after experiment 8's report timestamp
-`2026-09-13 19:21:07`; report them but do not use them as independent evidence.
+## Required method
 
-### Precommitted methodology
+1. Record `git status --short` and hashes of the canonical experiment-5 inputs before capture.
+2. Capture the complete fixed fixture once; do not refetch or substitute missing series.
+3. Write an offline-only audit script under `research/` that reads only the fixture and existing research code needed for comparison; network access must be impossible or explicitly asserted absent.
+4. Recompute the experiment-5 master population and trade summary offline using the frozen production functions, without editing them.
+5. Compare row keys and all numeric outputs against the archived experiment-5 artifacts using tolerances declared before the comparison. Explain any mismatch; do not tune until it matches.
+6. Record fixture hashes and before/after hashes of all canonical inputs.
 
-1. Verify from `backtest.py` by read-only code inspection what each summary's
-   `signal_date`, `entry_date`, `exit_date`, threshold, non-overlap behavior,
-   and return fields mean. Verify the file's threshold is exactly `40` and that
-   category/symbol labels match the canonical trade convention. If any semantic
-   equivalence is unknown, label that file incomparable rather than mapping it.
-2. For each of the seven candidate records, match to every eligible summary on
-   `(symbol, category, blocking_signal_date, threshold=40)`. Require exactly
-   one match per candidate within a given comparable file; report zero or
-   multiple matches as failures, with N. Compare matching entry price, exit
-   reason, strategy return, and days held to the canonical trade CSV using a
-   predeclared tolerance of `1e-6` for numeric CSV round-trip fields.
-3. Independently compare the summary's stored `exit_date` to its associated
-   candidate date. Report `exit_date > candidate_date`, `==`, `<`, missing, and
-   unreadable separately, with N and a complete seven-row table. Do not infer
-   dates from `days_held` or use calendar arithmetic.
-4. Treat each qualifying backtest summary as a replication artifact, not an
-   independent draw. Report agreement across all comparable pre-experiment-8
-   files and flag repeated byte-identical files by SHA-256 so duplicate exports
-   are not counted as independent corroboration.
-5. Keep the evidence-closure distinction explicit: this experiment can at most
-   upgrade `blocking_trade_remained_open_through_candidate_date`; it cannot
-   establish `candidate_was_skipped_by_the_production_walk`, because a summary
-   file does not record visited/skipped indices.
+## Required report
 
-### Falsification criterion and required conclusion
+Report coverage, provenance, hashes, offline boundary, exact reconstruction results, mismatch diagnostics, and limitations including vendor data revisions, corporate actions, timezone, and survivorship. State sample counts and whether the fixture is sufficient for future scheduler audits. This is a reproducibility audit, not evidence that the STRONG_BEARISH anomaly is real and not permission to change strategy logic.
 
-The hypothesis is **falsified** unless at least one semantically comparable,
-pre-experiment-8, non-duplicate summary matches all seven canonical blocking
-trades exactly and has `exit_date >= candidate_date` for every one. Any missing,
-multiple, conflicting, or semantically incomparable record is evidence against
-timing corroboration and must be reported rather than filtered.
+## Integrity gate
 
-If supported, conclude only that open-trade timing is independently corroborated
-by the specified archived summary. Retain the experiment-9 finding that the
-walk-skipping fact remains unverified. If falsified, retain both facts as
-unverified under the no-refetch boundary. Neither outcome is evidence for or
-against the STRONG_BEARISH-versus-BULLISH return anomaly and neither supports a
-production change.
+Production files, `tests/test_engine.py`, entry/exit rules, indicators, thresholds, weights, and data-source code must remain byte-for-byte unchanged. If any production file changes, stop and mark the experiment invalid. End with the exact files changed and commands/tests executed.
 
-### Required report and integrity verification
+## One next experiment
 
-Create one additive research-only script and dated immutable report/CSV under
-`research/results/`, including all file hashes, eligibility decisions, N,
-seven-row match table, duplicate analysis, field/timing comparisons,
-point-in-time/provenance caveats, and verdict.
+Propose exactly one follow-up based on the result; do not execute it.
 
-Before and after execution, record `git status --short` and verify all 16
-frozen production files and `tests/test_engine.py` are unchanged. Only additive
-files under `research/` are allowed. Do not edit `research/STATE.md` or this
-file. Syntax-check the audit script before execution and quote the verification
-evidence in the report.

@@ -1,0 +1,115 @@
+OFFLINE RAW-DATA-FIXTURE REPRODUCIBILITY AUDIT (experiment 12, research only, network blocked)
+
+## Hypothesis and falsifier (fixed, from research/NEXT_EXPERIMENT.md)
+  H: an immutable local fixture, captured through the existing data-fetch path, allows the canonical experiment-5 population and trade outcomes to be regenerated without network access or production-code changes.
+  Falsified if any required series/date-range/OHLCV field/provenance-hash record is missing, or if an offline rerun cannot reproduce the archived experiment-5 master/trade artifacts within predeclared numeric tolerances.
+  This is a reproducibility audit only -- not evidence the STRONG_BEARISH anomaly is real, and not permission to change strategy logic.
+
+## Offline boundary: network-block self-test
+  socket.create_connection(('8.8.8.8', 53)) raised NetworkBlockedError as expected: True
+  This script's socket.socket.connect/connect_ex and socket.create_connection are monkey-patched to raise before any other import (yfinance/requests/urllib3 all route through socket), so network access is BLOCKED, not merely unused, for the remainder of this process.
+
+## Fixture provenance
+  Manifest: raw_ohlcv_manifest.json  SHA-256=235e4f3c0991715bdd7363e7516238d85ad7255d6696bb94124616628ff0214b
+  Captured at (UTC): 2026-09-13T17:23:56.009593+00:00
+  Fetch mechanism (quoted from manifest): data_sources.fetch_daily_history (unchanged production function): yf.Ticker(ticker).history(period=period, interval='1d', auto_adjust=False), then data_sources._strip_tz() removes the Asia/Kolkata tz-awareness Yahoo Finance returns for NSE tickers, leaving a tz-naive DatetimeIndex.
+  Library versions: yfinance=1.7.0  pandas=3.0.5
+  Requested period: 3y
+  Capture summary: {'total': 61, 'ok': 61, 'failed': 0}
+    ADANIENT             (stock): ADANIENT_NS.csv  sha256=3a5b2e8589ad3a34...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ADANIPORTS           (stock): ADANIPORTS_NS.csv  sha256=6137e8e4b5400bf8...  rows=744  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    APOLLOHOSP           (stock): APOLLOHOSP_NS.csv  sha256=65e7dfce3916c2f7...  rows=744  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ASIANPAINT           (stock): ASIANPAINT_NS.csv  sha256=34fa9e1e6a17ec47...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    AXISBANK             (stock): AXISBANK_NS.csv  sha256=50047e4d5227bb70...  rows=744  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    BAJAJ-AUTO           (stock): BAJAJ-AUTO_NS.csv  sha256=537338e5e47c71fc...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    BAJFINANCE           (stock): BAJFINANCE_NS.csv  sha256=c12c1a1979f14acb...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    BAJAJFINSV           (stock): BAJAJFINSV_NS.csv  sha256=4ca8d4c0937337e3...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    BEL                  (stock): BEL_NS.csv  sha256=f284a45608c8310e...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    BHARTIARTL           (stock): BHARTIARTL_NS.csv  sha256=4fe5da2ba7838b25...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    CIPLA                (stock): CIPLA_NS.csv  sha256=b0a4cfe0fbcf1991...  rows=744  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    COALINDIA            (stock): COALINDIA_NS.csv  sha256=ee87e7df6aa299a9...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    DRREDDY              (stock): DRREDDY_NS.csv  sha256=82edd820f67e5c73...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    EICHERMOT            (stock): EICHERMOT_NS.csv  sha256=286f2861ebdd3ca9...  rows=744  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ETERNAL              (stock): ETERNAL_NS.csv  sha256=4248419b43edccab...  rows=744  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    GRASIM               (stock): GRASIM_NS.csv  sha256=ed864b4abb89c301...  rows=744  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    HCLTECH              (stock): HCLTECH_NS.csv  sha256=56b413645700bdac...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    HDFCBANK             (stock): HDFCBANK_NS.csv  sha256=dc9262334ae6d58e...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    HDFCLIFE             (stock): HDFCLIFE_NS.csv  sha256=a4769f9a0461e63a...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    HEROMOTOCO           (stock): HEROMOTOCO_NS.csv  sha256=33751d69510aba66...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    HINDALCO             (stock): HINDALCO_NS.csv  sha256=6ced4aa7ecc47417...  rows=744  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    HINDUNILVR           (stock): HINDUNILVR_NS.csv  sha256=66ccadf4f784164e...  rows=744  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ICICIBANK            (stock): ICICIBANK_NS.csv  sha256=8372ceb903ca9bcf...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ITC                  (stock): ITC_NS.csv  sha256=3c69ad42df764ce8...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    INDUSINDBK           (stock): INDUSINDBK_NS.csv  sha256=571e0a18ff31c255...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    INFY                 (stock): INFY_NS.csv  sha256=f7a768a1830be649...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    JSWSTEEL             (stock): JSWSTEEL_NS.csv  sha256=5247afb994a97bc4...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    JIOFIN               (stock): JIOFIN_NS.csv  sha256=272bebf1273da3c3...  rows=744  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    KOTAKBANK            (stock): KOTAKBANK_NS.csv  sha256=b0d1430a78dab536...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    LT                   (stock): LT_NS.csv  sha256=90e45ca5b5e75a18...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    M&M                  (stock): MANDM_NS.csv  sha256=b4fe072a8eb8cda4...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    MARUTI               (stock): MARUTI_NS.csv  sha256=16e90b71c4c00047...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    NESTLEIND            (stock): NESTLEIND_NS.csv  sha256=50cc8533bc996e8b...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    NTPC                 (stock): NTPC_NS.csv  sha256=2291677b6196a966...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ONGC                 (stock): ONGC_NS.csv  sha256=af259d7de5095898...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    POWERGRID            (stock): POWERGRID_NS.csv  sha256=7377512eaca84e9f...  rows=744  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    RELIANCE             (stock): RELIANCE_NS.csv  sha256=53e78c082db1e7b5...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    SBILIFE              (stock): SBILIFE_NS.csv  sha256=b84f5fab28909381...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    SHRIRAMFIN           (stock): SHRIRAMFIN_NS.csv  sha256=344ea70087a7b0d5...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    SBIN                 (stock): SBIN_NS.csv  sha256=9dc63d8c68487856...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    SUNPHARMA            (stock): SUNPHARMA_NS.csv  sha256=7e4c3ca7af03c0e2...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    TCS                  (stock): TCS_NS.csv  sha256=b2c007a96509eb89...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    TATACONSUM           (stock): TATACONSUM_NS.csv  sha256=1c96715d8f6fa3b0...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    TMPV                 (stock): TMPV_NS.csv  sha256=9aaa27cb7be31237...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    TATASTEEL            (stock): TATASTEEL_NS.csv  sha256=236ce0ef9f12c4eb...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    TECHM                (stock): TECHM_NS.csv  sha256=bdee8ec32f48ba56...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    TITAN                (stock): TITAN_NS.csv  sha256=035aaaefc691685c...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    TRENT                (stock): TRENT_NS.csv  sha256=7789439140f69791...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ULTRACEMCO           (stock): ULTRACEMCO_NS.csv  sha256=2e97af4a9df6b91f...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    WIPRO                (stock): WIPRO_NS.csv  sha256=daa3b55561de3f02...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    BAJAJHLDNG           (stock): BAJAJHLDNG_NS.csv  sha256=58a8cf4cd3c0b2cb...  rows=745  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    NIFTY_REGIME_INDEX   (regime_index): IDX_NSEI.csv  sha256=7bfe7bf2a7e7e5a9...  rows=741  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ^CNXAUTO             (sector_index): IDX_CNXAUTO.csv  sha256=7396e6b2b9bfc4e3...  rows=697  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ^CNXCONSUM           (sector_index): IDX_CNXCONSUM.csv  sha256=152051c10cceb0d9...  rows=697  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ^CNXENERGY           (sector_index): IDX_CNXENERGY.csv  sha256=928bec37190d7c8b...  rows=697  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ^CNXFMCG             (sector_index): IDX_CNXFMCG.csv  sha256=594513cb5aca0619...  rows=697  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ^CNXINFRA            (sector_index): IDX_CNXINFRA.csv  sha256=a284f8d4c6c6d29a...  rows=697  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ^CNXIT               (sector_index): IDX_CNXIT.csv  sha256=cea0f8d3ca46e89e...  rows=740  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ^CNXMETAL            (sector_index): IDX_CNXMETAL.csv  sha256=650c17ee87707888...  rows=697  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ^CNXPHARMA           (sector_index): IDX_CNXPHARMA.csv  sha256=82aa013a33e70097...  rows=739  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+    ^NSEBANK             (sector_index): IDX_NSEBANK.csv  sha256=e6d578a8eac9ef5a...  rows=740  range=2023-09-11 to 2026-09-11  columns=['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Dividends', 'Stock Splits']  tz_after_strip=None
+
+## Canonical experiment-5 input hashes (re-checked, must be unchanged since capture)
+  resistance_master_20260913_164146.csv: 7d6d623480e64c37ac606f45909074134b96257630f43230a51b476f5981e6c7
+  resistance_trades_20260913_164146.csv: 05b11415a0979d224048e6e993d24c9a064f25a7b622e13a60ab5bbfe9026369
+
+## Required universe (from symbols.get_universe(), quoted not re-derived): N=51
+
+## Offline universe load (from frozen fixture only -- no network call)
+  Offline universe loaded: 51/51 symbols
+
+## Offline recomputation (research.factor_data.build_master_dataset / run_ablation, UNCHANGED)
+  Offline master rows: 48552  |  Offline trades rows: 2083
+
+## Comparison: master dataset (build_master_dataset)
+  Offline-recomputed rows: 48552  |  Archived rows: 48552
+  Rows with matching keys in both: 48552
+  VALUE MISMATCHES among matched-key rows, by column (predeclared tol=1e-06, missing-value representations normalized before comparison): [('score', 11), ('factor__Momentum', 11)]
+    Sample mismatches for 'score' (up to 10): [{'key': ('BAJAJFINSV', 'Short-Term (Swing)', Timestamp('2025-12-11 00:00:00')), 'offline': np.float64(36.1), 'archived': np.float64(26.1)}, {'key': ('BAJFINANCE', 'Short-Term (Swing)', Timestamp('2026-05-01 00:00:00')), 'offline': np.float64(40.4), 'archived': np.float64(47.4)}, {'key': ('BEL', 'Short-Term (Swing)', Timestamp('2026-05-28 00:00:00')), 'offline': np.float64(37.6), 'archived': np.float64(27.6)}, {'key': ('COALINDIA', 'Short-Term (Swing)', Timestamp('2025-07-16 00:00:00')), 'offline': np.float64(33.0), 'archived': np.float64(43.0)}, {'key': ('COALINDIA', 'Short-Term (Swing)', Timestamp('2026-01-15 00:00:00')), 'offline': np.float64(51.8), 'archived': np.float64(58.8)}, {'key': ('COALINDIA', 'Short-Term (Swing)', Timestamp('2026-05-28 00:00:00')), 'offline': np.float64(40.6), 'archived': np.float64(30.6)}, {'key': ('INDUSINDBK', 'Short-Term (Swing)', Timestamp('2026-05-01 00:00:00')), 'offline': np.float64(46.7), 'archived': np.float64(39.7)}, {'key': ('ITC', 'Short-Term (Swing)', Timestamp('2025-12-01 00:00:00')), 'offline': np.float64(44.8), 'archived': np.float64(34.8)}, {'key': ('JSWSTEEL', 'Short-Term (Swing)', Timestamp('2025-07-24 00:00:00')), 'offline': np.float64(29.4), 'archived': np.float64(39.4)}, {'key': ('KOTAKBANK', 'Short-Term (Swing)', Timestamp('2025-03-18 00:00:00')), 'offline': np.float64(52.4), 'archived': np.float64(59.4)}]
+    Sample mismatches for 'factor__Momentum' (up to 10): [{'key': ('BAJAJFINSV', 'Short-Term (Swing)', Timestamp('2025-12-11 00:00:00')), 'offline': np.float64(0.5), 'archived': np.float64(0.0)}, {'key': ('BAJFINANCE', 'Short-Term (Swing)', Timestamp('2026-05-01 00:00:00')), 'offline': np.float64(0.5), 'archived': np.float64(0.85)}, {'key': ('BEL', 'Short-Term (Swing)', Timestamp('2026-05-28 00:00:00')), 'offline': np.float64(0.5), 'archived': np.float64(0.0)}, {'key': ('COALINDIA', 'Short-Term (Swing)', Timestamp('2025-07-16 00:00:00')), 'offline': np.float64(0.5), 'archived': np.float64(1.0)}, {'key': ('COALINDIA', 'Short-Term (Swing)', Timestamp('2026-01-15 00:00:00')), 'offline': np.float64(0.5), 'archived': np.float64(0.85)}, {'key': ('COALINDIA', 'Short-Term (Swing)', Timestamp('2026-05-28 00:00:00')), 'offline': np.float64(0.5), 'archived': np.float64(0.0)}, {'key': ('INDUSINDBK', 'Short-Term (Swing)', Timestamp('2026-05-01 00:00:00')), 'offline': np.float64(0.85), 'archived': np.float64(0.5)}, {'key': ('ITC', 'Short-Term (Swing)', Timestamp('2025-12-01 00:00:00')), 'offline': np.float64(0.5), 'archived': np.float64(0.0)}, {'key': ('JSWSTEEL', 'Short-Term (Swing)', Timestamp('2025-07-24 00:00:00')), 'offline': np.float64(0.0), 'archived': np.float64(0.5)}, {'key': ('KOTAKBANK', 'Short-Term (Swing)', Timestamp('2025-03-18 00:00:00')), 'offline': np.float64(0.5), 'archived': np.float64(0.85)}]
+  EXACT RECONSTRUCTION (row count identical, all keys matched, zero value mismatches): False
+
+## Comparison: trades dataset (run_ablation, threshold=40)
+  Offline-recomputed rows: 2083  |  Archived rows: 2083
+  Rows with matching keys in both: 2083
+  OK -- zero value mismatches across 25 compared columns among matched-key rows.
+  EXACT RECONSTRUCTION (row count identical, all keys matched, zero value mismatches): True
+
+## Limitations (stated explicitly, not resolved by this audit)
+  - Vendor data revisions: Yahoo Finance can silently revise historical OHLCV (e.g. corrected closes) between the original experiment-5 fetch and this fixture's capture -- any such revision would surface as a value mismatch above, indistinguishable from a genuine reproduction failure without a third independent source.
+  - Corporate actions: splits/bonuses/dividends between the two fetch times would shift auto_adjust=False raw prices for all pre-action bars if yfinance restates them; not checked independently here.
+  - Timezone: both fetches use data_sources._strip_tz() to drop the Asia/Kolkata tz-awareness -- identical handling, but a fetch-time boundary near midnight IST could shift which calendar date a bar is stamped with; not observed to have occurred here unless flagged above.
+  - Survivorship: symbols.get_universe() reflects TODAY's NIFTY 50 + SENSEX Extra constituents, projected backward -- identical bias in both the original and this offline recomputation, not newly introduced or resolved by this audit.
+  - This fixture, even if reconstruction is exact, only proves LOCAL reproducibility of experiment 5's specific master/trades outputs. It does not, by itself, restore the entry_date/exit_date/visited-index information that experiments 9-11 found the archived artifacts lack -- a future scheduler audit would need to run research.scheduler_attribution_experiment-equivalent logic AGAINST this now-frozen fixture to get that (a separate, not-yet-run experiment).
+
+## Verdict
+  FALSIFIED: offline reconstruction did not match the archived experiment-5 artifacts exactly (master_exact=False, trades_exact=True) -- see the comparison sections above for the specific mismatches, which were explained, not tuned away.

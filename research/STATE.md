@@ -25,8 +25,8 @@ under that precommitted test (see experiment 6 below).
 
 ## Status: awaiting Codex audit
 
-Last completed experiment: **Independent backtest-summary timing
-corroboration audit** (2026-09-13, Codex-specified via
+Last completed experiment: **Frozen raw-data fixture and baseline
+reproducibility audit** (2026-09-13, Codex-specified via
 `research/NEXT_EXPERIMENT.md`). Codex has not yet audited it or written a
 new `NEXT_EXPERIMENT.md`. Next action is the human asking Codex to perform
 the handoff per the short prompt in the VYOM handoff README.
@@ -546,6 +546,86 @@ the handoff per the short prompt in the VYOM handoff README.
   inspecting this script's own import block, quoted in the report; script
   syntax-checked before running; single run, no code changes needed
   mid-run.
+- **This experiment does not begin or recommend a next experiment** —
+  awaiting Codex's next audit per the VYOM loop.
+
+### 12. Frozen raw-data fixture and baseline reproducibility audit — 2026-09-13
+- **Spec:** written by Codex in `research/NEXT_EXPERIMENT.md` after
+  auditing experiment 11. Unlike experiments 9-11, this spec explicitly
+  authorized a one-time network fetch (via the existing, unchanged
+  `data_sources.fetch_daily_history`) to CAPTURE a frozen local fixture,
+  then required a strictly offline, network-blocked script to recompute
+  and compare against experiment 5's archived outputs. Run exactly as
+  specified, two scripts (capture + offline audit).
+- **Reports:** `research/results/offline_reproducibility_report_20260913_225716.txt`
+  (final, corrected run)
+- **Fixture:** `research/fixtures/raw_ohlcv/` (61 CSVs: 51 stocks + NIFTY
+  `^NSEI` + 9 sector indices, `research/fixtures/raw_ohlcv_manifest.json`
+  records ticker, interval=`1d`, `auto_adjust=False`, requested
+  period=`3y`, retrieval timestamp, row count, date range, and SHA-256 for
+  every file — all 61/61 captures succeeded, none substituted).
+- **Datasets:** `research/results/offline_master_20260913_225716.csv`
+  (48,552 rows), `research/results/offline_trades_20260913_225716.csv`
+  (2,083 rows) — the offline-recomputed equivalents of experiment 5's
+  master/trades files.
+- **Question:** does a fixture captured through the existing fetch path
+  let the experiment-5 population and trade outcomes be regenerated
+  offline (no network, no production-code changes), matching the archived
+  artifacts within a predeclared tolerance?
+- **Offline boundary (enforced, not just stated):** the audit script
+  monkey-patches `socket.socket.connect`/`connect_ex` and
+  `socket.create_connection` to raise before any other import, and
+  self-tests this by attempting a real connection first — confirmed
+  blocked. It reuses `research.factor_data.build_master_dataset`/
+  `run_ablation` and `analyzer.compute_bundle`/`market_regime.
+  compute_regime_bundle`/`sector.compute_sector_trend_bundle` UNCHANGED,
+  fed by a new offline loader that mirrors `load_universe`'s exact filters
+  (`len(df) >= MIN_WARMUP_DAYS + 30`) but reads local fixture files
+  instead of fetching.
+- **Result:**
+  - **Trades dataset (threshold=40, non-overlapping — the exact
+    population used throughout experiments 6-11): EXACT MATCH.** 2,083/
+    2,083 rows, zero value mismatches across 25 columns.
+  - **Master dataset: 48,541/48,552 rows matched exactly; 11 rows
+    (0.023%) differed**, all in `score` and `factor__Momentum`, all
+    exclusively in the Short-Term (Swing) category (confirmed by direct
+    query, not assumed) — consistent with Short-Term's shorter Momentum
+    lookback being more sensitive to the ~1-hour fetch-time gap between
+    experiment 5's original fetch and this fixture's capture (both on
+    2026-09-13) shifting a borderline value across one of Momentum's
+    discrete score thresholds (values cluster at fixed levels 0/0.5/
+    0.85/1.0, and the resulting score deltas are all exactly ±7 or ±10).
+  - One comparison-code bug (same class as experiments 8-9): `sector_ticker`
+    initially showed 14,280 (master) / 604 (trades) "mismatches" — the
+    same None-vs-NaN string-representation artifact seen before, verified
+    and fixed (normalize missing-value representations before comparing)
+    before trusting the result; confirmed zero real sector_ticker
+    mismatches once fixed.
+- **Verdict: FALSIFIED per the strict predeclared criterion** (requires
+  BOTH master and trades to match exactly; master did not). Reported with
+  the nuance the data supports, not flattened: the population actually
+  used by every downstream scheduler/reliability experiment in this
+  program (the trades dataset) reproduces perfectly; only the broader
+  factor-audit master dataset has an extremely small, mechanistically
+  explained divergence.
+- **Limitations documented (not resolved):** vendor data revisions,
+  corporate actions (splits/dividends under `auto_adjust=False`),
+  timezone-boundary sensitivity, survivorship bias (today's constituents
+  projected backward) — all explicitly flagged as unresolved by this
+  audit. Also noted: even exact reconstruction would only cover
+  `build_master_dataset`/`run_ablation`'s outputs, not the entry_date/
+  exit_date/visited-index information experiments 9-11 found missing —
+  a further, separate experiment would be needed to test whether this
+  fixture also enables an offline scheduler-attribution reconstruction.
+- **Verification:** `git status --short` and canonical experiment-5 input
+  hashes recorded before capture and re-checked after; fixture manifest
+  SHA-256 recorded; all 16 production files and `tests/test_engine.py`
+  confirmed unchanged before and after both scripts; capture step's
+  network use is the spec-authorized exception, not a boundary violation;
+  offline step's network block was self-tested, not merely asserted;
+  both scripts syntax-checked before running; one comparison-code bug
+  found and fixed before the trusted final run (single corrected re-run,
+  not repeated tuning).
 - **This experiment does not begin or recommend a next experiment** —
   awaiting Codex's next audit per the VYOM loop.
 
