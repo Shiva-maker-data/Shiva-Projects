@@ -16,15 +16,20 @@ signals:
 | BULLISH | 324 | 50.3% | -0.333% | 0.83 |
 | STRONG_BEARISH | 48 | 68.8% | +0.818% | 1.45 |
 
-Every experiment below is testing one candidate explanation for this gap.
-**No candidate has explained it yet.**
+Experiments 1-5 each tested one candidate explanation for this gap — **no
+candidate has explained it.** Experiment 6 stepped back to ask a different
+question: is the gap itself statistically reliable, independent of any
+explanation? Result: only 2 of the predeclared 3 reliability conditions
+were met — **insufficient evidence the gap is distinguishable from noise**
+under that precommitted test (see experiment 6 below).
 
 ## Status: awaiting Codex audit
 
-Last completed experiment: **Resistance / "room-to-run" distance**
-(2026-09-13). Codex has not yet audited it or written
-`NEXT_EXPERIMENT.md`. Next action is the human asking Codex to perform the
-handoff per the short prompt in the VYOM handoff README.
+Last completed experiment: **Statistical reliability of the STRONG_BEARISH
+vs BULLISH anomaly** (2026-09-13, Codex-specified via
+`research/NEXT_EXPERIMENT.md`). Codex has not yet audited it or written a
+new `NEXT_EXPERIMENT.md`. Next action is the human asking Codex to perform
+the handoff per the short prompt in the VYOM handoff README.
 
 ## Experiment log (chronological)
 
@@ -119,6 +124,65 @@ handoff per the short prompt in the VYOM handoff README.
   `build_master_dataset` and `run_ablation`, nothing removed/renamed);
   new file `research/resistance_room_experiment.py` added, syntax-checked
   before the full run.
+
+### 6. Statistical reliability experiment — 2026-09-13
+- **Spec:** written by Codex in `research/NEXT_EXPERIMENT.md` after
+  auditing experiment 5; run exactly as specified, no substitutions.
+- **Report:** `research/results/reliability_experiment_report_20260913_171735.txt`
+- **Fixed input:** `research/results/resistance_trades_20260913_164146.csv`
+  (SHA-256 `05b11415a0979d224048e6e993d24c9a064f25a7b622e13a60ab5bbfe9026369`),
+  unmodified — 2,083 total rows, 372 after filtering to
+  `regime in {BULLISH, STRONG_BEARISH}` (BULLISH=324, STRONG_BEARISH=48).
+- **Datasets:** `research/results/reliability_null_draws_primary_20260913_171735.csv`
+  (100,000 rows), `research/results/reliability_bootstrap_draws_primary_20260913_171735.csv`
+  (20,000 rows), plus the same two for the symbol-excluded sensitivity run.
+- **Question:** is the STRONG_BEARISH-minus-BULLISH expectancy/win-rate gap
+  (+1.151pp / +18.4pp observed) statistically distinguishable from noise
+  given the small STRONG_BEARISH sample (n=48), or consistent with what
+  that sample size could produce by chance? Reliability only — not a
+  causal-explanation question (four mechanical candidates already rejected
+  in experiments 3-5).
+- **Method:** stratified (time_split × category) label permutation
+  (seed 20260913, 100,000 draws — preserves 48/324 counts exactly in every
+  draw, verified by assertion in code) for two-sided p-values; independent
+  stratified calendar-month-cluster bootstrap per regime (seed 20260914,
+  20,000 draws, exact via per-month sum/count aggregates) for 95% CIs.
+- **Result:**
+  - Expectancy gap: permutation p=0.09652 (not <0.05); bootstrap 95% CI
+    **[-0.244, +2.657]pp — includes zero.** Condition 1: **FAILED.**
+  - Win-rate gap: permutation p=0.02899 (<0.05); bootstrap 95% CI
+    [+3.4, +36.8]pp — entirely above zero. Condition 2: **PASSED.**
+  - Early/Middle expectancy gaps both positive (+0.945pp, +1.591pp).
+    Recent has zero STRONG_BEARISH trades — untestable, as predeclared.
+    Condition 3: **PASSED.**
+- **Verdict:** Per the predeclared all-3-conditions rule, **NOT all
+  conditions met (2 of 3)** → **insufficient evidence that the gap is
+  statistically distinguishable from noise** under this precommitted test.
+  This is not proof the anomaly is fake, and not a causal claim either
+  way — the win-rate gap alone clears the bar; the expectancy gap does
+  not, and the predeclared rule required both.
+- **Sensitivity (does not override the primary decision):** excluding the
+  same top-3 symbols per regime *strengthens* both signals (expectancy
+  p=0.05822, still >0.05; win-rate p=0.03396; expectancy CI
+  [+0.330, +2.740]pp — now excludes zero) — directionally consistent with
+  "not purely noise" but the primary population's own predeclared test is
+  the one that governs the verdict above, per the spec's own rule that
+  sensitivity checks must not change the primary decision. ST/LT
+  breakdown: STRONG_BEARISH outperforms BULLISH in both categories
+  descriptively (n=27 ST, n=21 LT — both flagged small). STRONG_BEARISH
+  trades concentrate somewhat by month (16 of 48 in 2025-01) but spread
+  across 27 different symbols with no single symbol dominant.
+- **Verification:** input file SHA-256 recorded and matched before/after;
+  `git status --short` before and after run showed only new files under
+  `research/`, all 16 production files and `tests/test_engine.py`
+  unchanged; permutation code asserts stratum-count preservation
+  (48/324 in every one of 100,000 draws) rather than assuming it; no
+  new indicator/score computation performed — this experiment only
+  resamples already-realized, previously point-in-time-verified trade
+  outcomes; script syntax-checked before running; single run, no
+  alternate seeds/definitions/subsets explored, per spec.
+- **This experiment does not begin or recommend a next experiment** —
+  awaiting Codex's next audit per the VYOM loop.
 
 ## Cumulative robustness findings (hold across every experiment above)
 

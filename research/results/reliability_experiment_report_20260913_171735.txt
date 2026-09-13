@@ -1,0 +1,84 @@
+STATISTICAL RELIABILITY EXPERIMENT -- STRONG_BEARISH vs BULLISH anomaly (research only, no production changes)
+
+## Provenance and fixed input
+  Input file: research\results\resistance_trades_20260913_164146.csv
+  SHA-256: 05b11415a0979d224048e6e993d24c9a064f25a7b622e13a60ab5bbfe9026369
+  Command: python -m research.reliability_experiment
+  Runtime: Python 3.14.7  pandas 3.0.5  numpy 2.5.3
+  Seeds: permutation=20260913  bootstrap=20260914 (documented offset = permutation seed + 1)
+  Draws: permutation=100000  bootstrap=20000
+  Source verification (from research/factor_data.py, inspected not re-run): this input was produced by run_ablation(), which calls analyzer.score_short_term/score_long_term, analyzer._grade_from_score, analyzer._classify_signal, and backtest._simulate_trade UNCHANGED -- no reimplemented scoring logic.
+  Point-in-time note: this experiment performs no new indicator/score computation; it only resamples already-realized trade outcomes from a frozen, previously-verified point-in-time-safe population. No future information is introduced by permutation or bootstrap resampling of realized outcomes.
+
+  Rows in file (all regimes): 2083
+  Rows after filtering regime in {BULLISH, STRONG_BEARISH}: 372 (BULLISH=324, STRONG_BEARISH=48)
+
+## Time-split convention (fixed before inspecting outcomes)
+  Early:  signal_date <= 2025-01-31
+  Middle: 2025-01-31 < signal_date <= 2025-10-17
+  Recent: signal_date > 2025-10-17
+
+## Hypothesis and falsification rule (fixed, from research/NEXT_EXPERIMENT.md)
+  H: the positive STRONG_BEARISH expectancy/win-rate gap is statistically reliable, not a small-sample artefact.
+  Falsified (or 'insufficient evidence') UNLESS ALL of:
+    1. expectancy-gap permutation p<0.05 AND bootstrap 95% CI entirely above zero
+    2. win-rate-gap permutation p<0.05 AND bootstrap 95% CI entirely above zero
+    3. Early AND Middle both show a positive expectancy gap
+
+## PRIMARY PROCEDURE (full population)
+
+#### Primary (n_total=372) ####
+  BULLISH: n=324  mean=-0.333%  median=0.378%  win_rate=50.3%  expectancy=-0.333%  PF=0.83
+  STRONG_BEARISH: n=48  mean=0.818%  median=1.484%  win_rate=68.8%  expectancy=0.818%  PF=1.45
+  Observed gaps: expectancy=+1.151pp  win_rate=+18.4pp
+  Strata used (6): ['Early|Long-Term', 'Early|Short-Term (Swing)', 'Middle|Long-Term', 'Middle|Short-Term (Swing)', 'Recent|Long-Term', 'Recent|Short-Term (Swing)']
+  Permutation (100000 draws, seed=20260913): p_expectancy=0.09652  p_win_rate=0.02899
+  Bootstrap (20000 draws, seed=20260914, clusters: BULLISH=16 months, STRONG_BEARISH=6 months):
+    Expectancy-gap 95% CI: [-0.244, +2.657] pp
+    Win-rate-gap 95% CI:   [+3.4, +36.8] pp
+  Null draws saved: reliability_null_draws_primary_20260913_171735.csv (100000 rows)
+  Bootstrap draws saved: reliability_bootstrap_draws_primary_20260913_171735.csv (20000 rows)
+
+### Time-split descriptive check (Early/Middle each need a positive expectancy gap; Recent untestable if STRONG_BEARISH n=0) ###
+  Early: BULLISH n=65  mean=-0.732%  median=1.073%  win_rate=53.8%  expectancy=-0.732%  PF=0.65  |  STRONG_BEARISH n=25  mean=0.213%  median=1.304%  win_rate=60.0%  expectancy=0.213%  PF=1.09  |  expectancy_gap=+0.945pp
+  Middle: BULLISH n=149  mean=-0.115%  median=0.545%  win_rate=52.3%  expectancy=-0.115%  PF=0.94  |  STRONG_BEARISH n=23  mean=1.476%  median=1.59%  win_rate=78.3%  expectancy=1.476%  PF=2.33  |  expectancy_gap=+1.591pp
+  Recent: BULLISH n=110  mean=-0.391%  median=-1.841%  win_rate=45.5%  expectancy=-0.391%  PF=0.81  |  STRONG_BEARISH n=0 -- UNTESTABLE
+
+## SENSITIVITY CHECKS (must not override the primary decision)
+
+### Sensitivity 1: symbol-exclusion repeat (same seeds, same procedure) ###
+
+#### Excl top-3 symbols (n_total=324) ####
+  BULLISH: n=287  mean=-0.412%  median=-0.889%  win_rate=49.5%  expectancy=-0.412%  PF=0.8
+  STRONG_BEARISH: n=37  mean=1.154%  median=1.498%  win_rate=70.3%  expectancy=1.154%  PF=1.68
+  Observed gaps: expectancy=+1.566pp  win_rate=+20.8pp
+  Strata used (6): ['Early|Long-Term', 'Early|Short-Term (Swing)', 'Middle|Long-Term', 'Middle|Short-Term (Swing)', 'Recent|Long-Term', 'Recent|Short-Term (Swing)']
+  Permutation (100000 draws, seed=20260913): p_expectancy=0.05822  p_win_rate=0.03396
+  Bootstrap (20000 draws, seed=20260914, clusters: BULLISH=16 months, STRONG_BEARISH=6 months):
+    Expectancy-gap 95% CI: [+0.330, +2.740] pp
+    Win-rate-gap 95% CI:   [+4.1, +41.3] pp
+  Null draws saved: reliability_null_draws_excl_top-3_symbols_20260913_171735.csv (100000 rows)
+  Bootstrap draws saved: reliability_bootstrap_draws_excl_top-3_symbols_20260913_171735.csv (20000 rows)
+
+### Descriptive breakdown by category (Short-Term vs Long-Term) ###
+
+  --- Short-Term (Swing) ---
+    BULLISH: n=217  mean=-0.613%  median=-1.756%  win_rate=47.0%  expectancy=-0.613%  PF=0.63
+    STRONG_BEARISH: n=27  mean=0.159%  median=1.098%  win_rate=70.4%  expectancy=0.159%  PF=1.16
+
+  --- Long-Term ---
+    BULLISH: n=107  mean=0.237%  median=1.276%  win_rate=57.0%  expectancy=0.237%  PF=1.09
+    STRONG_BEARISH: n=21  mean=1.665%  median=3.889%  win_rate=66.7%  expectancy=1.665%  PF=1.58
+
+### STRONG_BEARISH concentration (symbol and calendar month) ###
+  By symbol: {'WIPRO': 5, 'HINDALCO': 3, 'TATASTEEL': 3, 'EICHERMOT': 3, 'BAJFINANCE': 2, 'BHARTIARTL': 2, 'CIPLA': 2, 'HEROMOTOCO': 2, 'ICICIBANK': 2, 'INFY': 2, 'KOTAKBANK': 2, 'MARUTI': 2, 'SHRIRAMFIN': 2, 'M&M': 2, 'BAJAJHLDNG': 2, 'APOLLOHOSP': 1, 'BAJAJFINSV': 1, 'HCLTECH': 1, 'HDFCBANK': 1, 'HDFCLIFE': 1, 'JSWSTEEL': 1, 'SBILIFE': 1, 'SBIN': 1, 'GRASIM': 1, 'LT': 1, 'TECHM': 1, 'ULTRACEMCO': 1}
+  By month:  {'2024-10': 5, '2024-11': 4, '2025-01': 16, '2025-02': 8, '2025-03': 6, '2025-08': 9}
+
+## PRIMARY DECISION
+  Condition 1 (expectancy p<0.05 and CI>0): False  (p=0.09652, CI=(np.float64(-0.2437484774341623), np.float64(2.6571015373168283)))
+  Condition 2 (win-rate p<0.05 and CI>0):   True  (p=0.02899, CI=(np.float64(3.430688933352046), np.float64(36.83336834733893)))
+  Condition 3 (Early and Middle both positive): True  (Early=0.945, Middle=1.591)
+
+  ALL CONDITIONS MET: False
+  Verdict: Insufficient evidence that the gap is distinguishable from noise under the precommitted test -- NOT proof of no effect, and NOT a causal claim either way.
+  Note: a non-rejection here is not proof of a causal regime effect, and this experiment makes no production recommendation regardless of outcome.
