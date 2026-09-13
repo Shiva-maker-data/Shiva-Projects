@@ -15,9 +15,10 @@ from __future__ import annotations
 import logging
 import os
 
-from analyzer import TradeIdea
+from analyzer import ENTRY_MISSED, TradeIdea
 
 logger = logging.getLogger("nifty_agent.narrative")
+ENTRY_MISSED_TEXT = f"{ENTRY_MISSED} (price has already run past the ideal zone)"
 
 _client = None
 _client_checked = False
@@ -43,11 +44,13 @@ def _get_client():
 
 def _template_narrative(idea: TradeIdea) -> str:
     reason_text = " ".join(idea.reasons) if idea.reasons else "Signals are mixed; treat as a lower-conviction idea."
+    entry_text = ENTRY_MISSED_TEXT if idea.chase_flag else f"Suggested entry {idea.entry_low}-{idea.entry_high} ({idea.entry_type})"
     return (
-        f"{reason_text} Suggested entry {idea.entry_low}-{idea.entry_high}, "
+        f"[{idea.signal}, Grade {idea.grade or 'below C'}] {reason_text} {entry_text}, "
         f"target {idea.target1} (+{idea.target1_pct}%) (stretch {idea.target2}, +{idea.target2_pct}%), "
         f"stop-loss {idea.stop_loss} ({idea.stop_loss_pct}%) "
-        f"(reward:risk to target1 = {idea.rr_ratio}:1). Horizon: {idea.horizon}."
+        f"(reward:risk to target1 = {idea.rr_ratio}:1). Horizon: {idea.horizon}. "
+        f"Confidence {idea.confidence:.0f}/100 (evidence agreement, not a win-probability)."
     )
 
 
@@ -57,23 +60,33 @@ def write_rationale(idea: TradeIdea) -> str:
         return _template_narrative(idea)
 
     signal_lines = "\n".join(f"- {r}" for r in idea.reasons) or "- No strong individual signals; mixed picture."
+    rs_line = f"{idea.relative_strength_pct:+.1f} percentage points vs NIFTY" if idea.relative_strength_pct is not None else "not available"
     prompt = f"""You are an experienced Indian equity market analyst writing a short note for a client's daily watchlist email.
+The DETERMINISTIC RULE ENGINE below has already made every decision (score, grade, signal, entry/target/stop-loss).
+Your job is ONLY to explain that decision in plain language -- you must NOT invent a different signal, upgrade/downgrade
+the conviction, mention news/earnings/events not listed here, or imply a win-probability. If the engine says WATCH or
+NO TRADE, your tone must reflect that caution, not talk it up into a buy.
 
 Stock: {idea.symbol} (NSE)
 Category: {idea.category}
-Score (0-100, our internal technical score): {idea.score}
+Signal: {idea.signal}   Grade: {idea.grade or "below C (NO TRADE)"}
+Score: {idea.score}/100   Confidence: {idea.confidence:.0f}/100 (these are DIFFERENT things -- score is how many rules matched, confidence is how much the evidence agrees)
+Market regime: {idea.market_regime_label}   Sector trend: {idea.sector_trend}   Relative strength vs NIFTY: {rs_line}
 Last price: Rs {idea.last_price}
-Suggested entry zone: Rs {idea.entry_low} - {idea.entry_high}
+Entry: {"ENTRY MISSED -- price has run too far, do not chase" if idea.chase_flag else f"Rs {idea.entry_low} - {idea.entry_high} ({idea.entry_type})"}
 Target 1: Rs {idea.target1} (+{idea.target1_pct}%)
 Target 2 (stretch): Rs {idea.target2} (+{idea.target2_pct}%)
 Stop-loss: Rs {idea.stop_loss} ({idea.stop_loss_pct}%)
 Reward:risk to target 1: {idea.rr_ratio}:1
 Holding horizon: {idea.horizon}
 
-Technical signals detected (this is ALL the information you have -- do not invent news, earnings, sector events, or any fact not listed here):
+Score breakdown by factor (this is ALL the information you have -- do not invent news, earnings, sector events, or
+any fact not listed here):
 {signal_lines}
 
-Write a 2-3 sentence rationale in a confident but measured expert-broker tone, explaining WHY these technical signals support this idea and HOW the trader should approach it (entry, target, stop-loss). Do not mention specific news, results, or events. Do not guarantee any outcome. Plain text only, no markdown."""
+Write a 2-3 sentence rationale in a confident but measured expert-broker tone, explaining WHY this combination of
+factors produced this signal and grade, and HOW the trader should approach it. Do not mention specific news, results,
+or events. Do not state or imply a win-probability or accuracy percentage. Plain text only, no markdown."""
 
     try:
         resp = client.messages.create(

@@ -27,7 +27,12 @@ def rsi(series: pd.Series, period: int = 14) -> pd.Series:
     avg_loss = loss.ewm(alpha=1 / period, min_periods=period, adjust=False).mean()
     rs = avg_gain / avg_loss.replace(0, np.nan)
     out = 100 - (100 / (1 + rs))
-    return out.fillna(50)  # neutral RSI where undefined (e.g. no losses yet)
+    # avg_loss == 0 with real gains present means zero down-days in the
+    # lookback -- maximally overbought (RSI=100), not "insufficient data".
+    # Only fall back to neutral 50 when there's truly no data to judge from
+    # (e.g. still within the warmup window, or a completely flat series).
+    out = out.where(~((avg_loss == 0) & (avg_gain > 0)), 100.0)
+    return out.fillna(50)
 
 
 def macd(series: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9):

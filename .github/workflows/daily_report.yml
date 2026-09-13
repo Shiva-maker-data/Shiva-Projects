@@ -34,6 +34,8 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          ACCOUNT_CAPITAL: ${{ secrets.ACCOUNT_CAPITAL }}
+          RISK_PER_TRADE_PCT: ${{ secrets.RISK_PER_TRADE_PCT }}
         run: python main.py
 
       # state/open_positions.json is the only thing that needs to survive

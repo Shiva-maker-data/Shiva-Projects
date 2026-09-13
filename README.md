@@ -43,36 +43,108 @@ on average, vs ~0.2 of 3 for Short-Term.)
   point to add a broker API (Zerodha Kite / Upstox) later for genuine
   exchange-grade data if that redundancy matters to you.
 
-## Backtested performance -- read this before trusting a score
+## Rule engine v2 -- audit, redesign, and what actually changed
 
-`backtest.py` replays the exact live scoring rules from `analyzer.py`
-against historical data (point-in-time correct, no lookahead -- see the
-docstrings in both files for the methodology). The honest finding from a
-3-year / 51-symbol / 8,771-simulated-trade run:
+The original (v1) engine scored each stock on isolated technical
+indicators only. An audit (done deliberately adversarially, not just
+describing the existing code) found real, specific problems:
 
-- **A score >=40 (the live default) does NOT reliably produce >20% returns
-  within 90 days.** Hit rate was ~4%, and raising the bar to score >=60
-  made the average outcome *worse*, not better -- i.e. the score is not
-  predictive of that specific target in this window.
-- Judged by the tool's own (much more modest) target1/stop-loss levels
-  instead, it's roughly a coin flip before costs: target1 hit ~44-55% of
-  the time, stop-loss hit ~40-55% of the time, average return ~0%.
-- A handful of higher-beta names (JIOFIN, SHRIRAMFIN, ETERNAL, TRENT,
-  ADANIPORTS, BAJFINANCE) cleared a >20%/90-day move noticeably more often
-  (~12-23% of signals) than defensive large-caps like TCS/INFY/HCLTECH/ITC
-  (~0%) -- plausible (higher beta = fatter tails both ways, and the
-  worst-case single trade in the backtest was -52%, so the downside tail is
-  comparably fat), but this is three years of one market regime on today's
-  index list projected backward, not a validated edge. Treat any per-stock
-  tilt from this as a mild, uncertain lean -- not a filter that finds
-  winners.
+1. **No market regime gate** -- a breakout during a market-wide selloff
+   scored identically to one during a broad rally.
+2. **No sector confirmation or relative strength** -- pure single-stock
+   technicals, blind to whether a stock's sector/the index was
+   leading or lagging.
+3. **Correlated indicators double-counted** -- MACD, RSI, and Bollinger
+   Band position all substantially measure the same underlying "momentum
+   turning" signal, but were scored and summed independently, inflating
+   apparent conviction without genuinely independent confirmation.
+4. **Entry zone wasn't structure-based** -- always a fixed tiny band
+   around whatever price happened to be, so the system could never say
+   "you've already missed this, don't chase."
+5. **No position sizing, no confidence measure separate from score, no
+   explicit data-quality gate, no multi-timeframe conflict check for
+   Intraday, and the backtest was descriptive (hit-rate only), not
+   rigorous** (no expectancy, profit factor, drawdown, or train/OOS split).
 
-**Practical takeaway used in this project:** the live daily picks are NOT
+v2 addresses all of these -- see `config.py` (every weight/threshold,
+named and centralized), `market_regime.py` (NIFTY trend/momentum/
+volatility classification), `sector.py` (sector trend + relative strength
+vs NIFTY, manually mapped where a genuinely good free sector-index fit
+exists -- deliberately left unmapped elsewhere rather than forced),
+`position_sizing.py` (risk-based, grade-scaled sizing), and the rewritten
+`analyzer.py` (weighted, non-double-counted scoring; SCORE vs CONFIDENCE as
+separate numbers; structure-derived entry with chase detection; a
+STRONG BUY/BUY/WATCH/NO TRADE classification -- **no fabricated
+SELL/STRONG SELL signal**, since this is long-only NSE cash-equity in
+scope and retail cash accounts can't short; "should I exit" is answered by
+`positions.py`'s target/stop-loss tracking instead).
+
+**One explicit, important limitation:** the backtest validates the Market
+Regime factor point-in-time (same NIFTY-regime-bundle approach as
+`IndicatorBundle`, no lookahead), but Sector Strength and Relative
+Strength are NOT yet point-in-time backtested (they fall back to neutral
+defaults in `backtest.py`, same as the live path does when that data is
+genuinely unavailable) -- extending the point-in-time approach to ~9
+sector indices with correct date alignment is real follow-up work, not
+done here. Backtested scores are therefore not identical in magnitude to
+what ships live.
+
+## Backtested performance -- read this before trusting a score or a grade
+
+Real numbers from a 3-year / 51-symbol / 10,617-simulated-trade v2
+backtest run (`compute_performance_metrics` in `backtest.py` -- win rate,
+expectancy, profit factor, max drawdown, Sharpe/Sortino-like ratios, a
+regime-bucket breakdown, and a train/out-of-sample split by entry date):
+
+- **The 20%-in-90-days target still shows no edge, and it gets worse at
+  higher score cutoffs**, exactly as the earlier v1 backtest found: hit
+  rate 5.0% (score>=0) -> 4.3% (>=40) -> 3.5% (>=60).
+- **Judged by the tool's own target1/stop-loss objective, expectancy is
+  at or slightly below breakeven across the board**: +0.03%/trade at
+  score>=0, -0.05%/trade at the live default (>=40), -0.18%/trade at
+  >=60 (profit factor 1.02 -> 0.97 -> 0.91). Higher score does not mean
+  better realized outcome in this window.
+- **A genuinely important, counter-intuitive finding from the regime
+  breakdown, reported exactly as measured, not softened:** stocks
+  signaled during a BULLISH market regime performed *worst*
+  (expectancy -0.81%/trade, profit factor 0.63, n=447), while stocks
+  signaled during STRONG_BEARISH performed *best*
+  (expectancy +0.79%/trade, profit factor 1.46, n=312). This is the
+  opposite of the Market Regime factor's design assumption ("bearish
+  market = suppress the score"), which was built directly from the
+  request's own specification ("if NIFTY is strongly bearish, do not
+  aggressively recommend long positions"). Plausible explanations
+  (mean-reversion bounces off oversold conditions outperforming
+  already-extended "everything is bullish" entries) exist, but so does
+  the simpler one: this is one 3-year window's specific character, not a
+  validated causal pattern. **Do not conclude the regime gate should be
+  flipped from this alone** -- it's exactly the kind of result that needs
+  more history/regimes before acting on, and is reported here specifically
+  so it isn't hidden.
+- **Train/out-of-sample split is at least time-consistent**: expectancy
+  -0.05%/trade (train, Jul 2024-Jun 2025) vs -0.06%/trade (out-of-sample,
+  Jun 2025-Jun 2026) -- nearly identical. Rule weights were fixed before
+  this backtest was ever run and never adjusted based on its results, so
+  this isn't a classic overfitting check, but it does show the (thin,
+  roughly-breakeven) edge isn't being driven by one lucky/unlucky stretch.
+- Per-symbol pattern is unchanged from v1: SHRIRAMFIN, ETERNAL, TRENT,
+  JIOFIN, ADANIENT show the best 20%-hit-rates (7-26%); TCS, ITC, WIPRO,
+  INFY, HCLTECH, HINDUNILVR show 0%. Same caveats as before (survivorship
+  bias, single window) apply.
+- Max drawdown figures assume each trade consumes a fixed ~2% slice of
+  capital compounding sequentially (roughly a 50-position diversified
+  book) -- naively compounding 100% of capital into one trade at a time
+  produces a meaningless near-total-wipeout number over thousands of
+  trades regardless of the real edge, so that naive version is
+  deliberately not used (see `backtest.py`'s `PORTFOLIO_ALLOCATION_PER_TRADE`).
+
+**Practical takeaway used in this project:** live daily picks are NOT
 filtered by any specific target-return threshold -- they're the
-highest-scoring setups per category, full 51-stock universe, exactly as
-`analyzer.py`'s rules rank them. Treat the score as "how many textbook
-bullish conditions line up," not as a probability of hitting any specific
-return target.
+highest-scoring, regime/sector-adjusted setups per category that also
+clear the RR/no-chase/no-hostile-regime gates in `analyzer.py`. Treat
+Score as "how many weighted rules line up," Confidence as "how much the
+evidence agrees," and neither as a calibrated probability of profit --
+the numbers above are the actual, measured reason why.
 
 Re-run it yourself periodically (methodology and CLI flags are documented
 in the module docstring):
@@ -80,6 +152,14 @@ in the module docstring):
 .venv\Scripts\python.exe backtest.py --min-scores 0,40,60 --history 3y
 ```
 Full trade-by-trade logs and summaries land in `backtest_results/`.
+
+Unit tests for the critical calculations (indicators, regime
+classification, RR/grading math, position sizing, chase detection, data
+quality, and the point-in-time lookahead-safety guarantee itself) live in
+`tests/test_engine.py`:
+```powershell
+.venv\Scripts\python.exe -m pytest tests/ -v
+```
 
 ## One-time setup
 
@@ -249,14 +329,19 @@ but you won't get an accuracy readout on them from this data alone.
 | `symbols.py` | NIFTY 50 / SENSEX ticker universe |
 | `data_sources.py` | Yahoo Finance + NSE India fetching, cross-checking |
 | `indicators.py` | RSI, MACD, SMA/EMA, Bollinger Bands, ATR, VWAP, etc. |
-| `analyzer.py` | Scoring rules per horizon + entry/target/stop-loss (and %) calculation |
+| `config.py` | Every scoring weight/threshold/multiplier, named and centralized |
+| `market_regime.py` | NIFTY 50 trend/momentum/volatility classification (live + point-in-time backtest bundle) |
+| `sector.py` | Sector index mapping, sector trend, relative strength vs NIFTY |
+| `position_sizing.py` | Risk-based, grade-scaled position sizing |
+| `analyzer.py` | v2 weighted scoring (regime/sector/momentum/RR-quality/etc.), entry structure + chase detection, grading |
 | `positions.py` | Tracks open Short-Term/Long-Term picks across days; closes them out on target/stop/timeout |
 | `sheets_export.py` | Logs daily suggestions + resolved outcomes to a Google Sheet (optional) |
-| `narrative.py` | Per-pick rationale text (Claude if configured, else template) |
-| `report.py` | HTML email layout, incl. the Position Updates section |
+| `narrative.py` | Per-pick rationale text (Claude if configured, else template) -- explains the engine's decision, never overrides it |
+| `report.py` | HTML email layout: signal/grade/confidence, score breakdown, market snapshot, position sizing |
 | `emailer.py` | Gmail SMTP sending |
 | `main.py` | Orchestrates the full daily pipeline |
-| `backtest.py` | Replays the live scoring rules against history -- see "Backtested performance" above |
+| `backtest.py` | Replays the live scoring rules against history, with expectancy/profit-factor/drawdown/Sharpe-Sortino/train-OOS metrics -- see "Backtested performance" above |
+| `tests/test_engine.py` | Unit tests for the critical calculations |
 | `register_task.ps1` / `run_daily.bat` | Windows Task Scheduler wiring (local option) |
 | `.github/workflows/daily_report.yml` | GitHub Actions wiring (cloud option, recommended) |
 

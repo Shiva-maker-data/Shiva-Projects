@@ -12,3 +12,7 @@ anthropic>=0.40
 # in .env to export daily suggestions/outcomes to a Google Sheet.
 gspread>=6.0
 google-auth>=2.30
+
+# Dev-only -- needed to run tests/test_engine.py, not required to run the
+# daily agent itself.
+pytest>=8.0

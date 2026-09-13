@@ -34,11 +34,14 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
 
+import config as cfg
 import data_sources as ds
+import market_regime as regime_mod
+import sector as sector_mod
 import symbols as sym
 from analyzer import (
     CATEGORY_INTRADAY, CATEGORY_LONG_TERM, CATEGORY_SHORT_TERM,
-    build_idea, compute_bundle, rank_and_select, score_intraday, score_long_term, score_short_term,
+    compute_bundle, rank_and_select, score_intraday, score_long_term, score_short_term,
 )
 from emailer import send_report_email
 from narrative import write_rationale
@@ -68,7 +71,7 @@ PICKS_PER_CATEGORY = int(os.getenv("PICKS_PER_CATEGORY", "3"))
 MIN_SCORE = float(os.getenv("MIN_SCORE", "40"))
 
 
-def analyze_symbol(raw_symbol: str) -> dict | None:
+def analyze_symbol(raw_symbol: str, regime_label: str | None, nifty_close) -> dict | None:
     """Fetch data and score one symbol across all three categories."""
     yf_ticker = sym.to_yf_ticker(raw_symbol)
     daily_df = ds.fetch_daily_history(yf_ticker, period="1y")
@@ -80,16 +83,21 @@ def analyze_symbol(raw_symbol: str) -> dict | None:
     price_check = ds.cross_check_price(float(daily_df["Close"].iloc[-1]), nse_quote)
 
     bundle = compute_bundle(daily_df)
-    lt_score, lt_reasons = score_long_term(bundle)
-    st_score, st_reasons = score_short_term(bundle)
-    id_score, id_reasons = score_intraday(daily_df, intraday_df)
 
-    ideas = [
-        build_idea(raw_symbol, CATEGORY_LONG_TERM, bundle, None, lt_score, lt_reasons, price_check.note),
-        build_idea(raw_symbol, CATEGORY_SHORT_TERM, bundle, None, st_score, st_reasons, price_check.note),
-        build_idea(raw_symbol, CATEGORY_INTRADAY, bundle, None, id_score, id_reasons, price_check.note),
-    ]
-    return {"symbol": raw_symbol, "ideas": ideas, "daily_df": daily_df}
+    # Sector confirmation needs a preliminary "is this stock's own signal
+    # bullish" reading to judge alignment -- price above its 50-day SMA is
+    # a reasonable, cheap proxy shared by both categories.
+    stock_bullish = bool(pd.notna(bundle.sma50.iloc[-1]) and bundle.close.iloc[-1] > bundle.sma50.iloc[-1])
+    sector_confirmation = sector_mod.get_sector_confirmation(
+        raw_symbol, stock_bullish, nifty_close=nifty_close, stock_close=bundle.close)
+
+    lt_idea = score_long_term(raw_symbol, bundle, regime_label=regime_label,
+                               sector_confirmation=sector_confirmation, data_note=price_check.note)
+    st_idea = score_short_term(raw_symbol, bundle, regime_label=regime_label,
+                                sector_confirmation=sector_confirmation, data_note=price_check.note)
+    id_idea = score_intraday(raw_symbol, bundle, intraday_df, regime_label=regime_label, data_note=price_check.note)
+
+    return {"symbol": raw_symbol, "ideas": [lt_idea, st_idea, id_idea], "daily_df": daily_df}
 
 
 def run() -> None:
@@ -99,6 +107,27 @@ def run() -> None:
     universe = sym.get_universe()
     logger.info("Scanning %d symbols...", len(universe))
 
+    # Market regime is computed ONCE (NIFTY 50 is the same for every stock
+    # this run) and applied as a real, weighted factor in every score --
+    # see market_regime.py / analyzer.py's "Market Regime" breakdown line.
+    regime = regime_mod.get_market_regime()
+    if regime:
+        logger.info("Market regime: %s (NIFTY %.2f, %.1f%% vs 20-SMA, %.1f%% vs 50-SMA, ATR %.1f%% at %.0fth pctile)",
+                     regime.label, regime.index_price, regime.pct_from_sma_fast, regime.pct_from_sma_slow,
+                     regime.atr_pct, regime.atr_percentile)
+    else:
+        logger.warning("Could not determine market regime -- scoring will default to neutral for this factor.")
+    regime_label = regime.label if regime else None
+
+    nifty_df = ds.fetch_daily_history(cfg.REGIME_INDEX_TICKER, period="1y")
+    nifty_close = nifty_df["Close"] if nifty_df is not None else None
+
+    # Pre-fetch every unique sector index ONCE, sequentially, before the
+    # concurrent per-stock loop below -- see sector.py's prefetch docstring
+    # for why (avoids a cache race + redundant fetches across the several
+    # stocks that share each sector index).
+    sector_mod.prefetch_sector_trends()
+
     all_ideas_by_category: dict[str, list] = {
         CATEGORY_INTRADAY: [], CATEGORY_SHORT_TERM: [], CATEGORY_LONG_TERM: []
     }
@@ -106,7 +135,7 @@ def run() -> None:
     daily_data: dict[str, pd.DataFrame] = {}
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
-        futures = {pool.submit(analyze_symbol, s): s for s in universe}
+        futures = {pool.submit(analyze_symbol, s, regime_label, nifty_close): s for s in universe}
         for future in as_completed(futures):
             raw_symbol = futures[future]
             try:
