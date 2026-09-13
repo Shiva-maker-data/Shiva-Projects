@@ -88,5 +88,35 @@
     "target2": 5616.15,
     "stop_loss": 4782.01,
     "score_at_signal": 80.0
+  },
+  {
+    "symbol": "APOLLOHOSP",
+    "category": "Long-Term",
+    "first_shown_date": "2026-09-13",
+    "entry_price": 8836.0,
+    "target1": 9140.5,
+    "target2": 10042.89,
+    "stop_loss": 8383.41,
+    "score_at_signal": 75.0
+  },
+  {
+    "symbol": "COALINDIA",
+    "category": "Long-Term",
+    "first_shown_date": "2026-09-13",
+    "entry_price": 426.4,
+    "target1": 463.31,
+    "target2": 492.01,
+    "stop_loss": 401.8,
+    "score_at_signal": 65.0
+  },
+  {
+    "symbol": "KOTAKBANK",
+    "category": "Long-Term",
+    "first_shown_date": "2026-09-13",
+    "entry_price": 419.0,
+    "target1": 450.35,
+    "target2": 474.73,
+    "stop_loss": 398.1,
+    "score_at_signal": 65.0
   }
 ]
