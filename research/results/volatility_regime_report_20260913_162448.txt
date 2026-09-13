@@ -1,0 +1,104 @@
+VOLATILITY / REGIME ANOMALY EXPERIMENT (research only, no production changes)
+Trade dataset: 2083 rows (volatility_trades_20260913_162448.csv)
+BULLISH n=324  STRONG_BEARISH n=48
+
+### SECTION 1: Basic STRONG_BEARISH vs BULLISH comparison ###
+
+  BULLISH: n=324
+    Volatility Profile factor: mean=0.972 median=1.000
+    ATR%%: mean=2.20%  median=2.18%
+    Target distance: mean=3.61%
+    Stop distance: mean=4.46%
+    Realized performance: n=324  mean=-0.333%  median=0.378%  win_rate=50.3%  expectancy=-0.333%  PF=0.83
+
+  STRONG_BEARISH: n=48
+    Volatility Profile factor: mean=0.981 median=1.000
+    ATR%%: mean=2.52%  median=2.44%
+    Target distance: mean=4.63%
+    Stop distance: mean=5.60%
+    Realized performance: n=48  mean=0.818%  median=1.484%  win_rate=68.8%  expectancy=0.818%  PF=1.45
+
+### SECTION 2/3: Volatility-bucket comparison (common fixed ATR%% boundaries) ###
+
+  --- BULLISH ---
+    LOW (<=3%): n=304  mean=-0.339%  median=0.378%  win_rate=50.3%  expectancy=-0.339%  PF=0.82  target_hit=50%  stop_hit=48%  avg_days_held=11.7
+    MEDIUM (3-5%): n=20  mean=-0.23%  median=-0.319%  win_rate=50.0%  expectancy=-0.23%  PF=0.92  target_hit=50%  stop_hit=45%  avg_days_held=14.4
+    HIGH (>5%): no trades.
+
+  --- STRONG_BEARISH ---
+    LOW (<=3%): n=44  mean=0.636%  median=1.484%  win_rate=68.2%  expectancy=0.636%  PF=1.37  target_hit=68%  stop_hit=32%  avg_days_held=15.0
+    MEDIUM (3-5%): n=4  mean=2.821%  median=5.634%  win_rate=75.0%  expectancy=2.821%  PF=2.04  target_hit=25%  stop_hit=25%  avg_days_held=49.2
+    HIGH (>5%): no trades.
+
+  --- WITHIN-BUCKET comparison: does STRONG_BEARISH beat BULLISH at the SAME volatility level? ---
+    LOW (<=3%):  BULLISH n=304  mean=-0.339%  median=0.378%  win_rate=50.3%  expectancy=-0.339%  PF=0.82  |  STRONG_BEARISH n=44  mean=0.636%  median=1.484%  win_rate=68.2%  expectancy=0.636%  PF=1.37
+    MEDIUM (3-5%):  BULLISH n=20  mean=-0.23%  median=-0.319%  win_rate=50.0%  expectancy=-0.23%  PF=0.92  |  STRONG_BEARISH n=4  mean=2.821%  median=5.634%  win_rate=75.0%  expectancy=2.821%  PF=2.04
+    HIGH (>5%):  BULLISH n=0  |  STRONG_BEARISH n=0
+
+### SECTION 4: ATR target/stop exit mechanics ###
+
+  BULLISH (n=324):
+    Target distance avg=3.61%  Stop distance avg=4.46%  ATR%% avg=2.20%
+    Target-hit: 162 (50.0%)  avg days-to-target=10.9
+    Stop-hit: 155 (47.8%)  avg days-to-stop=9.3
+    Timeout (90d, neither hit): 7 (2.2%)  avg return-after-timeout=4.79%
+
+  STRONG_BEARISH (n=48):
+    Target distance avg=4.63%  Stop distance avg=5.60%  ATR%% avg=2.52%
+    Target-hit: 31 (64.6%)  avg days-to-target=13.1
+    Stop-hit: 15 (31.2%)  avg days-to-stop=18.1
+    Timeout (90d, neither hit): 2 (4.2%)  avg return-after-timeout=10.68%
+
+### Volatility x RRQuality ###
+  All regimes combined:
+    Vol LOW  / RRQuality LOW : n=1461  mean=-0.214%  median=1.108%  win_rate=59.3%  expectancy=-0.214%  PF=0.87
+    Vol LOW  / RRQuality HIGH: n=455  mean=-0.03%  median=-2.099%  win_rate=42.4%  expectancy=-0.03%  PF=0.99
+    Vol HIGH / RRQuality LOW : n=0
+    Vol HIGH / RRQuality HIGH: n=0
+  Within BULLISH:
+    Vol LOW  / RRQuality LOW : n=231  mean=-0.54%  median=0.578%  win_rate=52.4%  expectancy=-0.54%  PF=0.68
+    Vol LOW  / RRQuality HIGH: n=73  mean=0.297%  median=-2.116%  win_rate=43.8%  expectancy=0.297%  PF=1.12
+    Vol HIGH / RRQuality LOW : n=0
+    Vol HIGH / RRQuality HIGH: n=0
+  Within STRONG_BEARISH:
+    Vol LOW  / RRQuality LOW : n=40  mean=0.538%  median=1.484%  win_rate=70.0%  expectancy=0.538%  PF=1.36
+    Vol LOW  / RRQuality HIGH: n=4  mean=1.615%  median=1.265%  win_rate=50.0%  expectancy=1.615%  PF=1.4
+    Vol HIGH / RRQuality LOW : n=0
+    Vol HIGH / RRQuality HIGH: n=0
+
+### Volatility x Momentum ###
+  All regimes combined:
+    Vol LOW  / Momentum LOW : n=1512  mean=-0.251%  median=0.931%  win_rate=55.4%  expectancy=-0.251%  PF=0.85
+    Vol LOW  / Momentum HIGH: n=404  mean=0.131%  median=1.087%  win_rate=55.0%  expectancy=0.131%  PF=1.06
+    Vol HIGH / Momentum LOW : n=0
+    Vol HIGH / Momentum HIGH: n=0
+  Within BULLISH:
+    Vol LOW  / Momentum LOW : n=234  mean=-0.536%  median=0.172%  win_rate=50.0%  expectancy=-0.536%  PF=0.7
+    Vol LOW  / Momentum HIGH: n=70  mean=0.316%  median=1.064%  win_rate=51.4%  expectancy=0.316%  PF=1.14
+    Vol HIGH / Momentum LOW : n=0
+    Vol HIGH / Momentum HIGH: n=0
+  Within STRONG_BEARISH:
+    Vol LOW  / Momentum LOW : n=18  mean=0.627%  median=1.401%  win_rate=66.7%  expectancy=0.627%  PF=1.37
+    Vol LOW  / Momentum HIGH: n=26  mean=0.642%  median=1.486%  win_rate=69.2%  expectancy=0.642%  PF=1.37
+    Vol HIGH / Momentum LOW : n=0
+    Vol HIGH / Momentum HIGH: n=0
+
+### SECTION 7: Symbol/sector robustness (reusing prior audit's exact exclusion list) ###
+  BULLISH: baseline n=324  mean=-0.333%  median=0.378%  win_rate=50.3%  expectancy=-0.333%  PF=0.83  |  excluding ['LT', 'BAJFINANCE', 'JSWSTEEL']: n=287  mean=-0.412%  median=-0.889%  win_rate=49.5%  expectancy=-0.412%  PF=0.8
+    Sector spread: {'UNMAPPED': 84, '^CNXMETAL': 37, '^CNXAUTO': 36, '^NSEBANK': 33, '^CNXIT': 29, '^CNXFMCG': 28, '^CNXENERGY': 24, '^CNXINFRA': 21, '^CNXCONSUM': 17, '^CNXPHARMA': 15}
+  STRONG_BEARISH: baseline n=48  mean=0.818%  median=1.484%  win_rate=68.8%  expectancy=0.818%  PF=1.45  |  excluding ['WIPRO', 'HINDALCO', 'TATASTEEL']: n=37  mean=1.154%  median=1.498%  win_rate=70.3%  expectancy=1.154%  PF=1.68
+    Sector spread: {'UNMAPPED': 14, '^CNXIT': 9, '^CNXAUTO': 9, '^CNXMETAL': 7, '^NSEBANK': 6, '^CNXPHARMA': 2, '^CNXINFRA': 1}
+
+### SECTION 8: Time stability (same 3-way chronological split as prior audits) ###
+
+  Early (2024-07-09 to 2025-01-31):
+    BULLISH: n=65  mean=-0.732%  median=1.073%  win_rate=53.8%  expectancy=-0.732%  PF=0.65  avg_ATR%=2.23%
+    STRONG_BEARISH: n=25  mean=0.213%  median=1.304%  win_rate=60.0%  expectancy=0.213%  PF=1.09  avg_ATR%=2.65%
+
+  Middle (2025-01-31 to 2025-10-17):
+    BULLISH: n=149  mean=-0.115%  median=0.545%  win_rate=52.3%  expectancy=-0.115%  PF=0.94  avg_ATR%=2.11%
+    STRONG_BEARISH: n=23  mean=1.476%  median=1.59%  win_rate=78.3%  expectancy=1.476%  PF=2.33  avg_ATR%=2.39%
+
+  Recent (2025-10-20 to 2026-06-03):
+    BULLISH: n=110  mean=-0.391%  median=-1.841%  win_rate=45.5%  expectancy=-0.391%  PF=0.81  avg_ATR%=2.29%
+    STRONG_BEARISH: no trades

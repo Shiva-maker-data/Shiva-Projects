@@ -1,0 +1,254 @@
+RESISTANCE / ROOM-TO-RUN EXPERIMENT (research only, no production changes)
+Trade dataset: 2083 rows | Master dataset: 48552 rows
+BULLISH n=324  STRONG_BEARISH n=48
+
+### SECTION 2: Regime-level comparison -- room to run ###
+
+  BULLISH (n=324):
+    [A] Dist to resistance20: mean=1.81%  median=1.42%  std=1.97%  p25=0.53%  p75=2.60%
+    [B] Dist to 52w high:    mean=12.90%  median=6.70%  std=17.40%  p25=1.70%  p75=16.89%
+    Realized performance: n=324  mean=-0.333%  median=0.378%  win_rate=50.3%  expectancy=-0.333%  PF=0.83  target_hit=50%  stop_hit=48%
+
+  STRONG_BEARISH (n=48):
+    [A] Dist to resistance20: mean=2.57%  median=1.47%  std=3.41%  p25=0.49%  p75=3.02%
+    [B] Dist to 52w high:    mean=9.31%  median=6.98%  std=8.41%  p25=3.29%  p75=12.73%
+    Realized performance: n=48  mean=0.818%  median=1.484%  win_rate=68.8%  expectancy=0.818%  PF=1.45  target_hit=65%  stop_hit=31%
+
+### SECTION 3: Resistance-room buckets (common pooled-quantile boundaries, 4 bucket(s)) ###
+  Boundaries (pooled dist_resistance_pct, %): [-5.2, 0.57, 1.42, 2.94, 15.4]  [CLOSEST-to-level first]
+
+  --- BULLISH ---
+    (-5.206, 0.565]: n=86  n=86  mean=-0.325%  median=0.908%  win_rate=65.1%  expectancy=-0.325%  PF=0.77  target_hit=70%  stop_hit=28%
+    (0.565, 1.42]: n=77  n=77  mean=-1.089%  median=-2.494%  win_rate=42.9%  expectancy=-1.089%  PF=0.53  target_hit=40%  stop_hit=57%
+    (1.42, 2.937]: n=100  n=100  mean=-0.406%  median=-2.491%  win_rate=45.0%  expectancy=-0.406%  PF=0.8  target_hit=45%  stop_hit=55%
+    (2.937, 15.403]: n=61  n=61  mean=0.731%  median=-1.702%  win_rate=47.5%  expectancy=0.731%  PF=1.33  target_hit=43%  stop_hit=52%
+
+  --- STRONG_BEARISH ---
+    (-5.206, 0.565]: n=13  n=13  mean=0.902%  median=1.098%  win_rate=92.3%  expectancy=0.902%  PF=4.45  target_hit=92%  stop_hit=8%
+    (0.565, 1.42]: n=10  n=10  mean=2.26%  median=2.022%  win_rate=90.0%  expectancy=2.26%  PF=3.47  target_hit=90%  stop_hit=10%
+    (1.42, 2.937]: n=12  n=12  mean=0.159%  median=-0.157%  win_rate=50.0%  expectancy=0.159%  PF=1.08  target_hit=50%  stop_hit=50%
+    (2.937, 15.403]: n=13  n=13  mean=0.234%  median=-3.551%  win_rate=46.2%  expectancy=0.234%  PF=1.06  target_hit=31%  stop_hit=54%
+
+  --- WITHIN-BUCKET: does STRONG_BEARISH beat BULLISH at the SAME Resistance-room level? ---
+    (-5.206, 0.565]:  BULLISH n=86 n=86  mean=-0.325%  median=0.908%  win_rate=65.1%  expectancy=-0.325%  PF=0.77  |  STRONG_BEARISH n=13 n=13  mean=0.902%  median=1.098%  win_rate=92.3%  expectancy=0.902%  PF=4.45  |  exp_gap=+1.23pp  win_gap=+27.2pp  [SMALL SAMPLE]
+    (0.565, 1.42]:  BULLISH n=77 n=77  mean=-1.089%  median=-2.494%  win_rate=42.9%  expectancy=-1.089%  PF=0.53  |  STRONG_BEARISH n=10 n=10  mean=2.26%  median=2.022%  win_rate=90.0%  expectancy=2.26%  PF=3.47  |  exp_gap=+3.35pp  win_gap=+47.1pp  [SMALL SAMPLE]
+    (1.42, 2.937]:  BULLISH n=100 n=100  mean=-0.406%  median=-2.491%  win_rate=45.0%  expectancy=-0.406%  PF=0.8  |  STRONG_BEARISH n=12 n=12  mean=0.159%  median=-0.157%  win_rate=50.0%  expectancy=0.159%  PF=1.08  |  exp_gap=+0.57pp  win_gap=+5.0pp  [SMALL SAMPLE]
+    (2.937, 15.403]:  BULLISH n=61 n=61  mean=0.731%  median=-1.702%  win_rate=47.5%  expectancy=0.731%  PF=1.33  |  STRONG_BEARISH n=13 n=13  mean=0.234%  median=-3.551%  win_rate=46.2%  expectancy=0.234%  PF=1.06  |  exp_gap=-0.50pp  win_gap=-1.3pp  [SMALL SAMPLE]
+
+### SECTION 4: 20d-resistance distance vs forward returns, independent of regime (master dataset, all signal-days) ###
+
+  --- Horizon 1d --- (corr=0.023, n=48552)
+    (-5.430000000000001, 1.548]: n=9712  n=9712  mean=-0.15%  median=-0.204%  win_rate=44.8%  expectancy=-0.15%  PF=0.82
+    (1.548, 3.218]: n=9710  n=9710  mean=-0.05%  median=-0.06%  win_rate=48.4%  expectancy=-0.05%  PF=0.93
+    (3.218, 5.377]: n=9710  n=9710  mean=-0.029%  median=-0.044%  win_rate=48.7%  expectancy=-0.029%  PF=0.96
+    (5.377, 8.872]: n=9710  n=9710  mean=0.041%  median=-0.062%  win_rate=48.3%  expectancy=0.041%  PF=1.05
+    (8.872, 87.053]: n=9710  n=9710  mean=-0.007%  median=-0.057%  win_rate=48.9%  expectancy=-0.007%  PF=0.99
+    Monotonicity: NOT monotonic
+
+  --- Horizon 5d --- (corr=0.041, n=48552)
+    (-5.430000000000001, 1.548]: n=9712  n=9712  mean=-0.354%  median=-0.326%  win_rate=45.3%  expectancy=-0.354%  PF=0.77
+    (1.548, 3.218]: n=9710  n=9710  mean=-0.133%  median=-0.093%  win_rate=48.4%  expectancy=-0.133%  PF=0.91
+    (3.218, 5.377]: n=9710  n=9710  mean=0.145%  median=0.156%  win_rate=52.1%  expectancy=0.145%  PF=1.11
+    (5.377, 8.872]: n=9710  n=9710  mean=0.115%  median=0.047%  win_rate=50.5%  expectancy=0.115%  PF=1.08
+    (8.872, 87.053]: n=9710  n=9710  mean=0.163%  median=0.0%  win_rate=50.0%  expectancy=0.163%  PF=1.1
+    Monotonicity: NOT monotonic
+
+  --- Horizon 10d --- (corr=0.052, n=48552)
+    (-5.430000000000001, 1.548]: n=9712  n=9712  mean=-0.406%  median=-0.411%  win_rate=46.7%  expectancy=-0.406%  PF=0.81
+    (1.548, 3.218]: n=9710  n=9710  mean=-0.216%  median=-0.14%  win_rate=48.1%  expectancy=-0.216%  PF=0.89
+    (3.218, 5.377]: n=9710  n=9710  mean=0.217%  median=0.214%  win_rate=51.9%  expectancy=0.217%  PF=1.12
+    (5.377, 8.872]: n=9710  n=9710  mean=0.225%  median=0.25%  win_rate=52.0%  expectancy=0.225%  PF=1.12
+    (8.872, 87.053]: n=9710  n=9710  mean=0.363%  median=0.206%  win_rate=51.2%  expectancy=0.363%  PF=1.16
+    Monotonicity: monotonic increasing
+
+  --- Horizon 20d --- (corr=0.061, n=48552)
+    (-5.430000000000001, 1.548]: n=9712  n=9712  mean=-0.519%  median=-0.496%  win_rate=46.7%  expectancy=-0.519%  PF=0.82
+    (1.548, 3.218]: n=9710  n=9710  mean=-0.289%  median=-0.017%  win_rate=49.9%  expectancy=-0.289%  PF=0.9
+    (3.218, 5.377]: n=9710  n=9710  mean=0.258%  median=0.277%  win_rate=51.7%  expectancy=0.258%  PF=1.1
+    (5.377, 8.872]: n=9710  n=9710  mean=0.352%  median=0.298%  win_rate=51.8%  expectancy=0.352%  PF=1.14
+    (8.872, 87.053]: n=9710  n=9710  mean=0.738%  median=0.628%  win_rate=53.2%  expectancy=0.738%  PF=1.25
+    Monotonicity: monotonic increasing
+
+  --- Horizon 60d --- (corr=0.082, n=48552)
+    (-5.430000000000001, 1.548]: n=9712  n=9712  mean=-1.297%  median=-1.537%  win_rate=44.6%  expectancy=-1.297%  PF=0.74
+    (1.548, 3.218]: n=9710  n=9710  mean=-0.52%  median=-0.725%  win_rate=47.1%  expectancy=-0.52%  PF=0.89
+    (3.218, 5.377]: n=9710  n=9710  mean=0.407%  median=0.383%  win_rate=51.6%  expectancy=0.407%  PF=1.1
+    (5.377, 8.872]: n=9710  n=9710  mean=0.491%  median=0.319%  win_rate=51.4%  expectancy=0.491%  PF=1.11
+    (8.872, 87.053]: n=9710  n=9710  mean=2.059%  median=2.089%  win_rate=55.9%  expectancy=2.059%  PF=1.47
+    Monotonicity: monotonic increasing
+
+  --- Horizon 90d --- (corr=0.074, n=46286)
+    (-5.430000000000001, 1.548]: n=9712  n=9460  mean=-1.105%  median=-1.295%  win_rate=45.7%  expectancy=-1.105%  PF=0.81
+    (1.548, 3.218]: n=9710  n=9356  mean=-0.544%  median=-0.695%  win_rate=47.8%  expectancy=-0.544%  PF=0.9
+    (3.218, 5.377]: n=9710  n=9266  mean=0.208%  median=0.089%  win_rate=50.2%  expectancy=0.208%  PF=1.04
+    (5.377, 8.872]: n=9710  n=9012  mean=0.82%  median=0.674%  win_rate=52.3%  expectancy=0.82%  PF=1.16
+    (8.872, 87.053]: n=9710  n=9192  mean=2.585%  median=2.241%  win_rate=56.2%  expectancy=2.585%  PF=1.49
+    Monotonicity: monotonic increasing
+
+### SECTION 5: Resistance-room x Regime matrix ###
+  (-5.206, 0.565] + STRONG_BEARISH: n=13  n=13  mean=0.902%  median=1.098%  win_rate=92.3%  expectancy=0.902%  PF=4.45  [SMALL SAMPLE]
+  (-5.206, 0.565] + BULLISH: n=86  n=86  mean=-0.325%  median=0.908%  win_rate=65.1%  expectancy=-0.325%  PF=0.77
+  (0.565, 1.42] + STRONG_BEARISH: n=10  n=10  mean=2.26%  median=2.022%  win_rate=90.0%  expectancy=2.26%  PF=3.47  [SMALL SAMPLE]
+  (0.565, 1.42] + BULLISH: n=77  n=77  mean=-1.089%  median=-2.494%  win_rate=42.9%  expectancy=-1.089%  PF=0.53
+  (1.42, 2.937] + STRONG_BEARISH: n=12  n=12  mean=0.159%  median=-0.157%  win_rate=50.0%  expectancy=0.159%  PF=1.08  [SMALL SAMPLE]
+  (1.42, 2.937] + BULLISH: n=100  n=100  mean=-0.406%  median=-2.491%  win_rate=45.0%  expectancy=-0.406%  PF=0.8
+  (2.937, 15.403] + STRONG_BEARISH: n=13  n=13  mean=0.234%  median=-3.551%  win_rate=46.2%  expectancy=0.234%  PF=1.06  [SMALL SAMPLE]
+  (2.937, 15.403] + BULLISH: n=61  n=61  mean=0.731%  median=-1.702%  win_rate=47.5%  expectancy=0.731%  PF=1.33
+  Majority of trades fall in bucket: (1.42, 2.937] (112 of 372)
+
+### SECTION 6: 20d-resistance distance vs 52w-high distance -- which is the stronger explanatory variable? ###
+  1d: corr(dist_resistance20)=0.023  corr(dist_52w_high)=0.022
+  5d: corr(dist_resistance20)=0.041  corr(dist_52w_high)=0.036
+  10d: corr(dist_resistance20)=0.052  corr(dist_52w_high)=0.046
+  20d: corr(dist_resistance20)=0.061  corr(dist_52w_high)=0.057
+  60d: corr(dist_resistance20)=0.082  corr(dist_52w_high)=0.084
+  90d: corr(dist_resistance20)=0.074  corr(dist_52w_high)=0.079
+
+  Fraction of signal-days where resistance20 == 52w-high (within 0.5%): 25.9% (20d resistance is capped by / often coincides with the 52w high for stocks near multi-year highs)
+
+
+========== 52-WEEK-HIGH CONDITIONING (parallel to resistance20 above) ==========
+
+### SECTION 3: 52w-high-room buckets (common pooled-quantile boundaries, 4 bucket(s)) ###
+  Boundaries (pooled dist_52w_high_pct, %): [-4.51, 1.44, 4.44, 11.76, 122.81]  [CLOSEST-to-level first]
+
+  --- BULLISH ---
+    (-4.515000000000001, 1.436]: n=69  n=69  mean=-0.792%  median=0.89%  win_rate=59.4%  expectancy=-0.792%  PF=0.52  target_hit=64%  stop_hit=36%
+    (1.436, 4.444]: n=70  n=70  mean=0.076%  median=1.323%  win_rate=55.7%  expectancy=0.076%  PF=1.05  target_hit=54%  stop_hit=44%
+    (4.444, 11.756]: n=62  n=62  mean=-0.261%  median=-1.858%  win_rate=45.2%  expectancy=-0.261%  PF=0.88  target_hit=45%  stop_hit=53%
+    (11.756, 122.806]: n=123  n=123  mean=-0.344%  median=-2.288%  win_rate=44.7%  expectancy=-0.344%  PF=0.85  target_hit=42%  stop_hit=54%
+
+  --- STRONG_BEARISH ---
+    (-4.515000000000001, 1.436]: n=5  n=5  mean=0.263%  median=1.129%  win_rate=80.0%  expectancy=0.263%  PF=1.39  target_hit=80%  stop_hit=20%
+    (1.436, 4.444]: n=10  n=10  mean=0.747%  median=2.026%  win_rate=70.0%  expectancy=0.747%  PF=1.52  target_hit=70%  stop_hit=30%
+    (4.444, 11.756]: n=19  n=19  mean=-0.078%  median=1.304%  win_rate=57.9%  expectancy=-0.078%  PF=0.97  target_hit=58%  stop_hit=42%
+    (11.756, 122.806]: n=14  n=14  mean=2.282%  median=1.649%  win_rate=78.6%  expectancy=2.282%  PF=2.76  target_hit=64%  stop_hit=21%
+
+  --- WITHIN-BUCKET: does STRONG_BEARISH beat BULLISH at the SAME 52w-high-room level? ---
+    (-4.515000000000001, 1.436]:  BULLISH n=69 n=69  mean=-0.792%  median=0.89%  win_rate=59.4%  expectancy=-0.792%  PF=0.52  |  STRONG_BEARISH n=5 n=5  mean=0.263%  median=1.129%  win_rate=80.0%  expectancy=0.263%  PF=1.39  |  exp_gap=+1.06pp  win_gap=+20.6pp  [SMALL SAMPLE]
+    (1.436, 4.444]:  BULLISH n=70 n=70  mean=0.076%  median=1.323%  win_rate=55.7%  expectancy=0.076%  PF=1.05  |  STRONG_BEARISH n=10 n=10  mean=0.747%  median=2.026%  win_rate=70.0%  expectancy=0.747%  PF=1.52  |  exp_gap=+0.67pp  win_gap=+14.3pp  [SMALL SAMPLE]
+    (4.444, 11.756]:  BULLISH n=62 n=62  mean=-0.261%  median=-1.858%  win_rate=45.2%  expectancy=-0.261%  PF=0.88  |  STRONG_BEARISH n=19 n=19  mean=-0.078%  median=1.304%  win_rate=57.9%  expectancy=-0.078%  PF=0.97  |  exp_gap=+0.18pp  win_gap=+12.7pp
+    (11.756, 122.806]:  BULLISH n=123 n=123  mean=-0.344%  median=-2.288%  win_rate=44.7%  expectancy=-0.344%  PF=0.85  |  STRONG_BEARISH n=14 n=14  mean=2.282%  median=1.649%  win_rate=78.6%  expectancy=2.282%  PF=2.76  |  exp_gap=+2.63pp  win_gap=+33.9pp  [SMALL SAMPLE]
+
+### SECTION 4: 52-week-high distance vs forward returns, independent of regime (master dataset, all signal-days) ###
+
+  --- Horizon 1d --- (corr=0.022, n=48552)
+    (-4.515000000000001, 4.508]: n=9712  n=9712  mean=-0.141%  median=-0.135%  win_rate=46.4%  expectancy=-0.141%  PF=0.82
+    (4.508, 9.508]: n=9710  n=9710  mean=-0.027%  median=-0.063%  win_rate=48.4%  expectancy=-0.027%  PF=0.96
+    (9.508, 16.527]: n=9710  n=9710  mean=-0.001%  median=-0.057%  win_rate=48.6%  expectancy=-0.001%  PF=1.0
+    (16.527, 29.462]: n=9710  n=9710  mean=-0.053%  median=-0.086%  win_rate=47.8%  expectancy=-0.053%  PF=0.94
+    (29.462, 184.591]: n=9710  n=9710  mean=0.025%  median=-0.091%  win_rate=47.8%  expectancy=0.025%  PF=1.03
+    Monotonicity: NOT monotonic
+
+  --- Horizon 5d --- (corr=0.036, n=48552)
+    (-4.515000000000001, 4.508]: n=9712  n=9712  mean=-0.317%  median=-0.214%  win_rate=46.6%  expectancy=-0.317%  PF=0.79
+    (4.508, 9.508]: n=9710  n=9710  mean=0.025%  median=-0.065%  win_rate=49.2%  expectancy=0.025%  PF=1.02
+    (9.508, 16.527]: n=9710  n=9710  mean=0.085%  median=0.021%  win_rate=50.3%  expectancy=0.085%  PF=1.06
+    (16.527, 29.462]: n=9710  n=9710  mean=-0.01%  median=-0.037%  win_rate=49.5%  expectancy=-0.01%  PF=0.99
+    (29.462, 184.591]: n=9710  n=9710  mean=0.152%  median=0.068%  win_rate=50.7%  expectancy=0.152%  PF=1.09
+    Monotonicity: NOT monotonic
+
+  --- Horizon 10d --- (corr=0.046, n=48552)
+    (-4.515000000000001, 4.508]: n=9712  n=9712  mean=-0.357%  median=-0.259%  win_rate=47.1%  expectancy=-0.357%  PF=0.82
+    (4.508, 9.508]: n=9710  n=9710  mean=-0.009%  median=-0.087%  win_rate=49.1%  expectancy=-0.009%  PF=1.0
+    (9.508, 16.527]: n=9710  n=9710  mean=0.158%  median=0.205%  win_rate=51.6%  expectancy=0.158%  PF=1.08
+    (16.527, 29.462]: n=9710  n=9710  mean=0.06%  median=-0.013%  win_rate=50.0%  expectancy=0.06%  PF=1.03
+    (29.462, 184.591]: n=9710  n=9710  mean=0.33%  median=0.266%  win_rate=52.1%  expectancy=0.33%  PF=1.15
+    Monotonicity: NOT monotonic
+
+  --- Horizon 20d --- (corr=0.057, n=48552)
+    (-4.515000000000001, 4.508]: n=9712  n=9712  mean=-0.599%  median=-0.385%  win_rate=47.5%  expectancy=-0.599%  PF=0.79
+    (4.508, 9.508]: n=9710  n=9710  mean=-0.029%  median=-0.188%  win_rate=48.7%  expectancy=-0.029%  PF=0.99
+    (9.508, 16.527]: n=9710  n=9710  mean=0.394%  median=0.588%  win_rate=53.7%  expectancy=0.394%  PF=1.16
+    (16.527, 29.462]: n=9710  n=9710  mean=0.173%  median=0.131%  win_rate=50.6%  expectancy=0.173%  PF=1.06
+    (29.462, 184.591]: n=9710  n=9710  mean=0.601%  median=0.506%  win_rate=52.9%  expectancy=0.601%  PF=1.2
+    Monotonicity: NOT monotonic
+
+  --- Horizon 60d --- (corr=0.084, n=48552)
+    (-4.515000000000001, 4.508]: n=9712  n=9712  mean=-1.813%  median=-1.806%  win_rate=43.0%  expectancy=-1.813%  PF=0.63
+    (4.508, 9.508]: n=9710  n=9710  mean=-0.349%  median=-0.503%  win_rate=47.9%  expectancy=-0.349%  PF=0.92
+    (9.508, 16.527]: n=9710  n=9710  mean=0.351%  median=-0.038%  win_rate=49.9%  expectancy=0.351%  PF=1.08
+    (16.527, 29.462]: n=9710  n=9710  mean=1.127%  median=1.297%  win_rate=53.9%  expectancy=1.127%  PF=1.26
+    (29.462, 184.591]: n=9710  n=9710  mean=1.824%  median=1.797%  win_rate=55.9%  expectancy=1.824%  PF=1.39
+    Monotonicity: monotonic increasing
+
+  --- Horizon 90d --- (corr=0.079, n=46286)
+    (-4.515000000000001, 4.508]: n=9712  n=9328  mean=-2.768%  median=-2.828%  win_rate=39.1%  expectancy=-2.768%  PF=0.56
+    (4.508, 9.508]: n=9710  n=9398  mean=-0.076%  median=-0.139%  win_rate=49.4%  expectancy=-0.076%  PF=0.99
+    (9.508, 16.527]: n=9710  n=9310  mean=0.927%  median=0.727%  win_rate=52.2%  expectancy=0.927%  PF=1.19
+    (16.527, 29.462]: n=9710  n=9164  mean=1.574%  median=1.886%  win_rate=55.3%  expectancy=1.574%  PF=1.3
+    (29.462, 184.591]: n=9710  n=9086  mean=2.312%  median=1.911%  win_rate=56.1%  expectancy=2.312%  PF=1.4
+    Monotonicity: monotonic increasing
+
+### SECTION 5: 52w-high-room x Regime matrix ###
+  (-4.515000000000001, 1.436] + STRONG_BEARISH: n=5  n=5  mean=0.263%  median=1.129%  win_rate=80.0%  expectancy=0.263%  PF=1.39  [SMALL SAMPLE]
+  (-4.515000000000001, 1.436] + BULLISH: n=69  n=69  mean=-0.792%  median=0.89%  win_rate=59.4%  expectancy=-0.792%  PF=0.52
+  (1.436, 4.444] + STRONG_BEARISH: n=10  n=10  mean=0.747%  median=2.026%  win_rate=70.0%  expectancy=0.747%  PF=1.52  [SMALL SAMPLE]
+  (1.436, 4.444] + BULLISH: n=70  n=70  mean=0.076%  median=1.323%  win_rate=55.7%  expectancy=0.076%  PF=1.05
+  (4.444, 11.756] + STRONG_BEARISH: n=19  n=19  mean=-0.078%  median=1.304%  win_rate=57.9%  expectancy=-0.078%  PF=0.97  [SMALL SAMPLE]
+  (4.444, 11.756] + BULLISH: n=62  n=62  mean=-0.261%  median=-1.858%  win_rate=45.2%  expectancy=-0.261%  PF=0.88
+  (11.756, 122.806] + STRONG_BEARISH: n=14  n=14  mean=2.282%  median=1.649%  win_rate=78.6%  expectancy=2.282%  PF=2.76  [SMALL SAMPLE]
+  (11.756, 122.806] + BULLISH: n=123  n=123  mean=-0.344%  median=-2.288%  win_rate=44.7%  expectancy=-0.344%  PF=0.85
+  Majority of trades fall in bucket: (11.756, 122.806] (137 of 372)
+
+### SECTION 7: Target/stop geometry vs resistance-room bucket ###
+
+  --- BULLISH ---
+    (-5.206, 0.565] (n=86): target_dist=2.11%  stop_dist=4.85%  ratio=0.44  target_hit=70%(avg_days=5.0)  stop_hit=28%(avg_days=11.6)  timeout=2%
+    (0.565, 1.42] (n=77): target_dist=2.85%  stop_dist=4.36%  ratio=0.65  target_hit=40%(avg_days=9.8)  stop_hit=57%(avg_days=8.1)  timeout=3%
+    (1.42, 2.937] (n=100): target_dist=3.78%  stop_dist=4.11%  ratio=0.92  target_hit=45%(avg_days=13.9)  stop_hit=55%(avg_days=9.4)  timeout=0%
+    (2.937, 15.403] (n=61): target_dist=6.39%  stop_dist=4.59%  ratio=1.39  target_hit=43%(avg_days=20.6)  stop_hit=52%(avg_days=9.1)  timeout=5%
+
+  --- STRONG_BEARISH ---
+    (-5.206, 0.565] (n=13): target_dist=1.27%  stop_dist=4.52%  ratio=0.28  target_hit=92%(avg_days=3.8)  stop_hit=8%(avg_days=1.0)  timeout=0%
+    (0.565, 1.42] (n=10): target_dist=4.32%  stop_dist=5.12%  ratio=0.84  target_hit=90%(avg_days=16.0)  stop_hit=10%(avg_days=23.0)  timeout=0%
+    (1.42, 2.937] (n=12): target_dist=3.69%  stop_dist=5.14%  ratio=0.72  target_hit=50%(avg_days=18.3)  stop_hit=50%(avg_days=7.0)  timeout=0%
+    (2.937, 15.403] (n=13): target_dist=9.07%  stop_dist=7.45%  ratio=1.22  target_hit=31%(avg_days=26.5)  stop_hit=54%(avg_days=29.3)  timeout=15%
+
+### Controlling for RRQuality ###
+  Within BULLISH:
+    RRQuality LOW  / Resistance-room CLOSE(<=med): n=145  n=145  mean=-0.764%  median=0.808%  win_rate=55.9%  expectancy=-0.764%  PF=0.54
+    RRQuality HIGH / Resistance-room CLOSE(<=med): n=18  n=18  mean=-0.057%  median=-3.4%  win_rate=44.4%  expectancy=-0.057%  PF=0.98
+    RRQuality LOW  / Resistance-room FAR(>med)   : n=100  n=100  mean=-0.352%  median=-2.177%  win_rate=47.0%  expectancy=-0.352%  PF=0.82
+    RRQuality HIGH / Resistance-room FAR(>med)   : n=61  n=61  mean=0.643%  median=-2.116%  win_rate=44.3%  expectancy=0.643%  PF=1.27
+  Within STRONG_BEARISH:
+    RRQuality LOW  / Resistance-room CLOSE(<=med): n=22  n=22  mean=1.975%  median=1.499%  win_rate=95.5%  expectancy=1.975%  PF=13.8
+    RRQuality HIGH / Resistance-room CLOSE(<=med): n=1  n=1  mean=-9.133%  median=-9.133%  win_rate=0.0%  expectancy=-9.133%  PF=0.0  [SMALL SAMPLE / UNTESTABLE]
+    RRQuality LOW  / Resistance-room FAR(>med)   : n=21  n=21  mean=-1.005%  median=-2.976%  win_rate=42.9%  expectancy=-1.005%  PF=0.69
+    RRQuality HIGH / Resistance-room FAR(>med)   : n=4  n=4  mean=6.512%  median=9.944%  win_rate=75.0%  expectancy=6.512%  PF=4.77  [SMALL SAMPLE / UNTESTABLE]
+
+### Controlling for Momentum ###
+  Within BULLISH:
+    Momentum LOW  / Resistance-room CLOSE(<=med): n=136  n=136  mean=-0.712%  median=0.765%  win_rate=55.9%  expectancy=-0.712%  PF=0.57
+    Momentum HIGH / Resistance-room CLOSE(<=med): n=27  n=27  mean=-0.554%  median=-2.801%  win_rate=48.1%  expectancy=-0.554%  PF=0.8
+    Momentum LOW  / Resistance-room FAR(>med)   : n=114  n=114  mean=-0.583%  median=-2.386%  win_rate=42.1%  expectancy=-0.583%  PF=0.72
+    Momentum HIGH / Resistance-room FAR(>med)   : n=47  n=47  mean=1.5%  median=2.802%  win_rate=55.3%  expectancy=1.5%  PF=1.73
+  Within STRONG_BEARISH:
+    Momentum LOW  / Resistance-room CLOSE(<=med): n=9  n=9  mean=0.123%  median=1.304%  win_rate=88.9%  expectancy=0.123%  PF=1.12  [SMALL SAMPLE / UNTESTABLE]
+    Momentum HIGH / Resistance-room CLOSE(<=med): n=14  n=14  mean=2.372%  median=1.668%  win_rate=92.9%  expectancy=2.372%  PF=10.78  [SMALL SAMPLE / UNTESTABLE]
+    Momentum LOW  / Resistance-room FAR(>med)   : n=12  n=12  mean=0.917%  median=-0.241%  win_rate=50.0%  expectancy=0.917%  PF=1.34  [SMALL SAMPLE / UNTESTABLE]
+    Momentum HIGH / Resistance-room FAR(>med)   : n=13  n=13  mean=-0.466%  median=-2.808%  win_rate=46.2%  expectancy=-0.466%  PF=0.86  [SMALL SAMPLE / UNTESTABLE]
+
+### SECTION 10: Time-split robustness (same 3-way chronological split as prior audits) ###
+
+  Early (2024-07-09 to 2025-01-31):
+    BULLISH: n=65  n=65  mean=-0.732%  median=1.073%  win_rate=53.8%  expectancy=-0.732%  PF=0.65  mean_dist_resistance=1.82%
+    STRONG_BEARISH: n=25  n=25  mean=0.213%  median=1.304%  win_rate=60.0%  expectancy=0.213%  PF=1.09  mean_dist_resistance=3.21%
+
+  Middle (2025-01-31 to 2025-10-17):
+    BULLISH: n=149  n=149  mean=-0.115%  median=0.545%  win_rate=52.3%  expectancy=-0.115%  PF=0.94  mean_dist_resistance=1.60%
+    STRONG_BEARISH: n=23  n=23  mean=1.476%  median=1.59%  win_rate=78.3%  expectancy=1.476%  PF=2.33  mean_dist_resistance=1.88%
+
+  Recent (2025-10-20 to 2026-06-03):
+    BULLISH: n=110  n=110  mean=-0.391%  median=-1.841%  win_rate=45.5%  expectancy=-0.391%  PF=0.81  mean_dist_resistance=2.07%
+    STRONG_BEARISH: no trades
+
+### SECTION 11: Symbol robustness (reusing prior audits' exact exclusion list) ###
+  BULLISH: baseline n=324 n=324  mean=-0.333%  median=0.378%  win_rate=50.3%  expectancy=-0.333%  PF=0.83  |  excluding ['LT', 'BAJFINANCE', 'JSWSTEEL']: n=287 n=287  mean=-0.412%  median=-0.889%  win_rate=49.5%  expectancy=-0.412%  PF=0.8
+    Mean dist_resistance_pct (baseline vs excl): 1.81%  vs  1.86%
+  STRONG_BEARISH: baseline n=48 n=48  mean=0.818%  median=1.484%  win_rate=68.8%  expectancy=0.818%  PF=1.45  |  excluding ['WIPRO', 'HINDALCO', 'TATASTEEL']: n=37 n=37  mean=1.154%  median=1.498%  win_rate=70.3%  expectancy=1.154%  PF=1.68
+    Mean dist_resistance_pct (baseline vs excl): 2.57%  vs  2.89%
+
+### SECTION 12: Sector robustness ###
+  BULLISH sector spread: {'UNMAPPED': 84, '^CNXMETAL': 37, '^CNXAUTO': 36, '^NSEBANK': 33, '^CNXIT': 29, '^CNXFMCG': 28, '^CNXENERGY': 24, '^CNXINFRA': 21, '^CNXCONSUM': 17, '^CNXPHARMA': 15}
+  STRONG_BEARISH sector spread: {'UNMAPPED': 14, '^CNXIT': 9, '^CNXAUTO': 9, '^CNXMETAL': 7, '^NSEBANK': 6, '^CNXPHARMA': 2, '^CNXINFRA': 1}

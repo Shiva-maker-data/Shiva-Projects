@@ -1,0 +1,267 @@
+RR-QUALITY INDEPENDENCE EXPERIMENT (research only, no production changes)
+Master dataset: 48552 rows
+
+
+======================================================================
+CATEGORY: Short-Term (Swing)
+======================================================================
+
+### SECTION 1: RR-Quality standalone (all horizons) ###
+  Short-Term (Swing) -- 4 buckets formed (qcut q=5, duplicates dropped where RR-Quality is discretized)
+
+  --- Horizon: 1d ---
+    (0.019, 0.08]: n=4953  mean=-0.11%  median=-0.193%  win_rate=45.5%  expectancy=-0.11%  PF=0.87
+    (0.08, 0.13]: n=11904  mean=-0.015%  median=-0.07%  win_rate=48.2%  expectancy=-0.015%  PF=0.98
+    (0.13, 0.81]: n=2580  mean=-0.043%  median=-0.106%  win_rate=47.5%  expectancy=-0.043%  PF=0.95
+    (0.81, 1.0]: n=4839  mean=-0.024%  median=-0.018%  win_rate=49.5%  expectancy=-0.024%  PF=0.97
+    Monotonicity (1d): NOT monotonic
+
+  --- Horizon: 5d ---
+    (0.019, 0.08]: n=4953  mean=-0.282%  median=-0.306%  win_rate=46.0%  expectancy=-0.282%  PF=0.83
+    (0.08, 0.13]: n=11904  mean=0.045%  median=0.014%  win_rate=50.1%  expectancy=0.045%  PF=1.03
+    (0.13, 0.81]: n=2580  mean=0.013%  median=-0.084%  win_rate=48.9%  expectancy=0.013%  PF=1.01
+    (0.81, 1.0]: n=4839  mean=0.107%  median=0.044%  win_rate=50.7%  expectancy=0.107%  PF=1.07
+    Monotonicity (5d): NOT monotonic
+
+  --- Horizon: 10d ---
+    (0.019, 0.08]: n=4953  mean=-0.274%  median=-0.267%  win_rate=47.8%  expectancy=-0.274%  PF=0.87
+    (0.08, 0.13]: n=11904  mean=0.021%  median=-0.052%  win_rate=49.5%  expectancy=0.021%  PF=1.01
+    (0.13, 0.81]: n=2580  mean=0.152%  median=0.091%  win_rate=50.7%  expectancy=0.152%  PF=1.07
+    (0.81, 1.0]: n=4839  mean=0.331%  median=0.358%  win_rate=52.9%  expectancy=0.331%  PF=1.17
+    Monotonicity (10d): monotonic increasing
+
+  --- Horizon: 20d ---
+    (0.019, 0.08]: n=4953  mean=-0.432%  median=-0.448%  win_rate=47.3%  expectancy=-0.432%  PF=0.86
+    (0.08, 0.13]: n=11904  mean=0.066%  median=0.121%  win_rate=50.6%  expectancy=0.066%  PF=1.02
+    (0.13, 0.81]: n=2580  mean=0.361%  median=0.391%  win_rate=52.1%  expectancy=0.361%  PF=1.14
+    (0.81, 1.0]: n=4839  mean=0.629%  median=0.521%  win_rate=53.4%  expectancy=0.629%  PF=1.25
+    Monotonicity (20d): monotonic increasing
+
+  --- Horizon: 60d ---
+    (0.019, 0.08]: n=4953  mean=-0.534%  median=-0.945%  win_rate=46.9%  expectancy=-0.534%  PF=0.89
+    (0.08, 0.13]: n=11904  mean=-0.009%  median=-0.072%  win_rate=49.7%  expectancy=-0.009%  PF=1.0
+    (0.13, 0.81]: n=2580  mean=1.061%  median=0.792%  win_rate=53.2%  expectancy=1.061%  PF=1.24
+    (0.81, 1.0]: n=4839  mean=1.147%  median=0.73%  win_rate=52.9%  expectancy=1.147%  PF=1.26
+    Monotonicity (60d): monotonic increasing
+
+  --- Horizon: 90d ---
+    (0.019, 0.08]: n=4789  mean=-0.345%  median=-0.784%  win_rate=47.6%  expectancy=-0.345%  PF=0.94
+    (0.08, 0.13]: n=11378  mean=0.045%  median=-0.194%  win_rate=49.4%  expectancy=0.045%  PF=1.01
+    (0.13, 0.81]: n=2429  mean=1.42%  median=0.931%  win_rate=53.1%  expectancy=1.42%  PF=1.27
+    (0.81, 1.0]: n=4547  mean=1.42%  median=1.301%  win_rate=54.3%  expectancy=1.42%  PF=1.26
+    Monotonicity (90d): monotonic increasing
+
+### SECTIONS 2/3: Conditional + interaction analysis ###
+
+--- Short-Term (Swing): RR-Quality conditional on each factor (fwd_ret_20d) ---
+
+  vs Momentum:
+    RR HIGH / Momentum LOW : n=6024  mean=0.62%  median=0.523%  win_rate=53.4%  expectancy=0.62%  PF=1.25
+    RR HIGH / Momentum HIGH: n=42  mean=-0.433%  median=0.783%  win_rate=57.1%  expectancy=-0.433%  PF=0.84
+    RR LOW  / Momentum LOW : n=12846  mean=-0.021%  median=0.042%  win_rate=50.2%  expectancy=-0.021%  PF=0.99
+    RR LOW  / Momentum HIGH: n=5364  mean=-0.154%  median=-0.207%  win_rate=48.6%  expectancy=-0.154%  PF=0.95
+
+  vs Structure/Trend:
+    RR HIGH / Structure/Trend LOW : n=6066  mean=0.613%  median=0.526%  win_rate=53.4%  expectancy=0.613%  PF=1.25
+    RR HIGH / Structure/Trend HIGH: n=0
+    RR LOW  / Structure/Trend LOW : n=17331  mean=-0.02%  median=0.02%  win_rate=50.1%  expectancy=-0.02%  PF=0.99
+    RR LOW  / Structure/Trend HIGH: n=879  mean=-0.857%  median=-0.8%  win_rate=43.1%  expectancy=-0.857%  PF=0.73
+
+  vs Relative Strength:
+    RR HIGH / Relative Strength LOW : n=5915  mean=0.587%  median=0.502%  win_rate=53.2%  expectancy=0.587%  PF=1.24
+    RR HIGH / Relative Strength HIGH: n=151  mean=1.641%  median=2.23%  win_rate=60.9%  expectancy=1.641%  PF=1.72
+    RR LOW  / Relative Strength LOW : n=12356  mean=-0.01%  median=-0.125%  win_rate=49.1%  expectancy=-0.01%  PF=1.0
+    RR LOW  / Relative Strength HIGH: n=5854  mean=-0.166%  median=0.215%  win_rate=51.2%  expectancy=-0.166%  PF=0.95
+
+  vs Market Regime:
+    RR HIGH / Market Regime LOW : n=6066  mean=0.613%  median=0.526%  win_rate=53.4%  expectancy=0.613%  PF=1.25
+    RR HIGH / Market Regime HIGH: n=0
+    RR LOW  / Market Regime LOW : n=18210  mean=-0.06%  median=-0.039%  win_rate=49.7%  expectancy=-0.06%  PF=0.98
+    RR LOW  / Market Regime HIGH: n=0
+
+### SECTION 5: Anti-trend hypothesis ###
+
+--- Anti-trend hypothesis: HIGH RR + LOW Momentum vs HIGH RR + HIGH Momentum ---
+  1d:  HIGH_RR+LOW_Mom: n=6024  mean=-0.034%  median=-0.047%  win_rate=48.9%  expectancy=-0.034%  PF=0.96
+        HIGH_RR+HIGH_Mom: n=42  mean=0.412%  median=-0.189%  win_rate=47.6%  expectancy=0.412%  PF=1.54
+        LOW_RR+LOW_Mom:  n=12846  mean=-0.052%  median=-0.097%  win_rate=47.6%  expectancy=-0.052%  PF=0.94
+        LOW_RR+HIGH_Mom: n=5364  mean=-0.02%  median=-0.109%  win_rate=47.2%  expectancy=-0.02%  PF=0.98
+  5d:  HIGH_RR+LOW_Mom: n=6024  mean=0.097%  median=0.017%  win_rate=50.3%  expectancy=0.097%  PF=1.07
+        HIGH_RR+HIGH_Mom: n=42  mean=0.896%  median=0.509%  win_rate=59.5%  expectancy=0.896%  PF=1.92
+        LOW_RR+LOW_Mom:  n=12846  mean=-0.02%  median=-0.056%  win_rate=49.2%  expectancy=-0.02%  PF=0.99
+        LOW_RR+HIGH_Mom: n=5364  mean=-0.126%  median=-0.152%  win_rate=48.3%  expectancy=-0.126%  PF=0.92
+  10d:  HIGH_RR+LOW_Mom: n=6024  mean=0.315%  median=0.336%  win_rate=52.7%  expectancy=0.315%  PF=1.16
+        HIGH_RR+HIGH_Mom: n=42  mean=0.354%  median=-0.035%  win_rate=50.0%  expectancy=0.354%  PF=1.19
+        LOW_RR+LOW_Mom:  n=12846  mean=-0.017%  median=-0.074%  win_rate=49.3%  expectancy=-0.017%  PF=0.99
+        LOW_RR+HIGH_Mom: n=5364  mean=-0.15%  median=-0.174%  win_rate=48.5%  expectancy=-0.15%  PF=0.93
+  20d:  HIGH_RR+LOW_Mom: n=6024  mean=0.62%  median=0.523%  win_rate=53.4%  expectancy=0.62%  PF=1.25
+        HIGH_RR+HIGH_Mom: n=42  mean=-0.433%  median=0.783%  win_rate=57.1%  expectancy=-0.433%  PF=0.84
+        LOW_RR+LOW_Mom:  n=12846  mean=-0.021%  median=0.042%  win_rate=50.2%  expectancy=-0.021%  PF=0.99
+        LOW_RR+HIGH_Mom: n=5364  mean=-0.154%  median=-0.207%  win_rate=48.6%  expectancy=-0.154%  PF=0.95
+  60d:  HIGH_RR+LOW_Mom: n=6024  mean=1.176%  median=0.827%  win_rate=53.1%  expectancy=1.176%  PF=1.27
+        HIGH_RR+HIGH_Mom: n=42  mean=0.197%  median=0.24%  win_rate=50.0%  expectancy=0.197%  PF=1.04
+        LOW_RR+LOW_Mom:  n=12846  mean=-0.121%  median=-0.284%  win_rate=48.9%  expectancy=-0.121%  PF=0.97
+        LOW_RR+HIGH_Mom: n=5364  mean=-0.0%  median=-0.065%  win_rate=49.7%  expectancy=-0.0%  PF=1.0
+  90d:  HIGH_RR+LOW_Mom: n=5661  mean=1.456%  median=1.301%  win_rate=54.3%  expectancy=1.456%  PF=1.27
+        HIGH_RR+HIGH_Mom: n=41  mean=3.543%  median=1.05%  win_rate=58.5%  expectancy=3.543%  PF=1.97
+        LOW_RR+LOW_Mom:  n=12255  mean=-0.26%  median=-0.554%  win_rate=48.2%  expectancy=-0.26%  PF=0.95
+        LOW_RR+HIGH_Mom: n=5186  mean=0.687%  median=0.363%  win_rate=51.2%  expectancy=0.687%  PF=1.13
+
+### SECTION 6: Market regime conditioning ###
+
+--- RR-Quality (HIGH vs LOW) by market regime (fwd_ret_20d) ---
+  STRONG_BULLISH: HIGH RR n=873  mean=-0.061%  median=-0.093%  win_rate=49.3%  expectancy=-0.061%  PF=0.97  |  LOW RR n=5859  mean=-0.108%  median=-0.223%  win_rate=48.3%  expectancy=-0.108%  PF=0.96
+  BULLISH: HIGH RR n=371  mean=0.777%  median=0.371%  win_rate=52.6%  expectancy=0.777%  PF=1.4  |  LOW RR n=2230  mean=0.139%  median=0.362%  win_rate=52.7%  expectancy=0.139%  PF=1.06
+  NEUTRAL: HIGH RR n=858  mean=1.0%  median=1.022%  win_rate=57.7%  expectancy=1.0%  PF=1.5  |  LOW RR n=2763  mean=-0.066%  median=-0.127%  win_rate=48.8%  expectancy=-0.066%  PF=0.98
+  BEARISH: HIGH RR n=1228  mean=-0.938%  median=-0.485%  win_rate=46.3%  expectancy=-0.938%  PF=0.72  |  LOW RR n=1679  mean=-1.539%  median=-1.526%  win_rate=42.1%  expectancy=-1.539%  PF=0.6
+  STRONG_BEARISH: HIGH RR n=1239  mean=0.742%  median=0.774%  win_rate=55.0%  expectancy=0.742%  PF=1.3  |  LOW RR n=1923  mean=1.158%  median=1.321%  win_rate=57.2%  expectancy=1.158%  PF=1.46
+  HIGH_VOLATILITY: HIGH RR n=1497  mean=1.91%  median=1.809%  win_rate=58.1%  expectancy=1.91%  PF=1.82  |  LOW RR n=3756  mean=-0.063%  median=0.13%  win_rate=50.5%  expectancy=-0.063%  PF=0.98
+
+--- Does RR-Quality level differ by regime? (mean RR-Quality fraction) ---
+regime
+BEARISH            0.456
+STRONG_BEARISH     0.429
+HIGH_VOLATILITY    0.336
+NEUTRAL            0.298
+BULLISH            0.220
+STRONG_BULLISH     0.204
+
+### SECTION 7: Time stability ###
+
+--- Time stability: RR-Quality HIGH vs LOW (fwd_ret_20d) per period ---
+  Early (2024-07-09 to 2025-02-21): HIGH RR n=2356  mean=-1.318%  median=-1.116%  win_rate=42.1%  expectancy=-1.318%  PF=0.62  |  LOW RR n=5736  mean=-1.188%  median=-1.092%  win_rate=43.9%  expectancy=-1.188%  PF=0.66
+  Middle (2025-02-21 to 2025-10-16): HIGH RR n=1636  mean=2.353%  median=1.744%  win_rate=65.3%  expectancy=2.353%  PF=2.72  |  LOW RR n=6456  mean=1.724%  median=1.229%  win_rate=58.7%  expectancy=1.724%  PF=2.04
+  Recent (2025-10-16 to 2026-06-08): HIGH RR n=2074  mean=1.435%  median=1.327%  win_rate=56.9%  expectancy=1.435%  PF=1.63  |  LOW RR n=6018  mean=-0.9%  median=-0.643%  win_rate=45.6%  expectancy=-0.9%  PF=0.73
+
+### SECTION 8: Symbol concentration ###
+
+--- Symbol concentration: leave-top-5-out (by count in HIGH-RR bucket) ---
+  Top 5 symbols in HIGH-RR bucket by count: ['TCS', 'TRENT', 'ASIANPAINT', 'TMPV', 'HEROMOTOCO']
+  Baseline (all symbols):        n=6066  mean=0.613%  median=0.526%  win_rate=53.4%  expectancy=0.613%  PF=1.25
+  Excluding those 5 symbols:     n=5239  mean=0.969%  median=0.873%  win_rate=55.5%  expectancy=0.969%  PF=1.44
+
+======================================================================
+CATEGORY: Long-Term
+======================================================================
+
+### SECTION 1: RR-Quality standalone (all horizons) ###
+  Long-Term -- 2 buckets formed (qcut q=5, duplicates dropped where RR-Quality is discretized)
+
+  --- Horizon: 1d ---
+    (0.009000000000000001, 0.09]: n=5445  mean=-0.114%  median=-0.117%  win_rate=47.0%  expectancy=-0.114%  PF=0.86
+    (0.09, 0.15]: n=18831  mean=-0.018%  median=-0.076%  win_rate=48.1%  expectancy=-0.018%  PF=0.98
+    Monotonicity (1d): insufficient buckets
+
+  --- Horizon: 5d ---
+    (0.009000000000000001, 0.09]: n=5445  mean=-0.271%  median=-0.215%  win_rate=46.7%  expectancy=-0.271%  PF=0.82
+    (0.09, 0.15]: n=18831  mean=0.062%  median=0.003%  win_rate=50.0%  expectancy=0.062%  PF=1.04
+    Monotonicity (5d): insufficient buckets
+
+  --- Horizon: 10d ---
+    (0.009000000000000001, 0.09]: n=5445  mean=-0.309%  median=-0.306%  win_rate=46.9%  expectancy=-0.309%  PF=0.85
+    (0.09, 0.15]: n=18831  mean=0.136%  median=0.108%  win_rate=50.9%  expectancy=0.136%  PF=1.07
+    Monotonicity (10d): insufficient buckets
+
+  --- Horizon: 20d ---
+    (0.009000000000000001, 0.09]: n=5445  mean=-0.582%  median=-0.442%  win_rate=46.9%  expectancy=-0.582%  PF=0.8
+    (0.09, 0.15]: n=18831  mean=0.308%  median=0.3%  win_rate=51.7%  expectancy=0.308%  PF=1.11
+    Monotonicity (20d): insufficient buckets
+
+  --- Horizon: 60d ---
+    (0.009000000000000001, 0.09]: n=5445  mean=-1.651%  median=-1.53%  win_rate=44.2%  expectancy=-1.651%  PF=0.66
+    (0.09, 0.15]: n=18831  mean=0.771%  median=0.47%  win_rate=51.8%  expectancy=0.771%  PF=1.17
+    Monotonicity (60d): insufficient buckets
+
+  --- Horizon: 90d ---
+    (0.009000000000000001, 0.09]: n=5207  mean=-2.646%  median=-2.619%  win_rate=40.1%  expectancy=-2.646%  PF=0.58
+    (0.09, 0.15]: n=17936  mean=1.257%  median=1.045%  win_rate=53.4%  expectancy=1.257%  PF=1.24
+    Monotonicity (90d): insufficient buckets
+
+### SECTIONS 2/3: Conditional + interaction analysis ###
+
+--- Long-Term: RR-Quality conditional on each factor (fwd_ret_20d) ---
+
+  vs Momentum:
+    RR HIGH / Momentum LOW : n=0
+    RR HIGH / Momentum HIGH: n=0
+    RR LOW  / Momentum LOW : n=24276  mean=0.108%  median=0.11%  win_rate=50.7%  expectancy=0.108%  PF=1.04
+    RR LOW  / Momentum HIGH: n=0
+
+  vs Structure/Trend:
+    RR HIGH / Structure/Trend LOW : n=0
+    RR HIGH / Structure/Trend HIGH: n=0
+    RR LOW  / Structure/Trend LOW : n=24276  mean=0.108%  median=0.11%  win_rate=50.7%  expectancy=0.108%  PF=1.04
+    RR LOW  / Structure/Trend HIGH: n=0
+
+  vs Relative Strength:
+    RR HIGH / Relative Strength LOW : n=0
+    RR HIGH / Relative Strength HIGH: n=0
+    RR LOW  / Relative Strength LOW : n=24276  mean=0.108%  median=0.11%  win_rate=50.7%  expectancy=0.108%  PF=1.04
+    RR LOW  / Relative Strength HIGH: n=0
+
+  vs Market Regime:
+    RR HIGH / Market Regime LOW : n=0
+    RR HIGH / Market Regime HIGH: n=0
+    RR LOW  / Market Regime LOW : n=24276  mean=0.108%  median=0.11%  win_rate=50.7%  expectancy=0.108%  PF=1.04
+    RR LOW  / Market Regime HIGH: n=0
+
+### SECTION 5: Anti-trend hypothesis ###
+
+--- Anti-trend hypothesis: HIGH RR + LOW Momentum vs HIGH RR + HIGH Momentum ---
+  1d:  HIGH_RR+LOW_Mom: n=0
+        HIGH_RR+HIGH_Mom: n=0
+        LOW_RR+LOW_Mom:  n=24276  mean=-0.039%  median=-0.086%  win_rate=47.8%  expectancy=-0.039%  PF=0.95
+        LOW_RR+HIGH_Mom: n=0
+  5d:  HIGH_RR+LOW_Mom: n=0
+        HIGH_RR+HIGH_Mom: n=0
+        LOW_RR+LOW_Mom:  n=24276  mean=-0.013%  median=-0.055%  win_rate=49.3%  expectancy=-0.013%  PF=0.99
+        LOW_RR+HIGH_Mom: n=0
+  10d:  HIGH_RR+LOW_Mom: n=0
+        HIGH_RR+HIGH_Mom: n=0
+        LOW_RR+LOW_Mom:  n=24276  mean=0.037%  median=-0.004%  win_rate=50.0%  expectancy=0.037%  PF=1.02
+        LOW_RR+HIGH_Mom: n=0
+  20d:  HIGH_RR+LOW_Mom: n=0
+        HIGH_RR+HIGH_Mom: n=0
+        LOW_RR+LOW_Mom:  n=24276  mean=0.108%  median=0.11%  win_rate=50.7%  expectancy=0.108%  PF=1.04
+        LOW_RR+HIGH_Mom: n=0
+  60d:  HIGH_RR+LOW_Mom: n=0
+        HIGH_RR+HIGH_Mom: n=0
+        LOW_RR+LOW_Mom:  n=24276  mean=0.228%  median=0.029%  win_rate=50.1%  expectancy=0.228%  PF=1.05
+        LOW_RR+HIGH_Mom: n=0
+  90d:  HIGH_RR+LOW_Mom: n=0
+        HIGH_RR+HIGH_Mom: n=0
+        LOW_RR+LOW_Mom:  n=23143  mean=0.379%  median=0.109%  win_rate=50.4%  expectancy=0.379%  PF=1.07
+        LOW_RR+HIGH_Mom: n=0
+
+### SECTION 6: Market regime conditioning ###
+
+--- RR-Quality (HIGH vs LOW) by market regime (fwd_ret_20d) ---
+  STRONG_BULLISH: HIGH RR n=0  |  LOW RR n=6732  mean=-0.102%  median=-0.199%  win_rate=48.5%  expectancy=-0.102%  PF=0.96
+  BULLISH: HIGH RR n=0  |  LOW RR n=2601  mean=0.23%  median=0.363%  win_rate=52.7%  expectancy=0.23%  PF=1.09
+  NEUTRAL: HIGH RR n=0  |  LOW RR n=3621  mean=0.186%  median=0.133%  win_rate=50.9%  expectancy=0.186%  PF=1.07
+  BEARISH: HIGH RR n=0  |  LOW RR n=2907  mean=-1.285%  median=-1.069%  win_rate=43.9%  expectancy=-1.285%  PF=0.65
+  STRONG_BEARISH: HIGH RR n=0  |  LOW RR n=3162  mean=0.995%  median=1.094%  win_rate=56.3%  expectancy=0.995%  PF=1.4
+  HIGH_VOLATILITY: HIGH RR n=0  |  LOW RR n=5253  mean=0.499%  median=0.53%  win_rate=52.7%  expectancy=0.499%  PF=1.16
+
+--- Does RR-Quality level differ by regime? (mean RR-Quality fraction) ---
+regime
+STRONG_BEARISH     0.140
+BEARISH            0.130
+HIGH_VOLATILITY    0.129
+NEUTRAL            0.127
+BULLISH            0.126
+STRONG_BULLISH     0.112
+
+### SECTION 7: Time stability ###
+
+--- Time stability: RR-Quality HIGH vs LOW (fwd_ret_20d) per period ---
+  Early (2024-07-09 to 2025-02-21): HIGH RR n=0  |  LOW RR n=8092  mean=-1.226%  median=-1.097%  win_rate=43.4%  expectancy=-1.226%  PF=0.65
+  Middle (2025-02-21 to 2025-10-16): HIGH RR n=0  |  LOW RR n=8092  mean=1.851%  median=1.384%  win_rate=60.1%  expectancy=1.851%  PF=2.16
+  Recent (2025-10-16 to 2026-06-08): HIGH RR n=0  |  LOW RR n=8092  mean=-0.301%  median=-0.242%  win_rate=48.5%  expectancy=-0.301%  PF=0.9
+
+### SECTION 8: Symbol concentration ###
+
+--- Symbol concentration: leave-top-5-out (by count in HIGH-RR bucket) ---
+  Top 5 symbols in HIGH-RR bucket by count: []
+  Baseline (all symbols):        n=0
+  Excluding those 5 symbols:     n=0

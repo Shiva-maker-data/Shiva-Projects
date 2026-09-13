@@ -1,0 +1,158 @@
+SUPPORT/RESISTANCE PROXIMITY EXPERIMENT (research only, no production changes)
+Trade dataset: 2083 rows | Master dataset: 48552 rows
+BULLISH n=324  STRONG_BEARISH n=48
+
+### SECTION 2: Distance to support/resistance -- STRONG_BEARISH vs BULLISH ###
+
+  BULLISH (n=324):
+    Distance to support: mean=9.46%  median=9.56%  std=4.21%
+    Distance to resistance: mean=1.81%  median=1.42%  std=1.97%
+    Closer to: {'RESISTANCE': 93.2, 'SUPPORT': 6.8}
+
+  STRONG_BEARISH (n=48):
+    Distance to support: mean=8.75%  median=8.00%  std=3.49%
+    Distance to resistance: mean=2.57%  median=1.47%  std=3.41%
+    Closer to: {'RESISTANCE': 89.6, 'SUPPORT': 10.4}
+
+### SECTION 3: Support-proximity buckets (common pooled-quantile boundaries) ###
+  Boundaries (pooled dist_support_pct, %): [-2.8, 6.72, 10.5, 28.55]  [3 bucket(s) -- CLOSEST-to-support first]
+
+  --- BULLISH ---
+    (-2.799, 6.723]: n=101  mean=-0.217%  median=-2.029%  win_rate=44.6%  expectancy=-0.217%  PF=0.89  target_hit=44%  stop_hit=55%
+    (6.723, 10.503]: n=89  mean=0.073%  median=0.89%  win_rate=56.2%  expectancy=0.073%  PF=1.05  target_hit=56%  stop_hit=43%
+    (10.503, 28.548]: n=134  mean=-0.689%  median=0.378%  win_rate=50.7%  expectancy=-0.689%  PF=0.69  target_hit=51%  stop_hit=46%
+
+  --- STRONG_BEARISH ---
+    (-2.799, 6.723]: n=18  mean=0.957%  median=1.402%  win_rate=61.1%  expectancy=0.957%  PF=1.44  target_hit=61%  stop_hit=39%
+    (6.723, 10.503]: n=16  mean=2.791%  median=1.98%  win_rate=87.5%  expectancy=2.791%  PF=5.33  target_hit=75%  stop_hit=12%
+    (10.503, 28.548]: n=14  mean=-1.616%  median=0.49%  win_rate=57.1%  expectancy=-1.616%  PF=0.4  target_hit=57%  stop_hit=43%
+
+  --- WITHIN-BUCKET: does STRONG_BEARISH beat BULLISH at the SAME support-proximity level? ---
+    (-2.799, 6.723]:  BULLISH n=101  mean=-0.217%  median=-2.029%  win_rate=44.6%  expectancy=-0.217%  PF=0.89  |  STRONG_BEARISH n=18  mean=0.957%  median=1.402%  win_rate=61.1%  expectancy=0.957%  PF=1.44
+    (6.723, 10.503]:  BULLISH n=89  mean=0.073%  median=0.89%  win_rate=56.2%  expectancy=0.073%  PF=1.05  |  STRONG_BEARISH n=16  mean=2.791%  median=1.98%  win_rate=87.5%  expectancy=2.791%  PF=5.33
+    (10.503, 28.548]:  BULLISH n=134  mean=-0.689%  median=0.378%  win_rate=50.7%  expectancy=-0.689%  PF=0.69  |  STRONG_BEARISH n=14  mean=-1.616%  median=0.49%  win_rate=57.1%  expectancy=-1.616%  PF=0.4
+
+### SECTION 4: Support-proximity x Regime matrix ###
+  (-2.799, 6.723] + STRONG_BEARISH: n=18  mean=0.957%  median=1.402%  win_rate=61.1%  expectancy=0.957%  PF=1.44  [SMALL SAMPLE]
+  (-2.799, 6.723] + BULLISH: n=101  mean=-0.217%  median=-2.029%  win_rate=44.6%  expectancy=-0.217%  PF=0.89
+  (6.723, 10.503] + STRONG_BEARISH: n=16  mean=2.791%  median=1.98%  win_rate=87.5%  expectancy=2.791%  PF=5.33  [SMALL SAMPLE]
+  (6.723, 10.503] + BULLISH: n=89  mean=0.073%  median=0.89%  win_rate=56.2%  expectancy=0.073%  PF=1.05
+  (10.503, 28.548] + STRONG_BEARISH: n=14  mean=-1.616%  median=0.49%  win_rate=57.1%  expectancy=-1.616%  PF=0.4  [SMALL SAMPLE]
+  (10.503, 28.548] + BULLISH: n=134  mean=-0.689%  median=0.378%  win_rate=50.7%  expectancy=-0.689%  PF=0.69
+
+### SECTION 5: Support distance vs forward returns, independent of regime (master dataset, all signal-days) ###
+
+  --- Horizon 1d ---
+    (-63.826, 1.885]: n=9712  mean=0.057%  median=0.035%  win_rate=50.8%  expectancy=0.057%  PF=1.07
+    (1.885, 3.702]: n=9712  mean=-0.059%  median=-0.103%  win_rate=47.6%  expectancy=-0.059%  PF=0.93
+    (3.702, 5.853]: n=9708  mean=-0.061%  median=-0.126%  win_rate=46.5%  expectancy=-0.061%  PF=0.92
+    (5.853, 8.932]: n=9710  mean=-0.053%  median=-0.094%  win_rate=47.8%  expectancy=-0.053%  PF=0.94
+    (8.932, 28.548]: n=9710  mean=-0.082%  median=-0.175%  win_rate=46.4%  expectancy=-0.082%  PF=0.91
+    Monotonicity: NOT monotonic
+
+  --- Horizon 5d ---
+    (-63.826, 1.885]: n=9712  mean=0.198%  median=0.121%  win_rate=51.7%  expectancy=0.198%  PF=1.15
+    (1.885, 3.702]: n=9712  mean=-0.079%  median=-0.128%  win_rate=48.3%  expectancy=-0.079%  PF=0.95
+    (3.702, 5.853]: n=9708  mean=-0.025%  median=-0.086%  win_rate=48.8%  expectancy=-0.025%  PF=0.98
+    (5.853, 8.932]: n=9710  mean=0.014%  median=-0.062%  win_rate=49.2%  expectancy=0.014%  PF=1.01
+    (8.932, 28.548]: n=9710  mean=-0.172%  median=-0.144%  win_rate=48.3%  expectancy=-0.172%  PF=0.9
+    Monotonicity: NOT monotonic
+
+  --- Horizon 10d ---
+    (-63.826, 1.885]: n=9712  mean=0.343%  median=0.395%  win_rate=53.2%  expectancy=0.343%  PF=1.19
+    (1.885, 3.702]: n=9712  mean=0.035%  median=-0.03%  win_rate=49.7%  expectancy=0.035%  PF=1.02
+    (3.702, 5.853]: n=9708  mean=-0.032%  median=-0.113%  win_rate=49.0%  expectancy=-0.032%  PF=0.98
+    (5.853, 8.932]: n=9710  mean=-0.078%  median=-0.025%  win_rate=49.8%  expectancy=-0.078%  PF=0.96
+    (8.932, 28.548]: n=9710  mean=-0.086%  median=-0.242%  win_rate=48.2%  expectancy=-0.086%  PF=0.96
+    Monotonicity: monotonic decreasing
+
+  --- Horizon 20d ---
+    (-63.826, 1.885]: n=9712  mean=0.558%  median=0.558%  win_rate=53.7%  expectancy=0.558%  PF=1.23
+    (1.885, 3.702]: n=9712  mean=0.198%  median=0.016%  win_rate=50.1%  expectancy=0.198%  PF=1.08
+    (3.702, 5.853]: n=9708  mean=-0.008%  median=-0.091%  win_rate=49.5%  expectancy=-0.008%  PF=1.0
+    (5.853, 8.932]: n=9710  mean=-0.186%  median=-0.097%  win_rate=49.3%  expectancy=-0.186%  PF=0.94
+    (8.932, 28.548]: n=9710  mean=-0.023%  median=0.095%  win_rate=50.6%  expectancy=-0.023%  PF=0.99
+    Monotonicity: NOT monotonic
+
+  --- Horizon 60d ---
+    (-63.826, 1.885]: n=9712  mean=0.828%  median=0.472%  win_rate=52.1%  expectancy=0.828%  PF=1.19
+    (1.885, 3.702]: n=9712  mean=0.57%  median=0.416%  win_rate=51.9%  expectancy=0.57%  PF=1.13
+    (3.702, 5.853]: n=9708  mean=0.043%  median=-0.137%  win_rate=49.4%  expectancy=0.043%  PF=1.01
+    (5.853, 8.932]: n=9710  mean=-0.616%  median=-0.642%  win_rate=47.5%  expectancy=-0.616%  PF=0.87
+    (8.932, 28.548]: n=9710  mean=0.316%  median=-0.081%  win_rate=49.7%  expectancy=0.316%  PF=1.07
+    Monotonicity: NOT monotonic
+
+  --- Horizon 90d ---
+    (-63.826, 1.885]: n=9182  mean=0.991%  median=1.014%  win_rate=53.5%  expectancy=0.991%  PF=1.19
+    (1.885, 3.702]: n=9174  mean=0.674%  median=0.643%  win_rate=52.4%  expectancy=0.674%  PF=1.13
+    (3.702, 5.853]: n=9304  mean=0.123%  median=-0.104%  win_rate=49.7%  expectancy=0.123%  PF=1.02
+    (5.853, 8.932]: n=9252  mean=-0.633%  median=-0.975%  win_rate=46.8%  expectancy=-0.633%  PF=0.89
+    (8.932, 28.548]: n=9374  mean=0.742%  median=-0.106%  win_rate=49.5%  expectancy=0.742%  PF=1.14
+    Monotonicity: NOT monotonic
+
+### SECTION 6: Support vs Resistance distance -- which correlates more with forward returns? ###
+  1d: corr(dist_support)=-0.021  corr(dist_resistance)=0.023  corr(support-minus-resistance)=-0.026
+  5d: corr(dist_support)=-0.020  corr(dist_resistance)=0.041  corr(support-minus-resistance)=-0.038
+  10d: corr(dist_support)=-0.017  corr(dist_resistance)=0.052  corr(support-minus-resistance)=-0.044
+  20d: corr(dist_support)=-0.012  corr(dist_resistance)=0.061  corr(support-minus-resistance)=-0.047
+  60d: corr(dist_support)=-0.008  corr(dist_resistance)=0.082  corr(support-minus-resistance)=-0.060
+  90d: corr(dist_support)=-0.002  corr(dist_resistance)=0.074  corr(support-minus-resistance)=-0.052
+
+  By which level is closer at signal time (fwd_ret_20d):
+    Closer to SUPPORT: n=23056  mean=0.476%  median=0.42%  win_rate=52.5%  expectancy=0.476%  PF=1.19
+    Closer to RESISTANCE: n=25496  mean=-0.225%  median=-0.151%  win_rate=49.0%  expectancy=-0.225%  PF=0.92
+
+### SECTION 7: Target/stop geometry vs support/resistance proximity ###
+
+  --- BULLISH ---
+    (-2.799, 6.723] (n=101): target_dist=4.25%  stop_dist=3.87%  dist_support=4.85%  dist_resistance=2.91%  target_hit=44%  stop_hit=55%  timeout=1%
+    (6.723, 10.503] (n=89): target_dist=3.03%  stop_dist=4.24%  dist_support=8.70%  dist_resistance=1.44%  target_hit=56%  stop_hit=43%  timeout=1%
+    (10.503, 28.548] (n=134): target_dist=3.51%  stop_dist=5.04%  dist_support=13.43%  dist_resistance=1.21%  target_hit=51%  stop_hit=46%  timeout=4%
+
+  --- STRONG_BEARISH ---
+    (-2.799, 6.723] (n=18): target_dist=5.34%  stop_dist=5.74%  dist_support=5.35%  dist_resistance=3.02%  target_hit=61%  stop_hit=39%  timeout=0%
+    (6.723, 10.503] (n=16): target_dist=4.84%  stop_dist=5.55%  dist_support=8.61%  dist_resistance=2.77%  target_hit=75%  stop_hit=12%  timeout=12%
+    (10.503, 28.548] (n=14): target_dist=3.45%  stop_dist=5.45%  dist_support=13.28%  dist_resistance=1.78%  target_hit=57%  stop_hit=43%  timeout=0%
+
+### Controlling for RRQuality ###
+  Within BULLISH:
+    RRQuality LOW  / Support CLOSE   : n=87  mean=-0.26%  median=0.808%  win_rate=52.9%  expectancy=-0.26%  PF=0.84
+    RRQuality HIGH / Support CLOSE   : n=53  mean=0.429%  median=-2.116%  win_rate=43.4%  expectancy=0.429%  PF=1.19
+    RRQuality LOW  / Support FAR     : n=158  mean=-0.781%  median=0.514%  win_rate=51.9%  expectancy=-0.781%  PF=0.58
+    RRQuality HIGH / Support FAR     : n=26  mean=0.595%  median=-2.26%  win_rate=46.2%  expectancy=0.595%  PF=1.18
+  Within STRONG_BEARISH:
+    RRQuality LOW  / Support CLOSE   : n=22  mean=0.798%  median=1.604%  win_rate=68.2%  expectancy=0.798%  PF=1.45
+    RRQuality HIGH / Support CLOSE   : n=4  mean=6.512%  median=9.944%  win_rate=75.0%  expectancy=6.512%  PF=4.77  [SMALL SAMPLE]
+    RRQuality LOW  / Support FAR     : n=21  mean=0.228%  median=1.129%  win_rate=71.4%  expectancy=0.228%  PF=1.15
+    RRQuality HIGH / Support FAR     : n=1  mean=-9.133%  median=-9.133%  win_rate=0.0%  expectancy=-9.133%  PF=0.0  [SMALL SAMPLE]
+
+### Controlling for Momentum ###
+  Within BULLISH:
+    Momentum LOW  / Support CLOSE   : n=90  mean=-0.328%  median=-1.109%  win_rate=48.9%  expectancy=-0.328%  PF=0.8
+    Momentum HIGH / Support CLOSE   : n=50  mean=0.593%  median=-0.155%  win_rate=50.0%  expectancy=0.593%  PF=1.28
+    Momentum LOW  / Support FAR     : n=160  mean=-0.836%  median=0.172%  win_rate=50.0%  expectancy=-0.836%  PF=0.58
+    Momentum HIGH / Support FAR     : n=24  mean=1.079%  median=1.343%  win_rate=58.3%  expectancy=1.079%  PF=1.41
+  Within STRONG_BEARISH:
+    Momentum LOW  / Support CLOSE   : n=7  mean=3.151%  median=1.708%  win_rate=71.4%  expectancy=3.151%  PF=2.54  [SMALL SAMPLE]
+    Momentum HIGH / Support CLOSE   : n=19  mean=1.133%  median=1.836%  win_rate=68.4%  expectancy=1.133%  PF=1.69
+    Momentum LOW  / Support FAR     : n=14  mean=-0.711%  median=0.8%  win_rate=64.3%  expectancy=-0.711%  PF=0.63  [SMALL SAMPLE]
+    Momentum HIGH / Support FAR     : n=8  mean=0.702%  median=1.3%  win_rate=75.0%  expectancy=0.702%  PF=1.4  [SMALL SAMPLE]
+
+### SECTION 10: Robustness (symbols, sectors, time) ###
+  BULLISH symbols: baseline n=324  mean=-0.333%  median=0.378%  win_rate=50.3%  expectancy=-0.333%  PF=0.83  |  excluding ['LT', 'BAJFINANCE', 'JSWSTEEL']: n=287  mean=-0.412%  median=-0.889%  win_rate=49.5%  expectancy=-0.412%  PF=0.8
+    Sector spread: {'UNMAPPED': 84, '^CNXMETAL': 37, '^CNXAUTO': 36, '^NSEBANK': 33, '^CNXIT': 29, '^CNXFMCG': 28, '^CNXENERGY': 24, '^CNXINFRA': 21, '^CNXCONSUM': 17, '^CNXPHARMA': 15}
+    Mean dist_support_pct: 9.46%
+  STRONG_BEARISH symbols: baseline n=48  mean=0.818%  median=1.484%  win_rate=68.8%  expectancy=0.818%  PF=1.45  |  excluding ['WIPRO', 'HINDALCO', 'TATASTEEL']: n=37  mean=1.154%  median=1.498%  win_rate=70.3%  expectancy=1.154%  PF=1.68
+    Sector spread: {'UNMAPPED': 14, '^CNXIT': 9, '^CNXAUTO': 9, '^CNXMETAL': 7, '^NSEBANK': 6, '^CNXPHARMA': 2, '^CNXINFRA': 1}
+    Mean dist_support_pct: 8.75%
+
+  Time periods:
+    Early (2024-07-09 to 2025-01-31):
+      BULLISH: n=65  mean=-0.732%  median=1.073%  win_rate=53.8%  expectancy=-0.732%  PF=0.65  mean_dist_support=8.57%
+      STRONG_BEARISH: n=25  mean=0.213%  median=1.304%  win_rate=60.0%  expectancy=0.213%  PF=1.09  mean_dist_support=8.17%
+    Middle (2025-01-31 to 2025-10-17):
+      BULLISH: n=149  mean=-0.115%  median=0.545%  win_rate=52.3%  expectancy=-0.115%  PF=0.94  mean_dist_support=9.63%
+      STRONG_BEARISH: n=23  mean=1.476%  median=1.59%  win_rate=78.3%  expectancy=1.476%  PF=2.33  mean_dist_support=9.37%
+    Recent (2025-10-20 to 2026-06-03):
+      BULLISH: n=110  mean=-0.391%  median=-1.841%  win_rate=45.5%  expectancy=-0.391%  PF=0.81  mean_dist_support=9.74%
+      STRONG_BEARISH: no trades

@@ -1,0 +1,281 @@
+FACTOR AUDIT -- 51 symbols, history=3y, generated 20260913_160607
+Master dataset: 48552 rows (master_dataset_20260913_160607.csv)
+CAVEAT: forward-return observations for the same stock overlap in time (adjacent signal-days share most of their forward window) -- NOT independent draws. Correlations/bucket patterns below are descriptive evidence, not p-value-backed hypothesis tests.
+
+
+======================================================================
+CATEGORY: Short-Term (Swing)
+======================================================================
+
+--- Factor correlation with forward returns (Pearson r) ---
+             factor     n  corr_1d  corr_5d  corr_10d  corr_20d  corr_60d  corr_90d
+      Market Regime 24276   -0.033   -0.048    -0.035    -0.022    -0.116    -0.161
+    Sector Strength 24276   -0.015   -0.034    -0.027    -0.044    -0.062    -0.051
+           Momentum 24276   -0.004   -0.019    -0.025    -0.034    -0.028    -0.009
+    Price Structure 24276   -0.025   -0.027    -0.026    -0.037    -0.051    -0.066
+Volume Confirmation 24276    0.009    0.006     0.018     0.021     0.007     0.017
+  Relative Strength 24276    0.001   -0.011    -0.017    -0.027    -0.039    -0.026
+ Volatility Profile 24276   -0.042   -0.074    -0.088    -0.110    -0.149    -0.153
+Risk/Reward Quality 24276    0.005    0.020     0.031     0.041     0.044     0.042
+
+--- Quantile bucket analysis (fwd_ret_20d) + monotonicity ---
+  Market Regime -- monotonicity: NOT monotonic
+                     count      mean    median  win_rate_pct
+    bucket                                                  
+    (-0.001, 0.253]   6069 -0.097078  0.051591     50.354259
+    (0.253, 0.3]      5253  0.499278  0.530350     52.674662
+    (0.3, 0.547]      3621  0.186187  0.132591     50.925159
+    (0.547, 1.0]      9333 -0.009097 -0.051683     49.630344
+  Sector Strength -- monotonicity: insufficient buckets
+                  count      mean    median  win_rate_pct
+    bucket                                               
+    (0.149, 0.6]  19614  0.316745  0.227271     51.356174
+    (0.6, 1.0]     4662 -0.770013 -0.342090     47.747748
+  Momentum -- monotonicity: NOT monotonic
+                   count      mean    median  win_rate_pct
+    bucket                                                
+    (-0.001, 0.5]  18870  0.183700  0.197309     51.229465
+    (0.5, 0.85]     4677 -0.187551 -0.222689     48.706436
+    (0.85, 1.0]      729  0.046056 -0.157584     48.559671
+  Price Structure -- monotonicity: monotonic decreasing (inverted)
+                     count      mean    median  win_rate_pct
+    bucket                                                  
+    (-0.001, 0.547]  16365  0.325425  0.275987     51.659028
+    (0.547, 0.747]    7032 -0.277216 -0.094293     49.288965
+    (0.747, 1.0]       879 -0.857082 -0.800003     43.117179
+  Volume Confirmation -- monotonicity: insufficient buckets
+                   count      mean    median  win_rate_pct
+    bucket                                                
+    (-0.001, 0.5]  21160  0.076166  0.094631     50.519849
+    (0.5, 1.0]      3116  0.324507  0.288573     51.636714
+  Relative Strength -- monotonicity: NOT monotonic
+                    count      mean    median  win_rate_pct
+    bucket                                                 
+    (-0.001, 0.05]   4856  0.358307  0.000000     49.938221
+    (0.05, 0.38]     4999  0.366925  0.400163     52.910582
+    (0.38, 0.66]     4833  0.007291 -0.124997     48.955100
+    (0.66, 1.0]      9588 -0.102900  0.118064     50.719650
+  Volatility Profile -- monotonicity: insufficient buckets
+                   count      mean    median  win_rate_pct
+    bucket                                                
+    (-0.001, 1.0]  24276  0.108042  0.109621     50.663206
+  Risk/Reward Quality -- monotonicity: monotonic increasing
+                   count      mean    median  win_rate_pct
+    bucket                                                
+    (0.019, 0.08]   4953 -0.431852 -0.448485     47.324854
+    (0.08, 0.13]   11904  0.066040  0.120877     50.638441
+    (0.13, 0.81]    2580  0.360860  0.391305     52.093023
+    (0.81, 1.0]     4839  0.629186  0.520869     53.378797
+
+--- Cross-sectional rank vs absolute score (fwd_ret_20d) ---
+                 count      mean    median
+xs_bucket                                 
+(0.0186, 0.216]   5198  0.151499  0.061236
+(0.216, 0.412]    4770  0.317681  0.254196
+(0.412, 0.608]    4755  0.316286  0.242989
+(0.608, 0.804]    4753 -0.115160 -0.059433
+(0.804, 1.0]      4800 -0.132621  0.045431
+  Cross-sectional monotonicity: NOT monotonic
+
+--- Time-period robustness (score factor -> fwd_ret_20d correlation) ---
+  Market Regime:
+    period               date_range    n   corr
+     Early 2024-07-09 to 2025-02-21 8092  0.065
+    Middle 2025-02-21 to 2025-10-16 8092 -0.152
+    Recent 2025-10-16 to 2026-06-08 8092 -0.035
+  Sector Strength:
+    period               date_range    n   corr
+     Early 2024-07-09 to 2025-02-21 8092 -0.024
+    Middle 2025-02-21 to 2025-10-16 8092 -0.095
+    Recent 2025-10-16 to 2026-06-08 8092 -0.058
+  Momentum:
+    period               date_range    n   corr
+     Early 2024-07-09 to 2025-02-21 8092  0.016
+    Middle 2025-02-21 to 2025-10-16 8092 -0.018
+    Recent 2025-10-16 to 2026-06-08 8092 -0.121
+  Price Structure:
+    period               date_range    n   corr
+     Early 2024-07-09 to 2025-02-21 8092  0.021
+    Middle 2025-02-21 to 2025-10-16 8092 -0.112
+    Recent 2025-10-16 to 2026-06-08 8092 -0.062
+  Volume Confirmation:
+    period               date_range    n   corr
+     Early 2024-07-09 to 2025-02-21 8092 -0.000
+    Middle 2025-02-21 to 2025-10-16 8092  0.019
+    Recent 2025-10-16 to 2026-06-08 8092  0.045
+  Relative Strength:
+    period               date_range    n   corr
+     Early 2024-07-09 to 2025-02-21 8092  0.016
+    Middle 2025-02-21 to 2025-10-16 8092 -0.055
+    Recent 2025-10-16 to 2026-06-08 8092 -0.052
+  Volatility Profile:
+    period               date_range    n   corr
+     Early 2024-07-09 to 2025-02-21 8092 -0.024
+    Middle 2025-02-21 to 2025-10-16 8092 -0.214
+    Recent 2025-10-16 to 2026-06-08 8092 -0.136
+  Risk/Reward Quality:
+    period               date_range    n   corr
+     Early 2024-07-09 to 2025-02-21 8092 -0.007
+    Middle 2025-02-21 to 2025-10-16 8092  0.042
+    Recent 2025-10-16 to 2026-06-08 8092  0.132
+
+--- Factor redundancy (correlation matrix among factor fractions) ---
+                             factor__Market Regime  factor__Sector Strength  factor__Momentum  factor__Price Structure  factor__Volume Confirmation  factor__Relative Strength  factor__Volatility Profile  factor__Risk/Reward Quality
+factor__Market Regime                         1.00                     0.26              0.17                     0.21                        -0.03                      -0.01                        0.16                        -0.24
+factor__Sector Strength                       0.26                     1.00              0.21                     0.26                         0.02                       0.17                        0.08                        -0.20
+factor__Momentum                              0.17                     0.21              1.00                     0.20                        -0.01                       0.36                        0.06                        -0.58
+factor__Price Structure                       0.21                     0.26              0.20                     1.00                         0.02                       0.45                        0.13                        -0.29
+factor__Volume Confirmation                  -0.03                     0.02             -0.01                     0.02                         1.00                      -0.01                       -0.04                         0.07
+factor__Relative Strength                    -0.01                     0.17              0.36                     0.45                        -0.01                       1.00                        0.12                        -0.49
+factor__Volatility Profile                    0.16                     0.08              0.06                     0.13                        -0.04                       0.12                        1.00                        -0.09
+factor__Risk/Reward Quality                  -0.24                    -0.20             -0.58                    -0.29                         0.07                      -0.49                       -0.09                         1.00
+  Pairs with |r|>=0.4 (possible redundancy): [('factor__Momentum', 'factor__Risk/Reward Quality', np.float64(-0.58)), ('factor__Price Structure', 'factor__Relative Strength', np.float64(0.45)), ('factor__Relative Strength', 'factor__Risk/Reward Quality', np.float64(-0.49))]
+
+======================================================================
+CATEGORY: Long-Term
+======================================================================
+
+--- Factor correlation with forward returns (Pearson r) ---
+             factor     n  corr_1d  corr_5d  corr_10d  corr_20d  corr_60d  corr_90d
+      Market Regime 24276   -0.033   -0.048    -0.035    -0.022    -0.116    -0.161
+    Sector Strength 24276   -0.015   -0.034    -0.027    -0.044    -0.062    -0.051
+        Price Trend 24276   -0.017   -0.030    -0.037    -0.060    -0.121    -0.129
+           Momentum 24276   -0.004   -0.019    -0.027    -0.043    -0.041    -0.019
+       Volume Trend 24276    0.017    0.026     0.016    -0.004     0.045     0.042
+  Relative Strength 24276   -0.010   -0.015    -0.016    -0.029    -0.026    -0.027
+Risk/Reward Quality 24276    0.020    0.034     0.037     0.051     0.091     0.120
+
+--- Quantile bucket analysis (fwd_ret_20d) + monotonicity ---
+  Market Regime -- monotonicity: NOT monotonic
+                     count      mean    median  win_rate_pct
+    bucket                                                  
+    (-0.001, 0.253]   6069 -0.097078  0.051591     50.354259
+    (0.253, 0.3]      5253  0.499278  0.530350     52.674662
+    (0.3, 0.547]      3621  0.186187  0.132591     50.925159
+    (0.547, 1.0]      9333 -0.009097 -0.051683     49.630344
+  Sector Strength -- monotonicity: insufficient buckets
+                  count      mean    median  win_rate_pct
+    bucket                                               
+    (0.149, 0.6]  19614  0.316745  0.227271     51.356174
+    (0.6, 1.0]     4662 -0.770013 -0.342090     47.747748
+  Price Trend -- monotonicity: monotonic decreasing (inverted)
+                     count      mean    median  win_rate_pct
+    bucket                                                  
+    (-0.001, 0.448]   9893  0.601348  0.535739     53.027393
+    (0.448, 0.848]    6091  0.151482  0.096548     50.533574
+    (0.848, 1.0]      8292 -0.512420 -0.296747     47.937771
+  Momentum -- monotonicity: NOT monotonic
+                   count      mean    median  win_rate_pct
+    bucket                                                
+    (-0.001, 0.5]  14363  0.320323  0.322758     51.973822
+    (0.5, 0.6]      2160 -0.591693 -0.446554     46.759259
+    (0.6, 1.0]      7753 -0.090277 -0.104604     49.322843
+  Volume Trend -- monotonicity: insufficient buckets
+                  count      mean    median  win_rate_pct
+    bucket                                               
+    (0.299, 1.0]  24276  0.108042  0.109621     50.663206
+  Relative Strength -- monotonicity: monotonic decreasing (inverted)
+                     count      mean    median  win_rate_pct
+    bucket                                                  
+    (-0.001, 0.267]   9751  0.307528  0.149373     50.897344
+    (0.267, 0.747]    4845  0.205408  0.416496     52.631579
+    (0.747, 1.0]      9680 -0.141640 -0.091390     49.442149
+  Risk/Reward Quality -- monotonicity: insufficient buckets
+                                  count      mean    median  win_rate_pct
+    bucket                                                               
+    (0.009000000000000001, 0.09]   5445 -0.582150 -0.441874     46.923783
+    (0.09, 0.15]                  18831  0.307612  0.300251     51.744464
+
+--- Cross-sectional rank vs absolute score (fwd_ret_20d) ---
+                 count      mean    median
+xs_bucket                                 
+(0.0186, 0.216]   5187  0.067341 -0.065415
+(0.216, 0.412]    4781  0.209587  0.125580
+(0.412, 0.608]    4751  0.614285  0.463325
+(0.608, 0.804]    4765 -0.156067 -0.124830
+(0.804, 1.0]      4792 -0.188504  0.256689
+  Cross-sectional monotonicity: NOT monotonic
+
+--- Time-period robustness (score factor -> fwd_ret_20d correlation) ---
+  Market Regime:
+    period               date_range    n   corr
+     Early 2024-07-09 to 2025-02-21 8092  0.065
+    Middle 2025-02-21 to 2025-10-16 8092 -0.152
+    Recent 2025-10-16 to 2026-06-08 8092 -0.035
+  Sector Strength:
+    period               date_range    n   corr
+     Early 2024-07-09 to 2025-02-21 8092 -0.024
+    Middle 2025-02-21 to 2025-10-16 8092 -0.095
+    Recent 2025-10-16 to 2026-06-08 8092 -0.058
+  Price Trend:
+    period               date_range    n   corr
+     Early 2024-07-09 to 2025-02-21 8092  0.028
+    Middle 2025-02-21 to 2025-10-16 8092 -0.089
+    Recent 2025-10-16 to 2026-06-08 8092 -0.056
+  Momentum:
+    period               date_range    n   corr
+     Early 2024-07-09 to 2025-02-21 8092  0.020
+    Middle 2025-02-21 to 2025-10-16 8092 -0.016
+    Recent 2025-10-16 to 2026-06-08 8092 -0.161
+  Volume Trend:
+    period               date_range    n   corr
+     Early 2024-07-09 to 2025-02-21 8092 -0.048
+    Middle 2025-02-21 to 2025-10-16 8092  0.062
+    Recent 2025-10-16 to 2026-06-08 8092 -0.024
+  Relative Strength:
+    period               date_range    n   corr
+     Early 2024-07-09 to 2025-02-21 8092 -0.033
+    Middle 2025-02-21 to 2025-10-16 8092 -0.069
+    Recent 2025-10-16 to 2026-06-08 8092  0.006
+  Risk/Reward Quality:
+    period               date_range    n   corr
+     Early 2024-07-09 to 2025-02-21 8092 -0.030
+    Middle 2025-02-21 to 2025-10-16 8092  0.054
+    Recent 2025-10-16 to 2026-06-08 8092  0.065
+
+--- Factor redundancy (correlation matrix among factor fractions) ---
+                             factor__Market Regime  factor__Sector Strength  factor__Price Trend  factor__Momentum  factor__Volume Trend  factor__Relative Strength  factor__Risk/Reward Quality
+factor__Market Regime                         1.00                     0.26                 0.24              0.21                 -0.09                      -0.00                        -0.22
+factor__Sector Strength                       0.26                     1.00                 0.10              0.18                  0.03                       0.08                        -0.20
+factor__Price Trend                           0.24                     0.10                 1.00              0.15                 -0.06                       0.56                        -0.59
+factor__Momentum                              0.21                     0.18                 0.15              1.00                  0.00                       0.14                        -0.19
+factor__Volume Trend                         -0.09                     0.03                -0.06              0.00                  1.00                       0.00                        -0.03
+factor__Relative Strength                    -0.00                     0.08                 0.56              0.14                  0.00                       1.00                        -0.53
+factor__Risk/Reward Quality                  -0.22                    -0.20                -0.59             -0.19                 -0.03                      -0.53                         1.00
+  Pairs with |r|>=0.4 (possible redundancy): [('factor__Price Trend', 'factor__Relative Strength', np.float64(0.56)), ('factor__Price Trend', 'factor__Risk/Reward Quality', np.float64(-0.59)), ('factor__Relative Strength', 'factor__Risk/Reward Quality', np.float64(-0.53))]
+
+======================================================================
+ABLATION STUDY (threshold=40.0)
+======================================================================
+
+--- Short-Term (Swing) ---
+  FULL SCORE: n=1283  win_rate=53.9%  expectancy=-0.2%/trade  profit_factor=0.86  max_drawdown=-5.6%  sharpe-like=-0.07  sortino-like=-0.18
+  minus Market Regime: n=471  win_rate=58.8%  expectancy=-0.26%/trade  profit_factor=0.81  max_drawdown=-2.7%  sharpe-like=-0.1  sortino-like=-0.25
+  minus Sector Strength: n=649  win_rate=57.6%  expectancy=-0.15%/trade  profit_factor=0.89  max_drawdown=-3.1%  sharpe-like=-0.05  sortino-like=-0.14
+  minus Momentum: n=358  win_rate=60.3%  expectancy=-0.01%/trade  profit_factor=0.99  max_drawdown=-1.3%  sharpe-like=-0.0  sortino-like=-0.01
+  minus Price Structure: n=585  win_rate=58.6%  expectancy=-0.08%/trade  profit_factor=0.94  max_drawdown=-2.3%  sharpe-like=-0.03  sortino-like=-0.07
+  minus Volume Confirmation: n=724  win_rate=52.9%  expectancy=-0.36%/trade  profit_factor=0.76  max_drawdown=-5.7%  sharpe-like=-0.13  sortino-like=-0.33
+  minus Relative Strength: n=678  win_rate=56.5%  expectancy=-0.13%/trade  profit_factor=0.9  max_drawdown=-3.2%  sharpe-like=-0.05  sortino-like=-0.12
+  minus Volatility Profile: n=922  win_rate=55.0%  expectancy=-0.23%/trade  profit_factor=0.84  max_drawdown=-4.5%  sharpe-like=-0.08  sortino-like=-0.21
+  minus Risk/Reward Quality: n=1195  win_rate=55.1%  expectancy=-0.2%/trade  profit_factor=0.86  max_drawdown=-5.5%  sharpe-like=-0.07  sortino-like=-0.18
+
+--- Long-Term ---
+  FULL SCORE: n=800  win_rate=58.5%  expectancy=-0.04%/trade  profit_factor=0.99  max_drawdown=-3.8%  sharpe-like=-0.01  sortino-like=-0.02
+  minus Market Regime: n=593  win_rate=60.0%  expectancy=-0.1%/trade  profit_factor=0.96  max_drawdown=-3.1%  sharpe-like=-0.02  sortino-like=-0.05
+  minus Sector Strength: n=690  win_rate=59.6%  expectancy=-0.22%/trade  profit_factor=0.92  max_drawdown=-3.8%  sharpe-like=-0.04  sortino-like=-0.1
+  minus Price Trend: n=77  win_rate=54.5%  expectancy=0.52%/trade  profit_factor=1.18  max_drawdown=-0.8%  sharpe-like=0.07  sortino-like=0.25
+  minus Momentum: n=615  win_rate=62.1%  expectancy=-0.2%/trade  profit_factor=0.92  max_drawdown=-3.1%  sharpe-like=-0.04  sortino-like=-0.09
+  minus Volume Trend: n=713  win_rate=59.0%  expectancy=-0.23%/trade  profit_factor=0.91  max_drawdown=-4.7%  sharpe-like=-0.04  sortino-like=-0.11
+  minus Relative Strength: n=562  win_rate=57.3%  expectancy=-0.25%/trade  profit_factor=0.9  max_drawdown=-3.3%  sharpe-like=-0.04  sortino-like=-0.12
+  minus Risk/Reward Quality: n=789  win_rate=58.0%  expectancy=-0.12%/trade  profit_factor=0.95  max_drawdown=-4.3%  sharpe-like=-0.02  sortino-like=-0.06
+
+======================================================================
+REGIME ANOMALY ROBUSTNESS (Short-Term, full score, threshold=40.0)
+======================================================================
+Baseline: BULLISH n=324 expectancy=-0.33%  |  STRONG_BEARISH n=48 expectancy=0.82%
+Top symbols driving each regime bucket: {'BULLISH': ['LT', 'BAJFINANCE', 'JSWSTEEL'], 'STRONG_BEARISH': ['WIPRO', 'HINDALCO', 'TATASTEEL']}
+After excluding those top symbols: BULLISH n=261 expectancy=-0.51%  |  STRONG_BEARISH n=33 expectancy=0.9%
+
+Sector composition of BULLISH vs STRONG_BEARISH signals (Short-Term+Long-Term combined):
+  BULLISH: {'UNMAPPED': 84, '^CNXMETAL': 37, '^CNXAUTO': 36, '^NSEBANK': 33, '^CNXIT': 29, '^CNXFMCG': 28, '^CNXENERGY': 24, '^CNXINFRA': 21, '^CNXCONSUM': 17, '^CNXPHARMA': 15}
+  STRONG_BEARISH: {'UNMAPPED': 14, '^CNXIT': 9, '^CNXAUTO': 9, '^CNXMETAL': 7, '^NSEBANK': 6, '^CNXPHARMA': 2, '^CNXINFRA': 1}
