@@ -33,7 +33,15 @@ CATEGORY_COLORS = {
 
 def _idea_row(idea: TradeIdea, rationale: str) -> str:
     color = CATEGORY_COLORS.get(idea.category, "#374151")
-    note = f'<div style="font-size:12px;color:#6b7280;margin-top:6px;">Data check: {idea.data_note}</div>' if idea.data_note else ""
+    # Only surface the per-stock data-check note when it's an actual price
+    # discrepancy worth knowing about -- NSE's cross-check API is blocked
+    # for essentially all automated requests (see the one-line summary
+    # footnote instead), so repeating "NSE unavailable" on every single
+    # pick, every single day, is just noise with zero new information.
+    note = (
+        f'<div style="font-size:12px;color:#b45309;margin-top:6px;">⚠ Data check: {idea.data_note}</div>'
+        if "differ" in idea.data_note else ""
+    )
     return f"""
     <tr>
       <td style="padding:14px 16px;border-bottom:1px solid #e5e7eb;">
@@ -116,6 +124,29 @@ def _position_updates_section(closed: list[ClosedPosition]) -> str:
     """
 
 
+def _nse_cross_check_note(picks_by_category: dict[str, list[TradeIdea]]) -> str:
+    """One aggregate line on whether today's NSE secondary-source check was
+    available, instead of repeating the same boilerplate on every pick.
+    NSE's own price was never used in any score/target/stop-loss
+    calculation -- everything is computed from Yahoo Finance OHLCV data
+    regardless of whether this cross-check succeeds."""
+    all_ideas = [i for ideas in picks_by_category.values() for i in ideas]
+    if not all_ideas:
+        return ""
+    unavailable = sum(1 for i in all_ideas if "NSE quote unavailable" in i.data_note)
+    if unavailable == len(all_ideas):
+        text = ("NSE India's cross-check API was unavailable for today's run (it blocks "
+                "essentially all automated requests) -- all analysis below is based on "
+                "Yahoo Finance data only, same as always; nothing was computed from NSE's "
+                "price, so this doesn't affect the picks themselves.")
+    elif unavailable == 0:
+        text = "NSE India's cross-check agreed with Yahoo Finance for every pick below."
+    else:
+        text = (f"NSE India's cross-check was unavailable for {unavailable} of {len(all_ideas)} "
+                f"pick(s) today; the rest agreed with Yahoo Finance.")
+    return f'<p style="font-size:11px;color:#9ca3af;margin:0 0 16px 0;">{text}</p>'
+
+
 def build_html_report(picks_by_category: dict[str, list[TradeIdea]], rationales: dict[str, str],
                        run_date: datetime | None = None, skipped_symbols: list[str] | None = None,
                        closed_positions: list[ClosedPosition] | None = None) -> str:
@@ -123,6 +154,7 @@ def build_html_report(picks_by_category: dict[str, list[TradeIdea]], rationales:
     date_str = run_date.strftime("%A, %d %B %Y")
 
     updates_section = _position_updates_section(closed_positions or [])
+    cross_check_note = _nse_cross_check_note(picks_by_category)
     sections = "".join(
         _category_section(category, picks_by_category.get(category, []), rationales)
         for category in ["Intraday", "Short-Term (Swing)", "Long-Term"]
@@ -143,6 +175,7 @@ def build_html_report(picks_by_category: dict[str, list[TradeIdea]], rationales:
         <div style="color:#9ca3af;font-size:13px;margin-top:4px;">{date_str}</div>
       </div>
       <div style="background:#fff;padding:20px 24px;border:1px solid #e5e7eb;border-top:none;">
+        {cross_check_note}
         {updates_section}
         {sections}
         {skipped_note}

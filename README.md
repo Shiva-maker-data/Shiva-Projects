@@ -30,11 +30,18 @@ on average, vs ~0.2 of 3 for Short-Term.)
   personal research. Every email includes a disclaimer and every pick
   includes a stop-loss because **losses are possible on any single idea** --
   respect the stop-loss and size positions sensibly.
-- Data comes from two free sources (Yahoo Finance for OHLCV history, NSE
-  India's public quote API for a cross-check on the latest price) -- both
-  can occasionally lag or rate-limit; the report flags when the two sources
-  disagree. See `data_sources.py` for a documented extension point to add a
-  broker API (Zerodha Kite / Upstox) later for exchange-grade data.
+- Data comes from two free sources: Yahoo Finance for OHLCV history (the
+  ONLY source actually used for every RSI/MACD/SMA/target/stop-loss
+  calculation), plus a secondary cross-check against NSE India's public
+  quote API purely as a sanity check on the displayed price. In practice,
+  NSE's site blocks essentially all automated requests (confirmed running
+  from both a home network and GitHub's cloud servers -- it's bot-detection
+  on NSE's end, not fixable by better headers), so expect that cross-check
+  to be unavailable most/all of the time. This does NOT affect analysis
+  quality -- NSE's price was never an input to any calculation, only a
+  redundant confirmation. See `data_sources.py` for a documented extension
+  point to add a broker API (Zerodha Kite / Upstox) later for genuine
+  exchange-grade data if that redundancy matters to you.
 
 ## Backtested performance -- read this before trusting a score
 
