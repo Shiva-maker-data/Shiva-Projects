@@ -10,16 +10,6 @@
     "score_at_signal": 75.0
   },
   {
-    "symbol": "HDFCBANK",
-    "category": "Short-Term (Swing)",
-    "first_shown_date": "2026-09-11",
-    "entry_price": 708.25,
-    "target1": 733.6,
-    "target2": 748.81,
-    "stop_loss": 689.24,
-    "score_at_signal": 67.0
-  },
-  {
     "symbol": "KOTAKBANK",
     "category": "Short-Term (Swing)",
     "first_shown_date": "2026-09-11",
@@ -77,16 +67,6 @@
     "target1": 12594.7,
     "target2": 13404.22,
     "stop_loss": 11030.67,
-    "score_at_signal": 80.0
-  },
-  {
-    "symbol": "TITAN",
-    "category": "Long-Term",
-    "first_shown_date": "2026-09-13",
-    "entry_price": 5009.5,
-    "target1": 5238.57,
-    "target2": 5616.15,
-    "stop_loss": 4782.01,
     "score_at_signal": 80.0
   },
   {
