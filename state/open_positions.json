@@ -1,15 +1,5 @@
 [
   {
-    "symbol": "KOTAKBANK",
-    "category": "Short-Term (Swing)",
-    "first_shown_date": "2026-09-11",
-    "entry_price": 419.0,
-    "target1": 432.93,
-    "target2": 441.29,
-    "stop_loss": 408.55,
-    "score_at_signal": 42.0
-  },
-  {
     "symbol": "ADANIPORTS",
     "category": "Long-Term",
     "first_shown_date": "2026-09-11",
@@ -88,16 +78,6 @@
     "target2": 474.73,
     "stop_loss": 398.1,
     "score_at_signal": 65.0
-  },
-  {
-    "symbol": "BAJAJHLDNG",
-    "category": "Short-Term (Swing)",
-    "first_shown_date": "2026-09-21",
-    "entry_price": 11409.0,
-    "target1": 11760.44,
-    "target2": 12118.21,
-    "stop_loss": 11076.56,
-    "score_at_signal": 60.0
   },
   {
     "symbol": "COALINDIA",
