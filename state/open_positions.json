@@ -10,16 +10,6 @@
     "score_at_signal": 100.0
   },
   {
-    "symbol": "ADANIENT",
-    "category": "Long-Term",
-    "first_shown_date": "2026-09-11",
-    "entry_price": 3060.0,
-    "target1": 3277.45,
-    "target2": 3722.32,
-    "stop_loss": 2811.63,
-    "score_at_signal": 100.0
-  },
-  {
     "symbol": "ETERNAL",
     "category": "Long-Term",
     "first_shown_date": "2026-09-11",
@@ -40,16 +30,6 @@
     "score_at_signal": 90.0
   },
   {
-    "symbol": "BAJAJ-AUTO",
-    "category": "Long-Term",
-    "first_shown_date": "2026-09-13",
-    "entry_price": 11678.0,
-    "target1": 12594.7,
-    "target2": 13404.22,
-    "stop_loss": 11030.67,
-    "score_at_signal": 80.0
-  },
-  {
     "symbol": "APOLLOHOSP",
     "category": "Long-Term",
     "first_shown_date": "2026-09-13",
@@ -67,16 +47,6 @@
     "target1": 463.31,
     "target2": 492.01,
     "stop_loss": 401.8,
-    "score_at_signal": 65.0
-  },
-  {
-    "symbol": "KOTAKBANK",
-    "category": "Long-Term",
-    "first_shown_date": "2026-09-13",
-    "entry_price": 419.0,
-    "target1": 450.35,
-    "target2": 474.73,
-    "stop_loss": 398.1,
     "score_at_signal": 65.0
   },
   {
