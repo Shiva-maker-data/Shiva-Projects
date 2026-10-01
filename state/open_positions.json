@@ -40,13 +40,13 @@
     "score_at_signal": 60.9
   },
   {
-    "symbol": "ADANIPORTS",
-    "category": "Short-Term (Swing)",
-    "first_shown_date": "2026-09-29",
-    "entry_price": 1822.0,
-    "target1": 1842.24,
-    "target2": 1954.75,
-    "stop_loss": 1759.77,
-    "score_at_signal": 64.5
+    "symbol": "KOTAKBANK",
+    "category": "Long-Term",
+    "first_shown_date": "2026-10-01",
+    "entry_price": 418.35,
+    "target1": 457.73,
+    "target2": 488.74,
+    "stop_loss": 391.95,
+    "score_at_signal": 60.5
   }
 ]
