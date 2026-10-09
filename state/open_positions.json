@@ -48,5 +48,25 @@
     "target2": 3455.32,
     "stop_loss": 2678.42,
     "score_at_signal": 68.7
+  },
+  {
+    "symbol": "ITC",
+    "category": "Short-Term (Swing)",
+    "first_shown_date": "2026-10-09",
+    "entry_price": 266.0,
+    "target1": 273.76,
+    "target2": 286.72,
+    "stop_loss": 256.29,
+    "score_at_signal": 65.0
+  },
+  {
+    "symbol": "KOTAKBANK",
+    "category": "Short-Term (Swing)",
+    "first_shown_date": "2026-10-09",
+    "entry_price": 441.0,
+    "target1": 449.7,
+    "target2": 472.52,
+    "stop_loss": 426.22,
+    "score_at_signal": 61.1
   }
 ]
