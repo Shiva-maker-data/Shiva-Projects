@@ -78,5 +78,65 @@
     "target2": 1923.88,
     "stop_loss": 1444.17,
     "score_at_signal": 65.7
+  },
+  {
+    "symbol": "TCS",
+    "category": "Short-Term (Swing)",
+    "first_shown_date": "2026-10-15",
+    "entry_price": 2361.8,
+    "target1": 2410.57,
+    "target2": 2586.99,
+    "stop_loss": 2256.24,
+    "score_at_signal": 65.7
+  },
+  {
+    "symbol": "HCLTECH",
+    "category": "Short-Term (Swing)",
+    "first_shown_date": "2026-10-15",
+    "entry_price": 1368.5,
+    "target1": 1389.66,
+    "target2": 1496.62,
+    "stop_loss": 1308.45,
+    "score_at_signal": 65.5
+  },
+  {
+    "symbol": "TECHM",
+    "category": "Short-Term (Swing)",
+    "first_shown_date": "2026-10-15",
+    "entry_price": 1641.4,
+    "target1": 1660.04,
+    "target2": 1786.62,
+    "stop_loss": 1573.33,
+    "score_at_signal": 65.5
+  },
+  {
+    "symbol": "AXISBANK",
+    "category": "Long-Term",
+    "first_shown_date": "2026-10-15",
+    "entry_price": 1286.8,
+    "target1": 1404.36,
+    "target2": 1495.79,
+    "stop_loss": 1208.43,
+    "score_at_signal": 73.2
+  },
+  {
+    "symbol": "BAJAJHLDNG",
+    "category": "Long-Term",
+    "first_shown_date": "2026-10-15",
+    "entry_price": 11198.0,
+    "target1": 12408.37,
+    "target2": 13349.77,
+    "stop_loss": 10391.09,
+    "score_at_signal": 69.9
+  },
+  {
+    "symbol": "HCLTECH",
+    "category": "Long-Term",
+    "first_shown_date": "2026-10-15",
+    "entry_price": 1368.5,
+    "target1": 1548.66,
+    "target2": 1688.79,
+    "stop_loss": 1248.39,
+    "score_at_signal": 67.5
   }
 ]
