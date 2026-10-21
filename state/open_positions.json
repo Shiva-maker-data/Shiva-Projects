@@ -60,16 +60,6 @@
     "score_at_signal": 65.0
   },
   {
-    "symbol": "AXISBANK",
-    "category": "Long-Term",
-    "first_shown_date": "2026-10-15",
-    "entry_price": 1286.8,
-    "target1": 1404.36,
-    "target2": 1495.79,
-    "stop_loss": 1208.43,
-    "score_at_signal": 73.2
-  },
-  {
     "symbol": "BAJAJHLDNG",
     "category": "Long-Term",
     "first_shown_date": "2026-10-15",
@@ -138,5 +128,15 @@
     "target2": 1477.12,
     "stop_loss": 1152.87,
     "score_at_signal": 61.1
+  },
+  {
+    "symbol": "TCS",
+    "category": "Long-Term",
+    "first_shown_date": "2026-10-21",
+    "entry_price": 2513.3,
+    "target1": 2846.82,
+    "target2": 3106.23,
+    "stop_loss": 2290.95,
+    "score_at_signal": 62.3
   }
 ]
