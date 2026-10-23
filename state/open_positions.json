@@ -30,26 +30,6 @@
     "score_at_signal": 60.5
   },
   {
-    "symbol": "TRENT",
-    "category": "Long-Term",
-    "first_shown_date": "2026-10-07",
-    "entry_price": 2890.3,
-    "target1": 3208.12,
-    "target2": 3455.32,
-    "stop_loss": 2678.42,
-    "score_at_signal": 68.7
-  },
-  {
-    "symbol": "ITC",
-    "category": "Short-Term (Swing)",
-    "first_shown_date": "2026-10-09",
-    "entry_price": 266.0,
-    "target1": 273.76,
-    "target2": 286.72,
-    "stop_loss": 256.29,
-    "score_at_signal": 65.0
-  },
-  {
     "symbol": "BAJAJHLDNG",
     "category": "Long-Term",
     "first_shown_date": "2026-10-15",
