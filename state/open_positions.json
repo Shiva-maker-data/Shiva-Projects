@@ -20,26 +20,6 @@
     "score_at_signal": 90.0
   },
   {
-    "symbol": "KOTAKBANK",
-    "category": "Long-Term",
-    "first_shown_date": "2026-10-01",
-    "entry_price": 418.35,
-    "target1": 457.73,
-    "target2": 488.74,
-    "stop_loss": 391.95,
-    "score_at_signal": 60.5
-  },
-  {
-    "symbol": "BAJAJHLDNG",
-    "category": "Long-Term",
-    "first_shown_date": "2026-10-15",
-    "entry_price": 11198.0,
-    "target1": 12408.37,
-    "target2": 13349.77,
-    "stop_loss": 10391.09,
-    "score_at_signal": 69.9
-  },
-  {
     "symbol": "HCLTECH",
     "category": "Long-Term",
     "first_shown_date": "2026-10-15",
@@ -138,5 +118,45 @@
     "target2": 9933.05,
     "stop_loss": 7463.48,
     "score_at_signal": 62.3
+  },
+  {
+    "symbol": "ADANIPORTS",
+    "category": "Short-Term (Swing)",
+    "first_shown_date": "2026-10-29",
+    "entry_price": 1872.0,
+    "target1": 1973.13,
+    "target2": 2033.81,
+    "stop_loss": 1796.15,
+    "score_at_signal": 77.6
+  },
+  {
+    "symbol": "KOTAKBANK",
+    "category": "Short-Term (Swing)",
+    "first_shown_date": "2026-10-29",
+    "entry_price": 459.0,
+    "target1": 464.8,
+    "target2": 491.61,
+    "stop_loss": 443.71,
+    "score_at_signal": 75.9
+  },
+  {
+    "symbol": "RELIANCE",
+    "category": "Short-Term (Swing)",
+    "first_shown_date": "2026-10-29",
+    "entry_price": 1167.4,
+    "target1": 1221.92,
+    "target2": 1254.63,
+    "stop_loss": 1146.44,
+    "score_at_signal": 61.0
+  },
+  {
+    "symbol": "KOTAKBANK",
+    "category": "Long-Term",
+    "first_shown_date": "2026-10-29",
+    "entry_price": 459.0,
+    "target1": 464.8,
+    "target2": 540.53,
+    "stop_loss": 428.42,
+    "score_at_signal": 69.7
   }
 ]
