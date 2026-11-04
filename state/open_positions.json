@@ -1,15 +1,5 @@
 [
   {
-    "symbol": "ADANIPORTS",
-    "category": "Long-Term",
-    "first_shown_date": "2026-09-11",
-    "entry_price": 1764.6,
-    "target1": 1910.01,
-    "target2": 2068.22,
-    "stop_loss": 1650.74,
-    "score_at_signal": 100.0
-  },
-  {
     "symbol": "ETERNAL",
     "category": "Long-Term",
     "first_shown_date": "2026-09-11",
@@ -218,5 +208,25 @@
     "target2": 8776.03,
     "stop_loss": 6938.99,
     "score_at_signal": 61.6
+  },
+  {
+    "symbol": "ADANIPORTS",
+    "category": "Long-Term",
+    "first_shown_date": "2026-11-04",
+    "entry_price": 1910.0,
+    "target1": 1940.51,
+    "target2": 2311.41,
+    "stop_loss": 1759.47,
+    "score_at_signal": 73.7
+  },
+  {
+    "symbol": "TITAN",
+    "category": "Long-Term",
+    "first_shown_date": "2026-11-04",
+    "entry_price": 4754.4,
+    "target1": 5236.03,
+    "target2": 5610.63,
+    "stop_loss": 4433.31,
+    "score_at_signal": 71.6
   }
 ]
