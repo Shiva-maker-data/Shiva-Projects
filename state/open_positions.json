@@ -120,16 +120,6 @@
     "score_at_signal": 62.8
   },
   {
-    "symbol": "BHARTIARTL",
-    "category": "Short-Term (Swing)",
-    "first_shown_date": "2026-11-03",
-    "entry_price": 2065.0,
-    "target1": 2101.91,
-    "target2": 2211.66,
-    "stop_loss": 1996.25,
-    "score_at_signal": 66.0
-  },
-  {
     "symbol": "EICHERMOT",
     "category": "Long-Term",
     "first_shown_date": "2026-11-03",
@@ -148,16 +138,6 @@
     "target2": 5610.63,
     "stop_loss": 4433.31,
     "score_at_signal": 71.6
-  },
-  {
-    "symbol": "ICICIBANK",
-    "category": "Short-Term (Swing)",
-    "first_shown_date": "2026-11-05",
-    "entry_price": 1500.0,
-    "target1": 1516.41,
-    "target2": 1596.19,
-    "stop_loss": 1454.91,
-    "score_at_signal": 66.8
   },
   {
     "symbol": "ETERNAL",
@@ -190,23 +170,53 @@
     "score_at_signal": 80.1
   },
   {
+    "symbol": "ICICIBANK",
+    "category": "Short-Term (Swing)",
+    "first_shown_date": "2026-11-06",
+    "entry_price": 1571.2,
+    "target1": 1637.2,
+    "target2": 1676.79,
+    "stop_loss": 1521.7,
+    "score_at_signal": 66.7
+  },
+  {
+    "symbol": "ULTRACEMCO",
+    "category": "Short-Term (Swing)",
+    "first_shown_date": "2026-11-06",
+    "entry_price": 12450.0,
+    "target1": 13006.36,
+    "target2": 13340.17,
+    "stop_loss": 12032.73,
+    "score_at_signal": 63.8
+  },
+  {
     "symbol": "KOTAKBANK",
     "category": "Long-Term",
-    "first_shown_date": "2026-11-05",
-    "entry_price": 467.0,
-    "target1": 477.23,
-    "target2": 548.28,
-    "stop_loss": 436.52,
-    "score_at_signal": 73.8
+    "first_shown_date": "2026-11-06",
+    "entry_price": 480.0,
+    "target1": 527.92,
+    "target2": 565.19,
+    "stop_loss": 448.06,
+    "score_at_signal": 75.0
   },
   {
     "symbol": "ICICIBANK",
     "category": "Long-Term",
-    "first_shown_date": "2026-11-05",
-    "entry_price": 1500.0,
-    "target1": 1516.41,
-    "target2": 1740.48,
-    "stop_loss": 1409.82,
-    "score_at_signal": 73.6
+    "first_shown_date": "2026-11-06",
+    "entry_price": 1571.2,
+    "target1": 1719.69,
+    "target2": 1835.19,
+    "stop_loss": 1472.2,
+    "score_at_signal": 73.5
+  },
+  {
+    "symbol": "JSWSTEEL",
+    "category": "Long-Term",
+    "first_shown_date": "2026-11-06",
+    "entry_price": 1357.1,
+    "target1": 1383.7,
+    "target2": 1622.09,
+    "stop_loss": 1257.73,
+    "score_at_signal": 71.5
   }
 ]
